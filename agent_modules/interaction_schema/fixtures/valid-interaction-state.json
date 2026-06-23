@@ -1,0 +1,9 @@
+{
+  "stage": "intake",
+  "status": "collecting",
+  "completion_level": "insufficient",
+  "answered_question_ids": [],
+  "pending_question_ids": ["trigger_type"],
+  "last_summary": "",
+  "next_action": "ask_questions"
+}

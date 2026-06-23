@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://yingdao.local/rpa-requirements/interaction-state.schema.json",
+  "title": "InteractionState",
+  "type": "object",
+  "required": [
+    "stage",
+    "status",
+    "completion_level",
+    "answered_question_ids",
+    "pending_question_ids",
+    "last_summary",
+    "next_action"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "stage": {
+      "type": "string",
+      "enum": [
+        "intake",
+        "clarification",
+        "rpa_boundary_check",
+        "process_breakdown",
+        "exception_design",
+        "blueprint_ready"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "collecting",
+        "summarizing",
+        "waiting_user_confirm",
+        "ready_for_next_module",
+        "blocked"
+      ]
+    },
+    "completion_level": {
+      "type": "string",
+      "enum": [
+        "insufficient",
+        "partial",
+        "workable",
+        "development_ready"
+      ]
+    },
+    "answered_question_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "pending_question_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "last_summary": {
+      "type": "string"
+    },
+    "next_action": {
+      "type": "string",
+      "enum": [
+        "ask_questions",
+        "ask_repair_question",
+        "request_free_text",
+        "summarize_and_confirm",
+        "enter_next_module",
+        "stop_with_gap_report",
+        "stop_with_blocker"
+      ]
+    }
+  }
+}
