@@ -1,0 +1,66 @@
+{
+  "clarification_depth": "boundary_only",
+  "boundary_facts": {
+    "business_goal": {
+      "value": "在供应商到货单进入系统后，按标准物料名称自动完成入库登记",
+      "confidence": "high",
+      "source": "user_answer"
+    },
+    "trigger": {
+      "value": "收到供应商发来的到货明细、入库单或物料清单时",
+      "confidence": "high",
+      "source": "user_answer"
+    },
+    "completion_condition": {
+      "value": "供应商原始名称与标准物料名称完成映射后，系统可以按标准名称完成入库处理",
+      "confidence": "high",
+      "source": "user_answer"
+    },
+    "input_data": {
+      "value": [
+        "供应商名称",
+        "供应商物料名称",
+        "到货数量",
+        "入库单号"
+      ],
+      "confidence": "high",
+      "source": "user_answer"
+    },
+    "operated_systems": {
+      "value": [
+        "供应商邮件",
+        "WMS",
+        "ERP主数据表"
+      ],
+      "confidence": "high",
+      "source": "user_answer"
+    },
+    "output_result": {
+      "value": "入库记录按照标准物料名称成功生成",
+      "confidence": "high",
+      "source": "user_answer"
+    }
+  },
+  "rpa_fit_prescreen": {
+    "input_stability": "medium",
+    "rule_clarity": "low",
+    "action_repeatability": "medium",
+    "platform_operability": "medium",
+    "result_verifiability": "medium",
+    "candidate_risk_types": [
+      "semantic_judgment"
+    ],
+    "pre_screen_flags": [
+      "semantic_judgment"
+    ],
+    "recommended_prework": [
+      "先统一物料主数据命名规则",
+      "建立供应商名称与标准物料名称的映射表"
+    ]
+  },
+  "pending_questions": [
+    "供应商原始名称和标准物料名称是否已经有可维护的映射表"
+  ],
+  "stage_summary": "当前请求能确认边界事实，但物料名称匹配依赖语义判断和主数据治理，适合先补齐命名规则和映射表，再继续后续模块。",
+  "next_stage_recommendation": "stop_with_prework_recommendation"
+}

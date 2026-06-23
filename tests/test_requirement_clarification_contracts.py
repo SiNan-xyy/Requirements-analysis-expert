@@ -38,6 +38,19 @@ class RequirementClarificationContractTests(unittest.TestCase):
         self.assertEqual(fixture["rpa_fit_prescreen"]["rule_clarity"], "medium")
         self.assertTrue(fixture["stage_summary"])
 
+    def test_semantic_risk_fixture_flags_prework_without_final_decision(self):
+        fixture = load_json("agent_modules/requirement_clarification/fixtures/semantic-risk-prescreen.json")
+        prescreen = fixture["rpa_fit_prescreen"]
+
+        self.assertEqual(fixture["clarification_depth"], "boundary_only")
+        self.assertIn("semantic_judgment", prescreen["candidate_risk_types"])
+        self.assertIn("semantic_judgment", prescreen["pre_screen_flags"])
+        self.assertIn("先统一物料主数据命名规则", prescreen["recommended_prework"])
+        self.assertIn("建立供应商名称与标准物料名称的映射表", prescreen["recommended_prework"])
+        self.assertEqual(fixture["next_stage_recommendation"], "stop_with_prework_recommendation")
+        self.assertNotIn("final_feasibility", fixture)
+        self.assertTrue(fixture["stage_summary"])
+
     def test_completion_rules_preserve_boundary_only_thresholds(self):
         rules = load_json("agent_modules/requirement_clarification/rules/completion-rules.json")
 
@@ -127,6 +140,22 @@ class RequirementClarificationContractTests(unittest.TestCase):
             self.assertIn("trigger_policy", example)
             self.assertTrue(example["trigger_policy"]["confirmation_required"])
             self.assertTrue(example["trigger_policy"]["never_conclude_from_initial_request_only"])
+
+    def test_readme_lists_module_2_artifacts(self):
+        text = (ROOT / "agent_modules/requirement_clarification/README.md").read_text(encoding="utf-8")
+
+        expected_paths = [
+            "schemas/clarification-result.schema.json",
+            "schemas/negative-example.schema.json",
+            "materials/negative-examples.v1.json",
+            "rules/completion-rules.json",
+            "rules/trigger-policy.json",
+            "rules/prompt-rules.md",
+            "fixtures/semantic-risk-prescreen.json",
+        ]
+        for path in expected_paths:
+            with self.subTest(path=path):
+                self.assertIn(path, text)
 
 
 if __name__ == "__main__":
