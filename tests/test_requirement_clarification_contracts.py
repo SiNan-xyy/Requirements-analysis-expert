@@ -32,8 +32,11 @@ class RequirementClarificationContractTests(unittest.TestCase):
 
         self.assertEqual(fixture["clarification_depth"], "boundary_only")
         self.assertEqual(fixture["next_stage_recommendation"], "rpa_boundary_check")
+        self.assertEqual(fixture["boundary_facts"]["business_goal"]["value"], "自动完成物流拦截")
+        self.assertEqual(fixture["boundary_facts"]["input_data"]["value"], ["物流单号"])
         self.assertEqual(fixture["rpa_fit_prescreen"]["rule_clarity"], "medium")
         self.assertIn("物流拦截", fixture["stage_summary"])
+        self.assertIn("影刀商户后台", fixture["stage_summary"])
 
 
 if __name__ == "__main__":
