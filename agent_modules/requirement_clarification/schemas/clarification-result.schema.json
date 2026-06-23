@@ -1,0 +1,159 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://yingdao.local/rpa-requirements/clarification-result.schema.json",
+  "title": "ClarificationResult",
+  "type": "object",
+  "required": [
+    "clarification_depth",
+    "boundary_facts",
+    "rpa_fit_prescreen",
+    "pending_questions",
+    "stage_summary",
+    "next_stage_recommendation"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "clarification_depth": {
+      "const": "boundary_only"
+    },
+    "boundary_facts": {
+      "type": "object",
+      "required": [
+        "business_goal",
+        "trigger",
+        "completion_condition",
+        "input_data",
+        "operated_systems",
+        "output_result"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "business_goal": {
+          "$ref": "#/$defs/fact"
+        },
+        "trigger": {
+          "$ref": "#/$defs/fact"
+        },
+        "completion_condition": {
+          "$ref": "#/$defs/fact"
+        },
+        "input_data": {
+          "$ref": "#/$defs/fact"
+        },
+        "operated_systems": {
+          "$ref": "#/$defs/fact"
+        },
+        "output_result": {
+          "$ref": "#/$defs/fact"
+        }
+      }
+    },
+    "rpa_fit_prescreen": {
+      "type": "object",
+      "required": [
+        "input_stability",
+        "rule_clarity",
+        "action_repeatability",
+        "platform_operability",
+        "result_verifiability",
+        "candidate_risk_types",
+        "pre_screen_flags",
+        "recommended_prework"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "input_stability": {
+          "$ref": "#/$defs/prescreen_level"
+        },
+        "rule_clarity": {
+          "$ref": "#/$defs/prescreen_level"
+        },
+        "action_repeatability": {
+          "$ref": "#/$defs/prescreen_level"
+        },
+        "platform_operability": {
+          "$ref": "#/$defs/prescreen_level"
+        },
+        "result_verifiability": {
+          "$ref": "#/$defs/prescreen_level"
+        },
+        "candidate_risk_types": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "pre_screen_flags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "recommended_prework": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "pending_questions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "stage_summary": {
+      "type": "string"
+    },
+    "next_stage_recommendation": {
+      "type": "string",
+      "enum": [
+        "rpa_boundary_check",
+        "stop_with_gap_report",
+        "stop_with_prework_recommendation"
+      ]
+    }
+  },
+  "$defs": {
+    "confidence": {
+      "type": "string",
+      "enum": [
+        "high",
+        "medium",
+        "low",
+        "none"
+      ]
+    },
+    "fact": {
+      "type": "object",
+      "required": [
+        "value",
+        "confidence",
+        "source"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "value": {},
+        "confidence": {
+          "$ref": "#/$defs/confidence"
+        },
+        "source": {
+          "type": "string"
+        }
+      }
+    },
+    "prescreen_level": {
+      "type": "string",
+      "enum": [
+        "high",
+        "medium",
+        "low",
+        "unknown"
+      ]
+    }
+  }
+}
+

@@ -1,0 +1,55 @@
+{
+  "clarification_depth": "boundary_only",
+  "boundary_facts": {
+    "business_goal": {
+      "value": "自动完成物流拦截",
+      "confidence": "high",
+      "source": "user_answer"
+    },
+    "trigger": {
+      "value": "收到飞书机器人消息中的物流单号后开始",
+      "confidence": "high",
+      "source": "user_answer"
+    },
+    "completion_condition": {
+      "value": "拦截结果已发送回飞书",
+      "confidence": "high",
+      "source": "user_answer"
+    },
+    "input_data": {
+      "value": [
+        "物流单号"
+      ],
+      "confidence": "high",
+      "source": "user_answer"
+    },
+    "operated_systems": {
+      "value": [
+        "飞书",
+        "影刀商户后台"
+      ],
+      "confidence": "high",
+      "source": "user_answer"
+    },
+    "output_result": {
+      "value": "飞书通知拦截成功或失败",
+      "confidence": "high",
+      "source": "user_answer"
+    }
+  },
+  "rpa_fit_prescreen": {
+    "input_stability": "high",
+    "rule_clarity": "medium",
+    "action_repeatability": "high",
+    "platform_operability": "medium",
+    "result_verifiability": "high",
+    "candidate_risk_types": [],
+    "pre_screen_flags": [],
+    "recommended_prework": []
+  },
+  "pending_questions": [
+    "确认商户后台是否存在强验证或人工复核"
+  ],
+  "stage_summary": "当前需求聚焦于物流拦截自动化：接收物流单号后在影刀商户后台执行拦截，并将结果回传飞书。",
+  "next_stage_recommendation": "rpa_boundary_check"
+}
