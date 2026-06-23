@@ -1,0 +1,37 @@
+{
+  "global_rules": {
+    "never_conclude_from_initial_request_only": true,
+    "weak_signals_create_candidate_risks_only": true,
+    "field_answer_triggers_are_more_reliable_than_initial_keywords": true,
+    "fixed_prescreen_questions_are_required_before_completion": true
+  },
+  "trigger_levels": [
+    {
+      "name": "weak_keyword_trigger",
+      "confidence": "low",
+      "action": "ask_disambiguation_question"
+    },
+    {
+      "name": "field_answer_trigger",
+      "confidence": "medium",
+      "action": "ask_targeted_risk_question"
+    },
+    {
+      "name": "fixed_prescreen",
+      "confidence": "medium",
+      "action": "ask_missing_prescreen_question"
+    }
+  ],
+  "fixed_prescreen_dimensions": [
+    "input_stability",
+    "rule_clarity",
+    "action_repeatability",
+    "platform_operability",
+    "result_verifiability"
+  ],
+  "skip_or_confirm_policy": {
+    "high_confidence_existing_answer": "skip_question",
+    "medium_confidence_inference": "ask_confirmation_question",
+    "missing_answer": "ask_choice_question"
+  }
+}

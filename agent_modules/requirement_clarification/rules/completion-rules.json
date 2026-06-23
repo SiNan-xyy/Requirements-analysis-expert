@@ -1,0 +1,36 @@
+{
+  "clarification_depth": "boundary_only",
+  "boundary_facts": [
+    "business_goal",
+    "trigger",
+    "completion_condition",
+    "input_data",
+    "operated_systems",
+    "output_result"
+  ],
+  "core_fields": [
+    "input_data",
+    "operated_systems",
+    "output_result"
+  ],
+  "summarize_threshold": {
+    "minimum_boundary_facts_medium_or_high": 4,
+    "minimum_prescreen_facts_answered_or_unknown": 3,
+    "forbidden_answer_statuses": [
+      "needs_free_text",
+      "invalid"
+    ]
+  },
+  "stop_conditions": [
+    "three_or_more_required_boundary_facts_unknown_after_retry",
+    "two_or_more_core_fields_unknown",
+    "business_goal_is_only_make_it_automatic",
+    "high_confidence_pre_screen_risk_requires_prework"
+  ],
+  "next_actions": {
+    "ready": "summarize_and_confirm",
+    "confirmed": "enter_next_module",
+    "insufficient": "stop_with_gap_report",
+    "prework_required": "stop_with_prework_recommendation"
+  }
+}

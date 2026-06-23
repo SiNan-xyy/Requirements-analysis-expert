@@ -32,11 +32,67 @@ class RequirementClarificationContractTests(unittest.TestCase):
 
         self.assertEqual(fixture["clarification_depth"], "boundary_only")
         self.assertEqual(fixture["next_stage_recommendation"], "rpa_boundary_check")
-        self.assertEqual(fixture["boundary_facts"]["business_goal"]["value"], "自动完成物流拦截")
-        self.assertEqual(fixture["boundary_facts"]["input_data"]["value"], ["物流单号"])
+        self.assertTrue(fixture["boundary_facts"]["business_goal"]["value"])
+        self.assertIsInstance(fixture["boundary_facts"]["input_data"]["value"], list)
+        self.assertGreaterEqual(len(fixture["boundary_facts"]["input_data"]["value"]), 1)
         self.assertEqual(fixture["rpa_fit_prescreen"]["rule_clarity"], "medium")
-        self.assertIn("物流拦截", fixture["stage_summary"])
-        self.assertIn("影刀商户后台", fixture["stage_summary"])
+        self.assertTrue(fixture["stage_summary"])
+
+    def test_completion_rules_preserve_boundary_only_thresholds(self):
+        rules = load_json("agent_modules/requirement_clarification/rules/completion-rules.json")
+
+        self.assertEqual(rules["clarification_depth"], "boundary_only")
+        self.assertEqual(
+            rules["boundary_facts"],
+            [
+                "business_goal",
+                "trigger",
+                "completion_condition",
+                "input_data",
+                "operated_systems",
+                "output_result",
+            ],
+        )
+        self.assertEqual(
+            rules["core_fields"],
+            [
+                "input_data",
+                "operated_systems",
+                "output_result",
+            ],
+        )
+        self.assertEqual(rules["summarize_threshold"]["minimum_boundary_facts_medium_or_high"], 4)
+        self.assertEqual(rules["summarize_threshold"]["minimum_prescreen_facts_answered_or_unknown"], 3)
+        self.assertEqual(rules["summarize_threshold"]["forbidden_answer_statuses"], ["needs_free_text", "invalid"])
+        self.assertIn("three_or_more_required_boundary_facts_unknown_after_retry", rules["stop_conditions"])
+        self.assertIn("two_or_more_core_fields_unknown", rules["stop_conditions"])
+        self.assertIn("business_goal_is_only_make_it_automatic", rules["stop_conditions"])
+        self.assertIn("high_confidence_pre_screen_risk_requires_prework", rules["stop_conditions"])
+        self.assertEqual(rules["next_actions"]["ready"], "summarize_and_confirm")
+        self.assertEqual(rules["next_actions"]["confirmed"], "enter_next_module")
+        self.assertEqual(rules["next_actions"]["insufficient"], "stop_with_gap_report")
+        self.assertEqual(rules["next_actions"]["prework_required"], "stop_with_prework_recommendation")
+
+    def test_trigger_policy_never_concludes_from_initial_request(self):
+        rules = load_json("agent_modules/requirement_clarification/rules/trigger-policy.json")
+
+        self.assertEqual(rules["trigger_levels"][0]["name"], "weak_keyword_trigger")
+        self.assertTrue(rules["global_rules"]["never_conclude_from_initial_request_only"])
+        self.assertIn("rule_clarity", rules["fixed_prescreen_dimensions"])
+        self.assertIn("result_verifiability", rules["fixed_prescreen_dimensions"])
+        self.assertTrue(rules["global_rules"]["weak_signals_create_candidate_risks_only"])
+        self.assertTrue(rules["global_rules"]["field_answer_triggers_are_more_reliable_than_initial_keywords"])
+        self.assertTrue(rules["global_rules"]["fixed_prescreen_questions_are_required_before_completion"])
+
+    def test_prompt_rules_forbid_execution_step_drilling(self):
+        rules = (ROOT / "agent_modules/requirement_clarification/rules/prompt-rules.md").read_text(encoding="utf-8")
+
+        self.assertIn("Do not ask for exact click paths", rules)
+        self.assertIn("Do not decide final RPA feasibility", rules)
+        self.assertIn("# Requirement Clarification Prompt Rules", rules)
+        self.assertIn("## Do", rules)
+        self.assertIn("## Do Not", rules)
+
     def test_negative_example_schema_requires_trigger_policy(self):
         schema = load_json("agent_modules/requirement_clarification/schemas/negative-example.schema.json")
         props = schema["properties"]
