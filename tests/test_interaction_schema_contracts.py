@@ -94,6 +94,28 @@ class InteractionSchemaContractTests(unittest.TestCase):
         self.assertIn("Do not ask a question if the answer was already supplied", text)
         self.assertIn("Summarize what was learned before entering the next module", text)
 
+    def test_deduplication_fixture_infers_web_system_from_url(self):
+        fixture = load_json("agent_modules/interaction_schema/fixtures/deduplication-url-inference.json")
+        patch = fixture["state_patch"]
+        skipped = fixture["deduplication"]["skipped_question_ids"]
+
+        self.assertEqual(
+            patch["systems[0].entry_url"]["value"],
+            "https://shop.yingdao.com/worktop/logistics-list",
+        )
+        self.assertEqual(patch["systems[0].type"]["value"], "browser_web")
+        self.assertEqual(patch["systems[0].type"]["source"], "inferred_from_url")
+        self.assertEqual(patch["systems[0].type"]["confidence"], "high")
+        self.assertIn("system_type", skipped)
+
+    def test_deduplication_fixture_records_confirmation_for_medium_confidence(self):
+        fixture = load_json("agent_modules/interaction_schema/fixtures/deduplication-url-inference.json")
+
+        self.assertEqual(
+            fixture["deduplication"]["medium_confidence_strategy"],
+            "ask_confirmation_question",
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

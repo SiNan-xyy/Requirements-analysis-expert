@@ -1,0 +1,41 @@
+{
+  "user_answer": "平台是影刀商城后台，网址是 https://shop.yingdao.com/worktop/logistics-list，用 admin 登录。",
+  "state_patch": {
+    "systems[0].name": {
+      "value": "影刀商城后台",
+      "source": "user_free_text",
+      "confidence": "high"
+    },
+    "systems[0].entry_url": {
+      "value": "https://shop.yingdao.com/worktop/logistics-list",
+      "source": "user_free_text",
+      "confidence": "high"
+    },
+    "systems[0].type": {
+      "value": "browser_web",
+      "source": "inferred_from_url",
+      "confidence": "high"
+    },
+    "systems[0].login_required": {
+      "value": true,
+      "source": "inferred_from_login_phrase",
+      "confidence": "medium"
+    },
+    "systems[0].account_hint": {
+      "value": "admin",
+      "source": "user_free_text",
+      "confidence": "high"
+    }
+  },
+  "deduplication": {
+    "skipped_question_ids": [
+      "system_name",
+      "system_entry_url",
+      "system_type"
+    ],
+    "confirmation_question_ids": [
+      "login_required"
+    ],
+    "medium_confidence_strategy": "ask_confirmation_question"
+  }
+}
