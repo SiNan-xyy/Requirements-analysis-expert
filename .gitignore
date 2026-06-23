@@ -1,2 +1,3 @@
 inspect_requirements_files.py
 requirements_inspection.json
+__pycache__/

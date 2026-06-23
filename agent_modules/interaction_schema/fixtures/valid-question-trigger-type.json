@@ -1,0 +1,51 @@
+{
+  "question_id": "trigger_type",
+  "stage": "clarification",
+  "question": "这个流程通常从什么事件开始？",
+  "type": "single_choice",
+  "importance": "required",
+  "blocks_stage_progression": true,
+  "allow_unknown": true,
+  "target_field": "requirement.trigger.type",
+  "options": [
+    {
+      "label": "固定时间自动开始",
+      "value": "scheduled",
+      "description": "例如每天 9 点、每小时一次。"
+    },
+    {
+      "label": "收到飞书/钉钉消息后开始",
+      "value": "message_received",
+      "description": "例如收到订单号、物流单号、审批消息。"
+    },
+    {
+      "label": "收到文件或表格后开始",
+      "value": "file_received",
+      "description": "例如收到 Excel、CSV、下载文件。"
+    },
+    {
+      "label": "人工点击按钮后开始",
+      "value": "manual_start",
+      "description": "适合人工确认后再执行的流程。"
+    },
+    {
+      "label": "暂不确定",
+      "value": "unknown"
+    },
+    {
+      "label": "其他，请补充",
+      "value": "other"
+    }
+  ],
+  "free_text": {
+    "enabled": true,
+    "field": "requirement.trigger.note",
+    "required_when": {
+      "selected_values_include": ["other"]
+    }
+  },
+  "retry_policy": {
+    "max_retries": 2,
+    "fallback_to_single_question": true
+  }
+}

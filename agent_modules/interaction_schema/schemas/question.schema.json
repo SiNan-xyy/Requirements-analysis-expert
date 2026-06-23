@@ -1,0 +1,125 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://yingdao.local/rpa-requirements/question.schema.json",
+  "title": "ChoiceQuestion",
+  "type": "object",
+  "required": [
+    "question_id",
+    "stage",
+    "question",
+    "type",
+    "importance",
+    "blocks_stage_progression",
+    "allow_unknown",
+    "target_field",
+    "options",
+    "free_text",
+    "retry_policy"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "question_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "stage": {
+      "type": "string"
+    },
+    "question": {
+      "type": "string",
+      "minLength": 1
+    },
+    "type": {
+      "type": "string",
+      "enum": ["single_choice", "multiple_choice"]
+    },
+    "importance": {
+      "type": "string",
+      "enum": ["required", "recommended", "optional"]
+    },
+    "blocks_stage_progression": {
+      "type": "boolean"
+    },
+    "allow_unknown": {
+      "type": "boolean"
+    },
+    "target_field": {
+      "type": "string",
+      "minLength": 1
+    },
+    "options": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "required": ["label", "value"],
+        "additionalProperties": false,
+        "properties": {
+          "label": {
+            "type": "string",
+            "minLength": 1
+          },
+          "value": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "free_text": {
+      "type": "object",
+      "required": ["enabled", "field", "required_when"],
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "field": {
+          "type": "string"
+        },
+        "required_when": {
+          "type": "object",
+          "required": ["selected_values_include"],
+          "additionalProperties": false,
+          "properties": {
+            "selected_values_include": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "retry_policy": {
+      "type": "object",
+      "required": ["max_retries", "fallback_to_single_question"],
+      "additionalProperties": false,
+      "properties": {
+        "max_retries": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "fallback_to_single_question": {
+          "type": "boolean"
+        }
+      }
+    },
+    "depends_on_fields": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "skip_if": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    }
+  }
+}
