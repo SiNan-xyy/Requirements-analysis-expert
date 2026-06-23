@@ -55,6 +55,28 @@ class InteractionSchemaContractTests(unittest.TestCase):
             ["other"],
         )
 
+    def test_answer_batch_schema_defines_status_and_confidence_enums(self):
+        schema = load_json("agent_modules/interaction_schema/schemas/answer-batch.schema.json")
+        answer_props = schema["properties"]["answer_records"]["items"]["properties"]
+
+        self.assertEqual(
+            answer_props["answer_status"]["enum"],
+            ["answered", "unknown", "skipped", "invalid", "needs_free_text"],
+        )
+        self.assertEqual(
+            answer_props["confidence"]["enum"],
+            ["high", "medium", "low", "none"],
+        )
+
+    def test_answer_batch_fixture_updates_state_patch_and_impact(self):
+        batch = load_json("agent_modules/interaction_schema/fixtures/valid-answer-batch.json")
+
+        self.assertEqual(batch["answer_records"][0]["question_id"], "trigger_type")
+        self.assertEqual(batch["answer_records"][0]["answer_status"], "answered")
+        self.assertEqual(batch["state_patch"]["requirement.trigger.type"]["value"], "message_received")
+        self.assertEqual(batch["impact"]["blocks_stage_progression"], False)
+        self.assertEqual(batch["impact"]["adds_pending_question"], False)
+
 
 if __name__ == "__main__":
     unittest.main()
