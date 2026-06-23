@@ -77,6 +77,23 @@ class InteractionSchemaContractTests(unittest.TestCase):
         self.assertEqual(batch["impact"]["blocks_stage_progression"], False)
         self.assertEqual(batch["impact"]["adds_pending_question"], False)
 
+    def test_decision_rules_have_required_order_and_gap_policy(self):
+        rules = load_json("agent_modules/interaction_schema/rules/decision-rules.json")
+        conditions = [rule["condition"] for rule in rules["decision_rules"]]
+
+        self.assertEqual(conditions[0], "has_invalid_required_answer")
+        self.assertEqual(conditions[1], "has_other_without_free_text")
+        self.assertIn("has_unanswered_required_questions", conditions)
+        self.assertEqual(rules["gap_stop_policy"]["max_required_unknown_count"], 3)
+        self.assertEqual(rules["gap_stop_policy"]["max_retries_per_question"], 2)
+        self.assertTrue(rules["gap_stop_policy"]["fallback_to_single_question"])
+
+    def test_prompt_rules_document_mentions_no_repeated_questions(self):
+        text = (ROOT / "agent_modules/interaction_schema/rules/prompt-rules.md").read_text(encoding="utf-8")
+
+        self.assertIn("Do not ask a question if the answer was already supplied", text)
+        self.assertIn("Summarize what was learned before entering the next module", text)
+
 
 if __name__ == "__main__":
     unittest.main()
