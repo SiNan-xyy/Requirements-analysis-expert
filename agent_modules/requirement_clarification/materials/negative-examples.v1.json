@@ -1,0 +1,340 @@
+{
+  "version": "v1",
+  "purpose": "Module 2 RPA-fit pre-screen negative examples. These examples trigger clarification questions and pre-screen flags, not final feasibility conclusions.",
+  "examples": [
+    {
+      "case_id": "semantic-material-matching",
+      "title": "物料名称不统一，需要人工判断是否同一物料",
+      "risk_type": "semantic_judgment",
+      "symptoms": [
+        "不同供应商对同一物料叫法不同",
+        "需要判断两个名称是不是同一类东西",
+        "没有标准命名规则或映射表",
+        "判断依赖人工经验或语义理解"
+      ],
+      "why_not_rpa_ready": "RPA 擅长执行明确规则，不擅长替业务判断同义关系。关键判断无法规则化时，机器容易误判。",
+      "screening_question": "不同名称之间是否已经有明确的标准命名或映射规则？",
+      "options": [
+        "已有标准命名和映射表",
+        "有部分规则，但仍需人工判断",
+        "主要靠人工判断是不是同一类东西",
+        "暂不确定",
+        "其他，请补充"
+      ],
+      "better_next_step": [
+        "先统一物料主数据命名规则",
+        "建立供应商名称与标准物料名称的映射表",
+        "规则明确后再考虑 RPA 自动入库"
+      ],
+      "module_2_action": "flag_rpa_fit_risk",
+      "trigger_policy": {
+        "weak_signals": [
+          "名称不统一",
+          "是不是同一类",
+          "人工判断",
+          "同义"
+        ],
+        "trigger_from_fields": [
+          "business_goal",
+          "input_data.description",
+          "decision_basis"
+        ],
+        "confirmation_required": true,
+        "never_conclude_from_initial_request_only": true
+      }
+    },
+    {
+      "case_id": "missing-stable-business-rules",
+      "title": "业务规则说不清，依赖看情况处理",
+      "risk_type": "missing_rules",
+      "symptoms": [
+        "业务描述里出现看情况、一般来说、人工会判断",
+        "无法明确什么情况下做、什么情况下不做",
+        "同一场景不同人处理方式不同",
+        "规则不能写成条件"
+      ],
+      "why_not_rpa_ready": "RPA 负责稳定执行规则，不负责临场创造规则。规则缺失时，自动化会放大不确定性。",
+      "screening_question": "这个流程里的关键判断是否能写成明确条件？",
+      "options": [
+        "可以，判断条件已经明确",
+        "大部分可以，少量情况需要人工确认",
+        "目前主要靠人工经验判断",
+        "暂不确定",
+        "其他，请补充"
+      ],
+      "better_next_step": [
+        "先整理判断规则",
+        "把常见情况分类",
+        "明确每类情况的处理动作",
+        "无法规则化的部分保留人工审核"
+      ],
+      "module_2_action": "flag_rpa_fit_risk",
+      "trigger_policy": {
+        "weak_signals": [
+          "看情况",
+          "人工判断",
+          "人工经验",
+          "说不清"
+        ],
+        "trigger_from_fields": [
+          "business_goal",
+          "completion_condition",
+          "decision_basis"
+        ],
+        "confirmation_required": true,
+        "never_conclude_from_initial_request_only": true
+      }
+    },
+    {
+      "case_id": "unstable-input-format",
+      "title": "输入数据来源或格式不稳定",
+      "risk_type": "unstable_input",
+      "symptoms": [
+        "输入可能来自聊天消息、表格、邮件、截图等多种形式",
+        "字段名称或顺序经常变化",
+        "同一字段有多种写法",
+        "缺少固定模板"
+      ],
+      "why_not_rpa_ready": "输入不稳定会导致机器人无法稳定读取字段，后续流程即使固定也容易失败。",
+      "screening_question": "机器人接收的数据格式是否固定？",
+      "options": [
+        "固定，有统一表格或字段模板",
+        "基本固定，但偶尔有变化",
+        "不固定，经常需要人工理解",
+        "暂不确定",
+        "其他，请补充"
+      ],
+      "better_next_step": [
+        "先制定统一输入模板",
+        "固定字段名称和必填项",
+        "对非标准输入增加人工预处理",
+        "必要时先用表单收集数据"
+      ],
+      "module_2_action": "flag_rpa_fit_risk",
+      "trigger_policy": {
+        "weak_signals": [
+          "各种格式",
+          "格式不固定",
+          "经常变化",
+          "截图",
+          "手工整理"
+        ],
+        "trigger_from_fields": [
+          "input_data.source",
+          "input_data.description"
+        ],
+        "confirmation_required": true,
+        "never_conclude_from_initial_request_only": true
+      }
+    },
+    {
+      "case_id": "unverifiable-result",
+      "title": "执行结果缺少明确成功或失败标志",
+      "risk_type": "unverifiable_result",
+      "symptoms": [
+        "完成后没有页面提示",
+        "没有状态变化",
+        "没有生成文件或记录",
+        "只能靠人工感觉判断是否成功"
+      ],
+      "why_not_rpa_ready": "RPA 需要知道任务是否完成。结果不可验证时，机器人无法稳定判断继续、重试还是报错。",
+      "screening_question": "流程完成后是否有明确的成功或失败标志？",
+      "options": [
+        "有明确状态、提示、文件或记录",
+        "有提示，但需要进一步确认",
+        "没有明确标志，通常人工判断",
+        "暂不确定",
+        "其他，请补充"
+      ],
+      "better_next_step": [
+        "明确成功标志",
+        "明确失败标志",
+        "增加日志或结果记录",
+        "让系统输出可读取的处理状态"
+      ],
+      "module_2_action": "flag_rpa_fit_risk",
+      "trigger_policy": {
+        "weak_signals": [
+          "不知道是否成功",
+          "人工确认结果",
+          "没有提示",
+          "凭经验判断"
+        ],
+        "trigger_from_fields": [
+          "output_result",
+          "completion_condition"
+        ],
+        "confirmation_required": true,
+        "never_conclude_from_initial_request_only": true
+      }
+    },
+    {
+      "case_id": "unstable-system-ui",
+      "title": "系统页面或入口不稳定",
+      "risk_type": "unstable_platform",
+      "symptoms": [
+        "页面经常改版",
+        "按钮位置或名称经常变化",
+        "入口路径不固定",
+        "系统加载速度波动大"
+      ],
+      "why_not_rpa_ready": "RPA 依赖稳定的系统入口和界面元素。页面频繁变化会让脚本维护成本升高。",
+      "screening_question": "机器人要操作的系统页面是否相对稳定？",
+      "options": [
+        "稳定，页面和按钮很少变化",
+        "基本稳定，偶尔升级",
+        "经常变化或近期有改版计划",
+        "暂不确定",
+        "其他，请补充"
+      ],
+      "better_next_step": [
+        "确认系统近期升级计划",
+        "优先寻找 API 或数据接口",
+        "固定操作入口",
+        "页面稳定后再开发 RPA"
+      ],
+      "module_2_action": "flag_rpa_fit_risk",
+      "trigger_policy": {
+        "weak_signals": [
+          "经常改版",
+          "页面变化",
+          "入口不固定",
+          "加载不稳定"
+        ],
+        "trigger_from_fields": [
+          "operated_systems",
+          "platform_notes"
+        ],
+        "confirmation_required": true,
+        "never_conclude_from_initial_request_only": true
+      }
+    },
+    {
+      "case_id": "frequent-strong-verification",
+      "title": "强验证码、面容或手机二次确认频繁出现",
+      "risk_type": "human_verification",
+      "symptoms": [
+        "每次登录都需要手机验证码",
+        "频繁出现滑块或图形验证码",
+        "需要人脸识别",
+        "需要人工在手机 App 上确认"
+      ],
+      "why_not_rpa_ready": "频繁强验证会打断机器人独立执行，导致流程无法无人的稳定运行。",
+      "screening_question": "流程执行过程中是否经常需要人工验证？",
+      "options": [
+        "基本不需要验证",
+        "偶尔需要验证码或人工确认",
+        "经常需要手机、面容或强验证码",
+        "暂不确定",
+        "其他，请补充"
+      ],
+      "better_next_step": [
+        "申请机器人专用账号",
+        "确认是否可保持登录态",
+        "改用接口或系统授权方式",
+        "保留人工验证节点，不做全自动"
+      ],
+      "module_2_action": "flag_rpa_fit_risk",
+      "trigger_policy": {
+        "weak_signals": [
+          "验证码",
+          "人脸",
+          "手机确认",
+          "二次验证",
+          "滑块"
+        ],
+        "trigger_from_fields": [
+          "operated_systems",
+          "login_method",
+          "platform_notes"
+        ],
+        "confirmation_required": true,
+        "never_conclude_from_initial_request_only": true
+      }
+    },
+    {
+      "case_id": "open-ended-exceptions",
+      "title": "异常情况过多且没有分类规则",
+      "risk_type": "open_ended_exceptions",
+      "symptoms": [
+        "失败原因很多",
+        "不同失败原因处理方式不同",
+        "目前没有异常分类",
+        "异常主要靠人工临场判断"
+      ],
+      "why_not_rpa_ready": "RPA 可以处理明确分支，但不适合处理完全开放的异常空间。异常无分类时，机器人难以收口。",
+      "screening_question": "异常情况是否已经分类并有对应处理方式？",
+      "options": [
+        "已经分类，并有明确处理方式",
+        "有常见异常分类，少量需要人工处理",
+        "异常很多，目前主要靠人工判断",
+        "暂不确定",
+        "其他，请补充"
+      ],
+      "better_next_step": [
+        "先整理常见异常类型",
+        "明确每类异常处理动作",
+        "无法覆盖的异常统一转人工",
+        "把异常处理纳入后续流程拆解"
+      ],
+      "module_2_action": "flag_rpa_fit_risk",
+      "trigger_policy": {
+        "weak_signals": [
+          "失败原因很多",
+          "异常很多",
+          "临场判断",
+          "不好分类"
+        ],
+        "trigger_from_fields": [
+          "business_goal",
+          "completion_condition",
+          "known_exceptions"
+        ],
+        "confirmation_required": true,
+        "never_conclude_from_initial_request_only": true
+      }
+    },
+    {
+      "case_id": "low-frequency-high-judgment",
+      "title": "低频且强人工判断，自动化收益不明确",
+      "risk_type": "low_roi",
+      "symptoms": [
+        "处理频率低",
+        "每次处理都需要人工判断",
+        "流程变化较大",
+        "自动化后仍需大量人工确认"
+      ],
+      "why_not_rpa_ready": "当流程低频、规则不稳定、人工判断占比高时，RPA 维护成本可能高于节省的人力。",
+      "screening_question": "这个流程是否高频重复，且大部分动作固定？",
+      "options": [
+        "高频重复，动作基本固定",
+        "中等频率，部分动作固定",
+        "低频且每次差异较大",
+        "暂不确定",
+        "其他，请补充"
+      ],
+      "better_next_step": [
+        "先评估处理频率和耗时",
+        "优先自动化高频固定动作",
+        "低频复杂判断保留人工",
+        "必要时只做辅助工具，不做完整 RPA"
+      ],
+      "module_2_action": "flag_rpa_fit_risk",
+      "trigger_policy": {
+        "weak_signals": [
+          "偶尔",
+          "低频",
+          "每次不一样",
+          "人工确认"
+        ],
+        "trigger_from_fields": [
+          "business_goal",
+          "frequency",
+          "decision_basis"
+        ],
+        "confirmation_required": true,
+        "never_conclude_from_initial_request_only": true
+      }
+    }
+  ]
+}
