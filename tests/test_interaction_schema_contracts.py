@@ -116,6 +116,21 @@ class InteractionSchemaContractTests(unittest.TestCase):
             "ask_confirmation_question",
         )
 
+    def test_readme_lists_all_module_artifacts(self):
+        text = (ROOT / "agent_modules/interaction_schema/README.md").read_text(encoding="utf-8")
+
+        expected_paths = [
+            "schemas/interaction-state.schema.json",
+            "schemas/question.schema.json",
+            "schemas/answer-batch.schema.json",
+            "rules/decision-rules.json",
+            "rules/prompt-rules.md",
+            "fixtures/deduplication-url-inference.json",
+        ]
+        for path in expected_paths:
+            with self.subTest(path=path):
+                self.assertIn(path, text)
+
 
 if __name__ == "__main__":
     unittest.main()
