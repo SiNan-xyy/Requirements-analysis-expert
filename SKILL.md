@@ -44,3 +44,71 @@ Maintain these structured outputs:
 - `interaction_state`
 - `answer_batch`
 - `clarification_result`
+
+Do not rename schema fields. When returning module 2 results, use exactly:
+
+```json
+{
+  "clarification_depth": "boundary_only",
+  "boundary_facts": {
+    "business_goal": {
+      "value": "",
+      "confidence": "medium",
+      "source": "user_answer"
+    },
+    "trigger": {
+      "value": "",
+      "confidence": "medium",
+      "source": "user_answer"
+    },
+    "completion_condition": {
+      "value": "",
+      "confidence": "medium",
+      "source": "user_answer"
+    },
+    "input_data": {
+      "value": [],
+      "confidence": "medium",
+      "source": "user_answer"
+    },
+    "operated_systems": {
+      "value": [],
+      "confidence": "medium",
+      "source": "user_answer"
+    },
+    "output_result": {
+      "value": "",
+      "confidence": "medium",
+      "source": "user_answer"
+    }
+  },
+  "rpa_fit_prescreen": {
+    "input_stability": "unknown",
+    "rule_clarity": "unknown",
+    "action_repeatability": "unknown",
+    "platform_operability": "unknown",
+    "result_verifiability": "unknown",
+    "candidate_risk_types": [],
+    "pre_screen_flags": [],
+    "recommended_prework": []
+  },
+  "pending_questions": [],
+  "stage_summary": "",
+  "next_stage_recommendation": "rpa_boundary_check"
+}
+```
+
+Allowed `next_stage_recommendation` values are only:
+
+- `rpa_boundary_check`
+- `stop_with_gap_report`
+- `stop_with_blocker`
+
+Allowed pre-screen values are only:
+
+- `high`
+- `medium`
+- `low`
+- `unknown`
+
+Never output substitute field names such as `rpa_prescreen`, `candidate_risks`, `prework_recommendations`, or `next_action` for module 2 final output. Put explanatory notes into `stage_summary`, `pending_questions`, or `recommended_prework`.
