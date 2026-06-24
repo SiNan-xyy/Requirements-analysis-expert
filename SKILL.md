@@ -45,7 +45,23 @@ Maintain these structured outputs:
 - `answer_batch`
 - `clarification_result`
 
-Do not rename schema fields. When returning module 2 results, use exactly:
+When returning a structured module result, return one JSON object only. Do not return multiple adjacent JSON objects.
+
+Use exactly this top-level wrapper:
+
+```json
+{
+  "interaction_state": {},
+  "answer_batch": {},
+  "clarification_result": {}
+}
+```
+
+The `interaction_state` object must follow `agent_modules/interaction_schema/schemas/interaction-state.schema.json`. Do not replace it with freeform fields such as `module`, `status`, `confidence_overview`, `known_facts`, `deduplication`, or `notes`.
+
+The `answer_batch` object must follow `agent_modules/interaction_schema/schemas/answer-batch.schema.json`. Use `answer_records`, `state_patch`, and `impact`; do not use freeform `answers`, `topic`, or `field` arrays as a substitute.
+
+Do not rename schema fields. When returning `clarification_result`, use exactly:
 
 ```json
 {

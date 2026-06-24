@@ -1,5 +1,36 @@
 # 平台测试期望输出
 
+## 完整结构化输出外壳
+
+合格输出必须是一个 JSON 对象，而不是三个连续 JSON 对象。
+
+```json
+{
+  "interaction_state": {
+    "stage": "clarification",
+    "status": "ready_for_next_module",
+    "completion_level": "workable",
+    "answered_question_ids": [],
+    "pending_question_ids": [],
+    "last_summary": "",
+    "next_action": "enter_next_module"
+  },
+  "answer_batch": {
+    "answer_records": [],
+    "state_patch": {},
+    "impact": {
+      "blocks_stage_progression": false,
+      "adds_pending_question": false,
+      "pending_question_ids": [],
+      "review_notes": []
+    }
+  },
+  "clarification_result": {}
+}
+```
+
+其中 `answer_records` 在真实输出中应包含本轮问题的记录；上面为空数组只是说明外壳字段。
+
 ## 邮件自动整理：合格输出骨架
 
 ```json
@@ -72,6 +103,9 @@
 
 如果出现以下情况，需要调整 Skill 或系统提示词：
 
+- 连续输出多个 JSON 对象，而不是一个顶层 wrapper。
+- `interaction_state` 使用 `module`、`confidence_overview`、`known_facts`、`notes` 等自由字段。
+- `answer_batch` 使用 `answers`、`topic`、`field` 等自由字段。
 - 使用 `rpa_prescreen` 代替 `rpa_fit_prescreen`。
 - 使用 `candidate_risks` 代替 `candidate_risk_types` 或 `pre_screen_flags`。
 - 使用 `prework_recommendations` 代替 `recommended_prework`。
@@ -80,3 +114,78 @@
 - 在模块 2 直接输出“可以做 RPA”或“不可以做 RPA”的最终结论。
 - 开始询问具体点击路径、页面字段、等待时间。
 
+## 电商多平台日报：合格 clarification_result 骨架
+
+```json
+{
+  "clarification_depth": "boundary_only",
+  "boundary_facts": {
+    "business_goal": {
+      "value": "自动汇总多个电商平台及固定店铺的日经营数据，并写入腾讯文档形成日报。",
+      "confidence": "high",
+      "source": "user_answer"
+    },
+    "trigger": {
+      "value": "每天固定时间自动执行",
+      "confidence": "high",
+      "source": "user_answer"
+    },
+    "completion_condition": {
+      "value": "所有平台数据成功写入腾讯文档固定日报表。",
+      "confidence": "high",
+      "source": "user_answer"
+    },
+    "input_data": {
+      "value": [
+        "销售额或 GMV",
+        "支付订单数",
+        "退款金额或退款单数",
+        "平台下固定店铺的日数据"
+      ],
+      "confidence": "high",
+      "source": "user_answer"
+    },
+    "operated_systems": {
+      "value": [
+        "淘宝/天猫",
+        "京东",
+        "拼多多",
+        "抖音电商",
+        "快手电商",
+        "腾讯文档"
+      ],
+      "confidence": "high",
+      "source": "user_answer"
+    },
+    "output_result": {
+      "value": "腾讯文档固定日报表中生成每日数据记录。",
+      "confidence": "high",
+      "source": "user_answer"
+    }
+  },
+  "rpa_fit_prescreen": {
+    "input_stability": "medium",
+    "rule_clarity": "medium",
+    "action_repeatability": "high",
+    "platform_operability": "high",
+    "result_verifiability": "medium",
+    "candidate_risk_types": [
+      "missing_rules",
+      "unstable_input"
+    ],
+    "pre_screen_flags": [],
+    "recommended_prework": [
+      "准备平台与店铺清单。",
+      "准备各平台指标与腾讯文档字段的映射表。",
+      "确认日报日期口径是自然日、前一日还是平台结算日。",
+      "确认是否需要把写入结果与源平台数据做自动核对。"
+    ]
+  },
+  "pending_questions": [
+    "后续能力边界评估需确认各平台是否有稳定导出入口或接口。",
+    "后续能力边界评估需确认登录态、验证码和设备验证情况。"
+  ],
+  "stage_summary": "当前需求边界已基本清晰：每天定时从多个电商平台和固定店铺获取日经营数据，并按固定模板写入腾讯文档。场景具备重复性和明确输出，但多平台指标口径、日期口径和结果核对方式需要在下一阶段确认。",
+  "next_stage_recommendation": "rpa_boundary_check"
+}
+```

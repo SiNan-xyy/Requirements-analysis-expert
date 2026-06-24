@@ -38,7 +38,43 @@
 
 结构化输出必须严格遵守 Git Skill 中的 schema 字段名，不允许自行改名。
 
-模块 2 最终输出必须使用：
+最终结构化输出只能返回一个 JSON 对象，不要连续返回多个 JSON 对象。顶层必须是：
+
+```json
+{
+  "interaction_state": {},
+  "answer_batch": {},
+  "clarification_result": {}
+}
+```
+
+`interaction_state` 必须使用模块 1 的标准字段：
+
+- `stage`
+- `status`
+- `completion_level`
+- `answered_question_ids`
+- `pending_question_ids`
+- `last_summary`
+- `next_action`
+
+不要在 `interaction_state` 里使用这些自由字段：
+
+- `module`
+- `confidence_overview`
+- `known_facts`
+- `deduplication`
+- `notes`
+
+`answer_batch` 必须使用模块 1 的标准字段：
+
+- `answer_records`
+- `state_patch`
+- `impact`
+
+不要把 `answer_batch` 写成 `answers` 数组，也不要用 `topic` 或 `field` 替代 `question_id` 和 `state_patch`。
+
+模块 2 的 `clarification_result` 必须使用：
 
 - `clarification_depth`
 - `boundary_facts`

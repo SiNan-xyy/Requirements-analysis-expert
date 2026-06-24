@@ -29,6 +29,34 @@
 
 ## 输出契约
 
+最终结构化结果只能返回一个 JSON 对象，顶层必须包含：
+
+- `interaction_state`
+- `answer_batch`
+- `clarification_result`
+
+不得连续输出三个相邻 JSON 对象。
+
+`interaction_state` 必须使用模块 1 标准字段，不得使用：
+
+- `module`
+- `confidence_overview`
+- `known_facts`
+- `deduplication`
+- `notes`
+
+`answer_batch` 必须使用：
+
+- `answer_records`
+- `state_patch`
+- `impact`
+
+不得使用：
+
+- `answers`
+- `topic`
+- `field`
+
 模块 2 最终输出必须包含：
 
 - `clarification_depth`
@@ -57,4 +85,3 @@
 - `medium_high`
 - `medium_low`
 - 自定义等级
-

@@ -21,6 +21,30 @@
 - `rpa_fit_prescreen.rule_clarity` 只能是 `medium`，不能是 `medium_high`。
 - 风险说明应放入 `candidate_risk_types`、`pre_screen_flags`、`recommended_prework` 或 `stage_summary`，不要新增 `candidate_risks`。
 - 最终动作字段必须是 `next_stage_recommendation`。
+- 如果输出完整结构化结果，只能返回一个 JSON wrapper，顶层是 `interaction_state`、`answer_batch`、`clarification_result`。
+
+## 场景 1B：电商多平台日报
+
+用户输入：
+
+```text
+我要做一个自动统计电商不同平台的日数据，然后写入到腾讯文档，形成日报表的应用。
+```
+
+期望行为：
+
+- Agent 应确认平台清单、店铺范围、指标字段、执行时间、腾讯文档模板。
+- 多平台多店铺不应直接判为阻塞；如果店铺数量固定、登录稳定、模板固定，可以进入 `rpa_boundary_check`。
+- 结果验证如果只要求“写入成功”，应标为 `medium`，并在 `stage_summary` 或 `pending_questions` 里提示后续确认源数据核对方式。
+- 指标口径差异应作为候选风险或后续待确认问题，不应直接输出最终不可行结论。
+
+关键检查：
+
+- 不要输出连续三个 JSON 对象。
+- 不要把第一段写成 `{ "module": "...", "status": "...", "confidence_overview": ... }`。
+- `answer_batch` 不要使用 `answers`、`topic`、`field`。
+- `rpa_fit_prescreen.rule_clarity` 只能是 `medium`，不能是 `medium_high`。
+- `candidate_risk_types` 应使用风险类型标识，例如 `missing_rules`、`unstable_input`，不要放完整中文风险句子。
 
 ## 场景 2：物料名称自动入库
 
@@ -50,4 +74,3 @@
 - Agent 追问物流单号来源、操作系统、拦截结果回传方式。
 - 如果输入、系统、结果都明确，最终可输出 `rpa_boundary_check`。
 - Agent 可保留后续风险问题，例如验证码、权限、页面稳定性，但不应在模块 2 深挖点击路径。
-
