@@ -32,7 +32,8 @@ class RequirementClarificationContractTests(unittest.TestCase):
 
         self.assertEqual(fixture["clarification_depth"], "boundary_only")
         self.assertEqual(fixture["next_stage_recommendation"], "rpa_boundary_check")
-        self.assertTrue(fixture["boundary_facts"]["business_goal"]["value"])
+        self.assertEqual(fixture["pending_questions"], [])
+        self.assertEqual(fixture["boundary_facts"]["business_goal"]["value"], "自动完成物流拦截")
         self.assertIsInstance(fixture["boundary_facts"]["input_data"]["value"], list)
         self.assertGreaterEqual(len(fixture["boundary_facts"]["input_data"]["value"]), 1)
         self.assertEqual(fixture["rpa_fit_prescreen"]["rule_clarity"], "medium")
@@ -47,7 +48,7 @@ class RequirementClarificationContractTests(unittest.TestCase):
         self.assertIn("semantic_judgment", prescreen["pre_screen_flags"])
         self.assertIn("先统一物料主数据命名规则", prescreen["recommended_prework"])
         self.assertIn("建立供应商名称与标准物料名称的映射表", prescreen["recommended_prework"])
-        self.assertEqual(fixture["next_stage_recommendation"], "stop_with_prework_recommendation")
+        self.assertEqual(fixture["next_stage_recommendation"], "stop_with_blocker")
         self.assertNotIn("final_feasibility", fixture)
         self.assertTrue(fixture["stage_summary"])
 
@@ -84,7 +85,24 @@ class RequirementClarificationContractTests(unittest.TestCase):
         self.assertEqual(rules["next_actions"]["ready"], "summarize_and_confirm")
         self.assertEqual(rules["next_actions"]["confirmed"], "enter_next_module")
         self.assertEqual(rules["next_actions"]["insufficient"], "stop_with_gap_report")
-        self.assertEqual(rules["next_actions"]["prework_required"], "stop_with_prework_recommendation")
+        self.assertEqual(rules["next_actions"]["prework_required"], "stop_with_blocker")
+
+    def test_module_2_actions_match_module_1_interaction_vocabulary(self):
+        interaction_schema = load_json("agent_modules/interaction_schema/schemas/interaction-state.schema.json")
+        module_2_schema = load_json("agent_modules/requirement_clarification/schemas/clarification-result.schema.json")
+        completion_rules = load_json("agent_modules/requirement_clarification/rules/completion-rules.json")
+
+        module_1_next_actions = set(interaction_schema["properties"]["next_action"]["enum"])
+        module_1_stages = set(interaction_schema["properties"]["stage"]["enum"])
+        module_2_recommendations = set(module_2_schema["properties"]["next_stage_recommendation"]["enum"])
+        stop_or_flow_recommendations = {
+            value for value in module_2_recommendations if value.startswith("stop_") or value == "enter_next_module"
+        }
+
+        self.assertTrue(stop_or_flow_recommendations <= module_1_next_actions)
+        self.assertIn("rpa_boundary_check", module_1_stages)
+        self.assertEqual(completion_rules["next_actions"]["prework_required"], "stop_with_blocker")
+        self.assertTrue(set(completion_rules["next_actions"].values()) <= module_1_next_actions)
 
     def test_trigger_policy_never_concludes_from_initial_request(self):
         rules = load_json("agent_modules/requirement_clarification/rules/trigger-policy.json")
@@ -123,6 +141,8 @@ class RequirementClarificationContractTests(unittest.TestCase):
         self.assertIn("trigger_from_fields", trigger_policy["required"])
         self.assertIn("confirmation_required", trigger_policy["required"])
         self.assertIn("never_conclude_from_initial_request_only", trigger_policy["required"])
+        self.assertEqual(trigger_policy["properties"]["confirmation_required"]["const"], True)
+        self.assertEqual(trigger_policy["properties"]["never_conclude_from_initial_request_only"]["const"], True)
 
     def test_negative_examples_v1_has_eight_approved_cases(self):
         library = load_json("agent_modules/requirement_clarification/materials/negative-examples.v1.json")

@@ -84,10 +84,10 @@
           }
         },
         "confirmation_required": {
-          "type": "boolean"
+          "const": true
         },
         "never_conclude_from_initial_request_only": {
-          "type": "boolean"
+          "const": true
         }
       }
     }

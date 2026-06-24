@@ -47,9 +47,7 @@
     "pre_screen_flags": [],
     "recommended_prework": []
   },
-  "pending_questions": [
-    "确认商户后台是否存在强验证或人工复核"
-  ],
+  "pending_questions": [],
   "stage_summary": "当前需求聚焦于物流拦截自动化：接收物流单号后在影刀商户后台执行拦截，并将结果回传飞书。",
   "next_stage_recommendation": "rpa_boundary_check"
 }

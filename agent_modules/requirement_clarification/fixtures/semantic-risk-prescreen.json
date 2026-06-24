@@ -61,6 +61,6 @@
   "pending_questions": [
     "供应商原始名称和标准物料名称是否已经有可维护的映射表"
   ],
-  "stage_summary": "当前请求能确认边界事实，但物料名称匹配依赖语义判断和主数据治理，适合先补齐命名规则和映射表，再继续后续模块。",
-  "next_stage_recommendation": "stop_with_prework_recommendation"
+  "stage_summary": "当前请求能够确认边界事实，但物料名称匹配依赖语义判断和主数据治理，适合先补齐命名规则和映射表，再继续后续模块。",
+  "next_stage_recommendation": "stop_with_blocker"
 }

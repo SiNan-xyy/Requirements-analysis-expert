@@ -113,7 +113,7 @@
       "enum": [
         "rpa_boundary_check",
         "stop_with_gap_report",
-        "stop_with_prework_recommendation"
+        "stop_with_blocker"
       ]
     }
   },
@@ -156,4 +156,3 @@
     }
   }
 }
-

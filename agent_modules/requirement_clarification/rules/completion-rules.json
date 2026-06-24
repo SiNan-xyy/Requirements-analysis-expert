@@ -31,6 +31,6 @@
     "ready": "summarize_and_confirm",
     "confirmed": "enter_next_module",
     "insufficient": "stop_with_gap_report",
-    "prework_required": "stop_with_prework_recommendation"
+    "prework_required": "stop_with_blocker"
   }
 }

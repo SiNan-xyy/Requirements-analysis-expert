@@ -44,4 +44,4 @@ The fixed pre-screen dimensions are:
 
 ## Risk Trigger Rule
 
-Module 2 uses weak signals and boundary answers to surface candidate risks only. When the request depends on semantic judgment, naming alignment, or other prework that cannot be resolved from the initial request alone, the module recommends `stop_with_prework_recommendation` instead of a final feasibility decision.
+Module 2 uses weak signals and boundary answers to surface candidate risks only. When the request depends on semantic judgment, naming alignment, or other prework that cannot be resolved from the initial request alone, the module maps that prework stop to the module 1 action `stop_with_blocker` instead of making a final feasibility decision.
