@@ -125,8 +125,10 @@ class RpaBoundaryCheckContractTests(unittest.TestCase):
         text = (ROOT / "agent_platform_package/system_prompt/agent-system-prompt.md").read_text(encoding="utf-8")
 
         self.assertIn("rpa_boundary_result", text)
-        self.assertIn("只能返回一个 JSON 对象", text)
-        self.assertNotIn("interaction_state`、`answer_batch`、`clarification_result` 三类结构", text)
+        self.assertIn("只能返回一个顶层 JSON wrapper", text)
+        self.assertIn("clarification_result", text)
+        self.assertIn("process_breakdown_result", text)
+        self.assertNotIn("保持 `interaction_state`、`answer_batch`、`clarification_result`、`rpa_boundary_result` 四类结构", text)
 
     def test_email_sorting_fixture_is_conditionally_suitable(self):
         fixture = load_json("agent_modules/rpa_boundary_check/fixtures/email-sorting-boundary-result.json")

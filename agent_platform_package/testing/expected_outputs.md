@@ -44,6 +44,13 @@ When module 4 completes, the platform should return a single top-level wrapper c
 
 Each process card should describe a business stage and candidate Yingdao capability families. It should not include selectors, exact click paths, wait times, retry counts, or instruction parameter values.
 
+Module 4 output should also preserve prior-stage dependency and assumption context instead of flattening it away:
+
+- Keep cross-step dependencies and `prework_dependencies` aligned with unresolved assumptions or required prework inherited from module 2 or module 3.
+- Preserve validation points that still need confirmation, such as field mapping, date scope, stable login, template readiness, result logging, or manual-review thresholds.
+- Surface follow-up questions in `open_questions` when the process cards cannot safely assume a missing rule or readiness condition.
+- Do not erase the distinction between mandatory vs optional upstream items when those differences still affect delivery risk, blockers, or sequencing.
+
 The e-commerce daily report scenario should produce cards for report scope preparation, platform access, platform data collection, metric normalization, Tencent Docs writing, and result logging.
 
 The email sorting scenario should produce cards for classification scope preparation, email reading, signal extraction, classification, folder or label application, and result logging.

@@ -142,12 +142,26 @@ class ProcessBreakdownContractTests(unittest.TestCase):
         text = (ROOT / "agent_platform_package/system_prompt/agent-system-prompt.md").read_text(encoding="utf-8")
 
         self.assertIn("process_breakdown_result", text)
-        self.assertIn("最终结构化输出只能返回一个 JSON 对象", text)
+        self.assertIn("只能返回一个顶层 JSON wrapper", text)
         self.assertIn("yingdao_flow_chain_templates_v3.md", text)
         self.assertIn("yingdao_scenario_building_guide.md", text)
-        self.assertNotIn("兼容旧版断言", text)
         self.assertIn("Module 4", text)
-        self.assertNotIn("顶层必须是四个 JSON 对象", text)
+        self.assertIn("required vs recommended vs optional", text)
+        self.assertIn("unresolved assumptions", text)
+        self.assertNotIn("保持 `interaction_state`、`answer_batch`、`clarification_result`、`rpa_boundary_result` 四类结构", text)
+        self.assertNotIn("鐗╂枡", text)
+        self.assertNotIn("鍏堢粺", text)
+        self.assertNotIn("鑷姩", text)
+        self.assertNotIn("椋炰功", text)
+
+    def test_module_4_expected_output_guidance_mentions_dependencies_validation_and_followups(self):
+        text = (ROOT / "agent_platform_package/testing/expected_outputs.md").read_text(encoding="utf-8")
+
+        self.assertIn("cross-step dependencies", text)
+        self.assertIn("prework_dependencies", text)
+        self.assertIn("validation points", text)
+        self.assertIn("open_questions", text)
+        self.assertIn("mandatory vs optional upstream items", text)
 
 
 if __name__ == "__main__":
