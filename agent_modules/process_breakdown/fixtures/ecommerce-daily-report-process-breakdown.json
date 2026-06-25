@@ -1,0 +1,103 @@
+{
+  "module": "module_4_process_breakdown",
+  "status": "completed",
+  "source_decision": {
+    "classification": "conditionally_suitable",
+    "confidence": "medium_high"
+  },
+  "breakdown_depth": "business_process_cards_with_candidate_capabilities",
+  "process_cards": [
+    {
+      "step_id": "S01",
+      "step_name": "Prepare report scope",
+      "business_purpose": "Confirm the date, platform-store scope, and target report template before data collection starts.",
+      "input": ["鏃ユ姤鏃ユ湡鍙ｅ緞", "骞冲彴-搴楅摵娓呭崟", "鑵捐鏂囨。鏃ユ姤妯℃澘"],
+      "operation_summary": "Load the fixed platform-store list, date scope, and report template configuration.",
+      "output": ["execution scope", "target template position"],
+      "candidate_yingdao_capabilities": ["configuration reading", "Excel or table reading"],
+      "depends_on": [],
+      "prework_dependencies": ["纭骞冲彴-搴楅摵娓呭崟鏄惁鍥哄畾涓斿畬鏁?", "纭鏃ユ姤鏃ユ湡鍙ｅ緞"],
+      "handoff_to_exception_design": false,
+      "exception_design_notes": []
+    },
+    {
+      "step_id": "S02",
+      "step_name": "Enter platform accounts",
+      "business_purpose": "Prepare access to each e-commerce platform backend.",
+      "input": ["platform account permissions", "login strategy"],
+      "operation_summary": "Open or connect to each platform backend using the configured account access method.",
+      "output": ["available platform sessions"],
+      "candidate_yingdao_capabilities": ["web automation", "login", "browser control"],
+      "depends_on": ["S01"],
+      "prework_dependencies": ["纭姣忎釜骞冲彴鐨勮处鍙锋潈闄愬拰鐧诲綍绋冲畾鎬?"],
+      "handoff_to_exception_design": true,
+      "exception_design_notes": ["login failure", "captcha or device verification", "permission missing"]
+    },
+    {
+      "step_id": "S03",
+      "step_name": "Collect platform daily data",
+      "business_purpose": "Get the daily operating metrics for each platform and fixed store.",
+      "input": ["platform-store list", "date scope", "account permissions"],
+      "operation_summary": "Enter each platform backend and query or download the daily data under fixed conditions.",
+      "output": ["raw platform daily data"],
+      "candidate_yingdao_capabilities": ["web automation", "report download", "file reading"],
+      "depends_on": ["S01", "S02"],
+      "prework_dependencies": ["纭骞冲彴-搴楅摵娓呭崟", "纭绋冲畾鐧诲綍绛栫暐"],
+      "handoff_to_exception_design": true,
+      "exception_design_notes": ["login failure", "missing data", "download failure"]
+    },
+    {
+      "step_id": "S04",
+      "step_name": "Normalize metrics",
+      "business_purpose": "Convert platform data into the same report field structure.",
+      "input": ["raw platform daily data", "metric mapping rules"],
+      "operation_summary": "Map platform fields to report fields and calculate the values needed for the daily report.",
+      "output": ["normalized report data"],
+      "candidate_yingdao_capabilities": ["data processing", "Excel processing", "condition judgment"],
+      "depends_on": ["S03"],
+      "prework_dependencies": ["纭鍚勫钩鍙版寚鏍囦笌鑵捐鏂囨。瀛楁鐨勪竴涓€瀵瑰簲鍏崇郴"],
+      "handoff_to_exception_design": true,
+      "exception_design_notes": ["missing field", "metric鍙ｅ緞 mismatch", "empty value"]
+    },
+    {
+      "step_id": "S05",
+      "step_name": "Write Tencent Docs report",
+      "business_purpose": "Write normalized daily data into the fixed Tencent Docs report template.",
+      "input": ["normalized report data", "Tencent Docs template position"],
+      "operation_summary": "Open the target Tencent Docs template and write each platform-store metric into the configured position.",
+      "output": ["updated Tencent Docs daily report"],
+      "candidate_yingdao_capabilities": ["web automation", "online document editing", "table writing"],
+      "depends_on": ["S04"],
+      "prework_dependencies": ["纭鑵捐鏂囨。妯℃澘鍜屽啓鍏ヤ綅缃浐瀹?"],
+      "handoff_to_exception_design": true,
+      "exception_design_notes": ["write failure", "template changed", "permission missing"]
+    },
+    {
+      "step_id": "S06",
+      "step_name": "Record execution result",
+      "business_purpose": "Preserve evidence for whether the report was generated correctly.",
+      "input": ["source values", "written values", "execution status"],
+      "operation_summary": "Record source value, written value, processing time, and abnormal items for later review.",
+      "output": ["execution log", "manual review list"],
+      "candidate_yingdao_capabilities": ["logging", "Excel writing", "notification"],
+      "depends_on": ["S05"],
+      "prework_dependencies": ["纭鏈€灏忕粨鏋滄牎楠屾柟寮?"],
+      "handoff_to_exception_design": true,
+      "exception_design_notes": ["source-write mismatch", "manual review required"]
+    }
+  ],
+  "cross_step_dependencies": [
+    "骞冲彴-搴楅摵娓呭崟 must be fixed and complete.",
+    "Metric-to-template mapping must be confirmed before normalization.",
+    "Date scope must be agreed before collection.",
+    "Stable login strategy is required for platform collection.",
+    "Result log must preserve source values and written values."
+  ],
+  "open_questions": [],
+  "handoff_to_exception_design": {
+    "required": true,
+    "focus_steps": ["S02", "S03", "S04", "S05", "S06"],
+    "notes": ["Design login, missing data, template change, write failure, and source-write mismatch branches."]
+  },
+  "next_stage_recommendation": "exception_design"
+}
