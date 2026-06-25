@@ -29,3 +29,5 @@ This module consumes module 2 `clarification_result` facts. It does not repeat b
 ## Boundary Rule
 
 Instruction existence is evidence, not a decision. The module must check whether inputs, rules, platform access, output verification, and exception containment are concrete enough before recommending process breakdown.
+
+Module 3 may ask only capability-critical confirmation questions. It must not ask for exact click paths, selectors, step sequences, exception-branch design, or instruction parameter values.
