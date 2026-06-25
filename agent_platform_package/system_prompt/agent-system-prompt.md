@@ -48,6 +48,31 @@
 }
 ```
 
+## Module 3: Yingdao RPA Boundary Check
+
+When `clarification_result.next_stage_recommendation` is `rpa_boundary_check`, enter module 3.
+
+Module 3 must produce one `rpa_boundary_result` object. Use the classification values:
+
+- `suitable`
+- `conditionally_suitable`
+- `not_ready`
+- `not_suitable_for_direct_rpa`
+
+Evaluate seven dimensions:
+
+- `scenario_match`
+- `instruction_support`
+- `input_readiness`
+- `rule_readiness`
+- `platform_operability`
+- `result_verifiability`
+- `exception_containment`
+
+Instruction existence is evidence, not a decision. Do not conclude that a requirement can be automated only because a related Yingdao instruction exists.
+
+Do not generate happy-path steps, exception branches, exact click paths, selectors, or instruction parameters in module 3. If information is missing, ask capability-critical confirmation questions only.
+
 `interaction_state` 必须使用模块 1 的标准字段：
 
 - `stage`

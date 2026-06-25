@@ -116,6 +116,26 @@
 - 在模块 2 直接输出“可以做 RPA”或“不可以做 RPA”的最终结论。
 - 开始询问具体点击路径、页面字段、等待时间。
 
+## Module 3 Expected Output
+
+The platform should return a single top-level wrapper containing:
+
+- `interaction_state`
+- `answer_batch` when user answers were recorded in the same turn
+- `clarification_result` when module 2 facts are still relevant
+- `rpa_boundary_result` when module 3 has completed
+
+For module 3, `rpa_boundary_result.decision.classification` must be one of:
+
+- `suitable`
+- `conditionally_suitable`
+- `not_ready`
+- `not_suitable_for_direct_rpa`
+
+`candidate_instruction_names` may appear as evidence, but the final decision must also cite input readiness, rule readiness, platform operability, result verifiability, and exception containment.
+
+The e-commerce daily report scenario should normally be `conditionally_suitable`, not automatically `suitable`, until platform-store mapping, metric mapping, date scope, login stability, and result verification are confirmed.
+
 ## 电商多平台日报：合格 clarification_result 骨架
 
 ```json
