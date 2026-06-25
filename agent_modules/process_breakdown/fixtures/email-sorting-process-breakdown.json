@@ -86,6 +86,16 @@
       "exception_design_notes": ["log write failure", "summary generation failure"]
     }
   ],
+  "assumptions": [
+    "Mailbox connection and trigger scope stay stable for the target mailbox during normal runs.",
+    "Existing sender, keyword, and semantic examples are sufficient for most daily email volume.",
+    "Manual review staff can clear low-confidence items within the agreed service window."
+  ],
+  "validation_points": [
+    "Confirm the classification taxonomy is approved and complete before production use.",
+    "Confirm the low-confidence routing threshold and manual review queue ownership before auto-sorting starts.",
+    "Confirm the result log captures enough evidence to explain why each email was moved or tagged."
+  ],
   "cross_step_dependencies": [
     "Classification taxonomy must be fixed.",
     "Low-confidence review policy must be defined.",

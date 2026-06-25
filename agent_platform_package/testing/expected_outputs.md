@@ -49,7 +49,7 @@ Module 4 output should also preserve prior-stage dependency and assumption conte
 - Keep cross-step dependencies and `prework_dependencies` aligned with unresolved assumptions or required prework inherited from module 2 or module 3.
 - Preserve validation points that still need confirmation, such as field mapping, date scope, stable login, template readiness, result logging, or manual-review thresholds.
 - Surface follow-up questions in `open_questions` when the process cards cannot safely assume a missing rule or readiness condition.
-- Do not erase the distinction between mandatory vs optional upstream items when those differences still affect delivery risk, blockers, or sequencing.
+- Do not erase the distinction between required/recommended/optional upstream items; preserve the three-way classification when those differences still affect delivery risk, blockers, or sequencing, including any prior mandatory vs optional guidance.
 
 The e-commerce daily report scenario should produce cards for report scope preparation, platform access, platform data collection, metric normalization, Tencent Docs writing, and result logging.
 

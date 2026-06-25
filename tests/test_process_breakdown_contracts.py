@@ -2,6 +2,11 @@ import json
 import unittest
 from pathlib import Path
 
+try:
+    import jsonschema
+except ImportError:  # pragma: no cover - optional dependency in local env
+    jsonschema = None
+
 
 ROOT = Path(__file__).resolve().parents[1]
 COMMON_MOJIBAKE_FRAGMENTS = (
@@ -41,7 +46,7 @@ class ProcessBreakdownContractTests(unittest.TestCase):
             with self.subTest(path=relative_path, fragment=fragment):
                 self.assertNotIn(fragment, text)
 
-    def test_process_breakdown_schema_defines_cards_and_handoff(self):
+    def test_process_breakdown_schema_defines_cards_handoff_and_context_fields(self):
         schema = load_json("agent_modules/process_breakdown/schemas/process-breakdown-result.schema.json")
         props = schema["properties"]
         card_props = schema["$defs"]["process_card"]["properties"]
@@ -56,6 +61,12 @@ class ProcessBreakdownContractTests(unittest.TestCase):
             props["status"]["enum"],
             ["completed", "blocked_by_boundary_result", "needs_more_information"],
         )
+        self.assertEqual(props["assumptions"]["type"], "array")
+        self.assertEqual(props["assumptions"]["items"]["type"], "string")
+        self.assertEqual(props["validation_points"]["type"], "array")
+        self.assertEqual(props["validation_points"]["items"]["type"], "string")
+        self.assertIn("assumptions", schema["required"])
+        self.assertIn("validation_points", schema["required"])
         self.assertEqual(
             props["next_stage_recommendation"]["enum"],
             [
@@ -98,6 +109,17 @@ class ProcessBreakdownContractTests(unittest.TestCase):
         self.assertIn("do_not_override_module_3_decision", rules["forbidden_behaviors"])
         self.assertEqual(rules["default_card_count"]["minimum"], 4)
         self.assertEqual(rules["default_card_count"]["maximum"], 8)
+        self.assertIn("assumptions", rules["required_result_fields"])
+        self.assertIn("validation_points", rules["required_result_fields"])
+        self.assertTrue(
+            any("assumptions" in item for item in rules["generation_requirements"])
+        )
+        self.assertTrue(
+            any("validation points" in item for item in rules["generation_requirements"])
+        )
+        self.assertTrue(
+            any("required recommended and optional" in item for item in rules["generation_requirements"])
+        )
 
     def test_material_use_policy_prioritizes_flow_templates(self):
         policy = load_json("agent_modules/process_breakdown/rules/material-use-policy.json")
@@ -145,6 +167,10 @@ class ProcessBreakdownContractTests(unittest.TestCase):
             "Metric-to-template mapping must be confirmed before normalization.",
             " ".join(fixture["cross_step_dependencies"]),
         )
+        self.assertGreaterEqual(len(fixture["assumptions"]), 2)
+        self.assertIn("Tencent Docs template structure stays stable", " ".join(fixture["assumptions"]))
+        self.assertGreaterEqual(len(fixture["validation_points"]), 2)
+        self.assertIn("date scope matches the business definition", " ".join(fixture["validation_points"]))
 
     def test_email_fixture_routes_uncertain_classification_to_exception_design(self):
         fixture = load_json("agent_modules/process_breakdown/fixtures/email-sorting-process-breakdown.json")
@@ -158,6 +184,27 @@ class ProcessBreakdownContractTests(unittest.TestCase):
         self.assertIn("manual review queue", classify_card["candidate_yingdao_capabilities"])
         self.assertTrue(classify_card["handoff_to_exception_design"])
         self.assertIn("low confidence", classify_card["exception_design_notes"])
+        self.assertGreaterEqual(len(fixture["assumptions"]), 2)
+        self.assertIn("Manual review staff can clear low-confidence items", " ".join(fixture["assumptions"]))
+        self.assertGreaterEqual(len(fixture["validation_points"]), 2)
+        self.assertIn("low-confidence routing threshold", " ".join(fixture["validation_points"]))
+
+    def test_process_breakdown_fixtures_validate_against_schema_when_validator_available(self):
+        if jsonschema is None:
+            self.skipTest("jsonschema is not installed in this environment")
+
+        schema = load_json("agent_modules/process_breakdown/schemas/process-breakdown-result.schema.json")
+        fixtures = [
+            "agent_modules/process_breakdown/fixtures/ecommerce-daily-report-process-breakdown.json",
+            "agent_modules/process_breakdown/fixtures/email-sorting-process-breakdown.json",
+        ]
+
+        for relative_path in fixtures:
+            with self.subTest(path=relative_path):
+                jsonschema.validate(
+                    instance=load_json(relative_path),
+                    schema=schema,
+                )
 
     def test_readme_lists_module_4_artifacts(self):
         text = (ROOT / "agent_modules/process_breakdown/README.md").read_text(encoding="utf-8")
@@ -191,7 +238,8 @@ class ProcessBreakdownContractTests(unittest.TestCase):
         self.assertIn("prework_dependencies", text)
         self.assertIn("validation points", text)
         self.assertIn("open_questions", text)
-        self.assertIn("mandatory vs optional upstream items", text)
+        self.assertIn("mandatory vs optional guidance", text)
+        self.assertIn("required/recommended/optional", text)
 
     def test_module_4_assets_do_not_contain_common_mojibake_fragments(self):
         for relative_path in MODULE_4_READABILITY_PATHS:

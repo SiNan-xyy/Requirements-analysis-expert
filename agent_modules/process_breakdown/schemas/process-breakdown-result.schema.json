@@ -9,6 +9,8 @@
     "source_decision",
     "breakdown_depth",
     "process_cards",
+    "assumptions",
+    "validation_points",
     "cross_step_dependencies",
     "open_questions",
     "handoff_to_exception_design",
@@ -45,6 +47,18 @@
       "type": "array",
       "items": {
         "$ref": "#/$defs/process_card"
+      }
+    },
+    "assumptions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "validation_points": {
+      "type": "array",
+      "items": {
+        "type": "string"
       }
     },
     "cross_step_dependencies": {

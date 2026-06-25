@@ -86,6 +86,16 @@
       "exception_design_notes": ["source-write mismatch", "manual review required"]
     }
   ],
+  "assumptions": [
+    "Each platform account can reach the daily report view without a new approval step during normal runs.",
+    "The Tencent Docs template structure stays stable during the reporting period.",
+    "Store ownership and platform-store mapping do not change inside a single reporting cycle."
+  ],
+  "validation_points": [
+    "Confirm the date scope matches the business definition used by every platform before collection starts.",
+    "Confirm the platform metric fields map cleanly into the Tencent Docs template before normalization.",
+    "Confirm the final written values are compared against source totals or spot checks before sign-off."
+  ],
   "cross_step_dependencies": [
     "Platform-store list must be fixed and complete.",
     "Metric-to-template mapping must be confirmed before normalization.",

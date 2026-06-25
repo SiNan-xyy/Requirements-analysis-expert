@@ -20,6 +20,19 @@
     "handoff_to_exception_design",
     "exception_design_notes"
   ],
+  "required_result_fields": [
+    "module",
+    "status",
+    "source_decision",
+    "breakdown_depth",
+    "process_cards",
+    "assumptions",
+    "validation_points",
+    "cross_step_dependencies",
+    "open_questions",
+    "handoff_to_exception_design",
+    "next_stage_recommendation"
+  ],
   "default_card_pattern": [
     "trigger_and_preparation",
     "load_configuration_scope_or_input",
@@ -42,5 +55,10 @@
     "ask_only_when_main_flow_cannot_be_coherent": true,
     "must_use_module_1_choice_format": true,
     "must_include_unknown_and_other_routes": true
-  }
+  },
+  "generation_requirements": [
+    "preserve upstream assumptions that still constrain the main flow",
+    "preserve validation points that must be confirmed before exception design or delivery",
+    "keep required recommended and optional upstream classifications when they affect sequencing or risk"
+  ]
 }
