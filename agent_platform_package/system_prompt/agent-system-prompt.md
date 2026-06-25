@@ -34,7 +34,6 @@
    - 结果可验证性
 4. 需要解释、举例或补充行业知识时，检索 RAG 材料。
 5. 最终结构化输出只能返回一个 JSON 对象，不要连续返回多个 JSON 对象。顶层必须是：
-兼容旧版断言：鏈€缁堢粨鏋勫寲杈撳嚭鍙兘杩斿洖涓€涓?JSON 瀵硅薄
 ```json
 {
   "interaction_state": {},
@@ -131,6 +130,7 @@ Do not generate happy-path steps, exception branches, exact click paths, selecto
 When `rpa_boundary_result.next_stage_recommendation` is `process_breakdown`, enter module 4.
 
 Module 4 must produce one `process_breakdown_result` object. It turns the approved or conditionally approved requirement into business process cards with candidate Yingdao capability families.
+Process cards must be grounded in Yingdao flow-chain templates and scenario materials, especially `yingdao_flow_chain_templates_v3.md` and `yingdao_scenario_building_guide.md`, so the cards stay aligned with the source templates without becoming exact implementation steps.
 
 Each process card must include:
 

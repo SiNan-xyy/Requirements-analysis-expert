@@ -105,7 +105,10 @@ class ProcessBreakdownContractTests(unittest.TestCase):
         self.assertIn("web automation", collect_card["candidate_yingdao_capabilities"])
         self.assertTrue(collect_card["handoff_to_exception_design"])
         self.assertIn("login failure", collect_card["exception_design_notes"])
-        self.assertIn("骞冲彴-搴楅摵娓呭崟", " ".join(fixture["cross_step_dependencies"]))
+        self.assertIn(
+            "Metric-to-template mapping must be confirmed before normalization.",
+            " ".join(fixture["cross_step_dependencies"]),
+        )
 
     def test_email_fixture_routes_uncertain_classification_to_exception_design(self):
         fixture = load_json("agent_modules/process_breakdown/fixtures/email-sorting-process-breakdown.json")
@@ -139,9 +142,12 @@ class ProcessBreakdownContractTests(unittest.TestCase):
         text = (ROOT / "agent_platform_package/system_prompt/agent-system-prompt.md").read_text(encoding="utf-8")
 
         self.assertIn("process_breakdown_result", text)
-        self.assertIn("鏈€缁堢粨鏋勫寲杈撳嚭鍙兘杩斿洖涓€涓?JSON 瀵硅薄", text)
+        self.assertIn("最终结构化输出只能返回一个 JSON 对象", text)
+        self.assertIn("yingdao_flow_chain_templates_v3.md", text)
+        self.assertIn("yingdao_scenario_building_guide.md", text)
+        self.assertNotIn("兼容旧版断言", text)
         self.assertIn("Module 4", text)
-        self.assertNotIn("rpa_boundary_result` 鍥涚被缁撴瀯", text)
+        self.assertNotIn("顶层必须是四个 JSON 对象", text)
 
 
 if __name__ == "__main__":
