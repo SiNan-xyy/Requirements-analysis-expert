@@ -11,12 +11,12 @@
       "step_id": "S01",
       "step_name": "Prepare report scope",
       "business_purpose": "Confirm the date, platform-store scope, and target report template before data collection starts.",
-      "input": ["鏃ユ姤鏃ユ湡鍙ｅ緞", "骞冲彴-搴楅摵娓呭崟", "鑵捐鏂囨。鏃ユ姤妯℃澘"],
+      "input": ["report date definition", "platform-store list", "Tencent Docs daily report template"],
       "operation_summary": "Load the fixed platform-store list, date scope, and report template configuration.",
       "output": ["execution scope", "target template position"],
       "candidate_yingdao_capabilities": ["configuration reading", "Excel or table reading"],
       "depends_on": [],
-      "prework_dependencies": ["纭骞冲彴-搴楅摵娓呭崟鏄惁鍥哄畾涓斿畬鏁?", "纭鏃ユ姤鏃ユ湡鍙ｅ緞"],
+      "prework_dependencies": ["Confirm the platform-store list is fixed and complete.", "Confirm the report date definition."],
       "handoff_to_exception_design": false,
       "exception_design_notes": []
     },
@@ -29,7 +29,7 @@
       "output": ["available platform sessions"],
       "candidate_yingdao_capabilities": ["web automation", "login", "browser control"],
       "depends_on": ["S01"],
-      "prework_dependencies": ["纭姣忎釜骞冲彴鐨勮处鍙锋潈闄愬拰鐧诲綍绋冲畾鎬?"],
+      "prework_dependencies": ["Confirm the login method for each platform account is stable and reusable."],
       "handoff_to_exception_design": true,
       "exception_design_notes": ["login failure", "captcha or device verification", "permission missing"]
     },
@@ -42,7 +42,7 @@
       "output": ["raw platform daily data"],
       "candidate_yingdao_capabilities": ["web automation", "report download", "file reading"],
       "depends_on": ["S01", "S02"],
-      "prework_dependencies": ["纭骞冲彴-搴楅摵娓呭崟", "纭绋冲畾鐧诲綍绛栫暐"],
+      "prework_dependencies": ["Confirm the platform-store list.", "Confirm the stable login strategy."],
       "handoff_to_exception_design": true,
       "exception_design_notes": ["login failure", "missing data", "download failure"]
     },
@@ -55,9 +55,9 @@
       "output": ["normalized report data"],
       "candidate_yingdao_capabilities": ["data processing", "Excel processing", "condition judgment"],
       "depends_on": ["S03"],
-      "prework_dependencies": ["纭鍚勫钩鍙版寚鏍囦笌鑵捐鏂囨。瀛楁鐨勪竴涓€瀵瑰簲鍏崇郴"],
+      "prework_dependencies": ["Confirm the metric mapping between platform fields and the report template is complete."],
       "handoff_to_exception_design": true,
-      "exception_design_notes": ["missing field", "metric鍙ｅ緞 mismatch", "empty value"]
+      "exception_design_notes": ["missing field", "metric definition mismatch", "empty value"]
     },
     {
       "step_id": "S05",
@@ -68,7 +68,7 @@
       "output": ["updated Tencent Docs daily report"],
       "candidate_yingdao_capabilities": ["web automation", "online document editing", "table writing"],
       "depends_on": ["S04"],
-      "prework_dependencies": ["纭鑵捐鏂囨。妯℃澘鍜屽啓鍏ヤ綅缃浐瀹?"],
+      "prework_dependencies": ["Confirm the Tencent Docs template location and edit permissions."],
       "handoff_to_exception_design": true,
       "exception_design_notes": ["write failure", "template changed", "permission missing"]
     },
@@ -81,13 +81,13 @@
       "output": ["execution log", "manual review list"],
       "candidate_yingdao_capabilities": ["logging", "Excel writing", "notification"],
       "depends_on": ["S05"],
-      "prework_dependencies": ["纭鏈€灏忕粨鏋滄牎楠屾柟寮?"],
+      "prework_dependencies": ["Confirm the minimum result validation method."],
       "handoff_to_exception_design": true,
       "exception_design_notes": ["source-write mismatch", "manual review required"]
     }
   ],
   "cross_step_dependencies": [
-    "骞冲彴-搴楅摵娓呭崟 must be fixed and complete.",
+    "Platform-store list must be fixed and complete.",
     "Metric-to-template mapping must be confirmed before normalization.",
     "Date scope must be agreed before collection.",
     "Stable login strategy is required for platform collection.",

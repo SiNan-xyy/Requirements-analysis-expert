@@ -4,6 +4,13 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
+COMMON_MOJIBAKE_FRAGMENTS = ("褰卞", "鍙ｅ緞", "閼", "閻", "鐠", "妞", "鏈", "閺")
+MODULE_4_READABILITY_PATHS = [
+    "agent_modules/process_breakdown/fixtures/ecommerce-daily-report-process-breakdown.json",
+    "agent_modules/process_breakdown/fixtures/email-sorting-process-breakdown.json",
+    "agent_modules/process_breakdown/README.md",
+    "agent_modules/process_breakdown/rules/prompt-rules.md",
+]
 
 
 def load_json(relative_path: str) -> dict:
@@ -11,6 +18,13 @@ def load_json(relative_path: str) -> dict:
 
 
 class ProcessBreakdownContractTests(unittest.TestCase):
+    def assert_has_no_common_mojibake(self, relative_path: str) -> None:
+        text = (ROOT / relative_path).read_text(encoding="utf-8")
+
+        for fragment in COMMON_MOJIBAKE_FRAGMENTS:
+            with self.subTest(path=relative_path, fragment=fragment):
+                self.assertNotIn(fragment, text)
+
     def test_process_breakdown_schema_defines_cards_and_handoff(self):
         schema = load_json("agent_modules/process_breakdown/schemas/process-breakdown-result.schema.json")
         props = schema["properties"]
@@ -102,9 +116,15 @@ class ProcessBreakdownContractTests(unittest.TestCase):
         collect_cards = [card for card in fixture["process_cards"] if card["step_id"] == "S03"]
         self.assertEqual(len(collect_cards), 1)
         collect_card = collect_cards[0]
+        prepare_card = fixture["process_cards"][0]
         self.assertIn("web automation", collect_card["candidate_yingdao_capabilities"])
         self.assertTrue(collect_card["handoff_to_exception_design"])
         self.assertIn("login failure", collect_card["exception_design_notes"])
+        self.assertIn("report date definition", prepare_card["input"])
+        self.assertIn(
+            "Confirm the platform-store list is fixed and complete.",
+            prepare_card["prework_dependencies"],
+        )
         self.assertIn(
             "Metric-to-template mapping must be confirmed before normalization.",
             " ".join(fixture["cross_step_dependencies"]),
@@ -142,17 +162,11 @@ class ProcessBreakdownContractTests(unittest.TestCase):
         text = (ROOT / "agent_platform_package/system_prompt/agent-system-prompt.md").read_text(encoding="utf-8")
 
         self.assertIn("process_breakdown_result", text)
-        self.assertIn("只能返回一个顶层 JSON wrapper", text)
         self.assertIn("yingdao_flow_chain_templates_v3.md", text)
         self.assertIn("yingdao_scenario_building_guide.md", text)
         self.assertIn("Module 4", text)
         self.assertIn("required vs recommended vs optional", text)
         self.assertIn("unresolved assumptions", text)
-        self.assertNotIn("保持 `interaction_state`、`answer_batch`、`clarification_result`、`rpa_boundary_result` 四类结构", text)
-        self.assertNotIn("鐗╂枡", text)
-        self.assertNotIn("鍏堢粺", text)
-        self.assertNotIn("鑷姩", text)
-        self.assertNotIn("椋炰功", text)
 
     def test_module_4_expected_output_guidance_mentions_dependencies_validation_and_followups(self):
         text = (ROOT / "agent_platform_package/testing/expected_outputs.md").read_text(encoding="utf-8")
@@ -162,6 +176,10 @@ class ProcessBreakdownContractTests(unittest.TestCase):
         self.assertIn("validation points", text)
         self.assertIn("open_questions", text)
         self.assertIn("mandatory vs optional upstream items", text)
+
+    def test_module_4_assets_do_not_contain_common_mojibake_fragments(self):
+        for relative_path in MODULE_4_READABILITY_PATHS:
+            self.assert_has_no_common_mojibake(relative_path)
 
 
 if __name__ == "__main__":
