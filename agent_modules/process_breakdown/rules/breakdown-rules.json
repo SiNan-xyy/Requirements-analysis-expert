@@ -1,0 +1,46 @@
+{
+  "module": "module_4_process_breakdown",
+  "breakdown_depth": "business_process_cards_with_candidate_capabilities",
+  "allowed_source_classifications": ["suitable", "conditionally_suitable"],
+  "blocked_source_classifications": ["not_ready", "not_suitable_for_direct_rpa"],
+  "default_card_count": {
+    "minimum": 4,
+    "maximum": 8
+  },
+  "required_card_fields": [
+    "step_id",
+    "step_name",
+    "business_purpose",
+    "input",
+    "operation_summary",
+    "output",
+    "candidate_yingdao_capabilities",
+    "depends_on",
+    "prework_dependencies",
+    "handoff_to_exception_design",
+    "exception_design_notes"
+  ],
+  "default_card_pattern": [
+    "trigger_and_preparation",
+    "load_configuration_scope_or_input",
+    "enter_or_connect_to_source_system",
+    "read_query_download_or_collect_source_data",
+    "normalize_match_filter_or_calculate_data",
+    "enter_or_connect_to_target_system",
+    "write_upload_notify_or_generate_output",
+    "record_execution_result_and_handoff_items"
+  ],
+  "forbidden_behaviors": [
+    "do_not_generate_exact_click_paths",
+    "do_not_generate_selectors_or_wait_times",
+    "do_not_design_exception_branches",
+    "do_not_generate_instruction_parameters",
+    "do_not_override_module_3_decision",
+    "do_not_generate_html"
+  ],
+  "question_policy": {
+    "ask_only_when_main_flow_cannot_be_coherent": true,
+    "must_use_module_1_choice_format": true,
+    "must_include_unknown_and_other_routes": true
+  }
+}

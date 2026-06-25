@@ -1,0 +1,36 @@
+{
+  "module": "module_4_process_breakdown",
+  "source_order": [
+    {
+      "source": "yingdao_flow_chain_templates_v3.md",
+      "use": "primary_process_chain_patterns"
+    },
+    {
+      "source": "yingdao_scenario_building_guide.md",
+      "use": "scenario_family_decomposition"
+    },
+    {
+      "source": "requirement_to_instruction_mapping.xlsx",
+      "use": "common_need_to_process_module_examples"
+    },
+    {
+      "source": "yingdao_instruction_search_keywords.xlsx",
+      "use": "normalize_user_wording_to_scenario_family"
+    },
+    {
+      "source": "yingdao_core_instruction_library.xlsx",
+      "use": "high_priority_candidate_capability_names"
+    },
+    {
+      "source": "yingdao_instruction_capability_library_cleaned.xlsx",
+      "use": "broader_capability_notes_and_constraints"
+    }
+  ],
+  "excluded_as_process_evidence": ["agent_answer_templates.md"],
+  "rules": [
+    "use_templates_without_instruction_parameters",
+    "candidate_capabilities_are_orientation_not_final_build_steps",
+    "flow_chain_templates_do_not_override_module_3_prework",
+    "scenario_material_may_help_card_names_and_business_purpose"
+  ]
+}

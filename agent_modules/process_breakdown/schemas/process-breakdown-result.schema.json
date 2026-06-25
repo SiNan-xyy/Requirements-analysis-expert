@@ -1,0 +1,168 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://yingdao.local/rpa-requirements/process-breakdown-result.schema.json",
+  "title": "ProcessBreakdownResult",
+  "type": "object",
+  "required": [
+    "module",
+    "status",
+    "source_decision",
+    "breakdown_depth",
+    "process_cards",
+    "cross_step_dependencies",
+    "open_questions",
+    "handoff_to_exception_design",
+    "next_stage_recommendation"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "module": {
+      "const": "module_4_process_breakdown"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["completed", "blocked_by_boundary_result", "needs_more_information"]
+    },
+    "source_decision": {
+      "type": "object",
+      "required": ["classification", "confidence"],
+      "additionalProperties": false,
+      "properties": {
+        "classification": {
+          "type": "string",
+          "enum": ["suitable", "conditionally_suitable", "not_ready", "not_suitable_for_direct_rpa"]
+        },
+        "confidence": {
+          "type": "string",
+          "enum": ["high", "medium_high", "medium", "low"]
+        }
+      }
+    },
+    "breakdown_depth": {
+      "const": "business_process_cards_with_candidate_capabilities"
+    },
+    "process_cards": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/process_card"
+      }
+    },
+    "cross_step_dependencies": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "open_questions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "handoff_to_exception_design": {
+      "type": "object",
+      "required": ["required", "focus_steps", "notes"],
+      "additionalProperties": false,
+      "properties": {
+        "required": {
+          "type": "boolean"
+        },
+        "focus_steps": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "next_stage_recommendation": {
+      "type": "string",
+      "enum": [
+        "exception_design",
+        "return_to_rpa_boundary_check",
+        "return_to_requirement_clarification",
+        "stop_with_blocker"
+      ]
+    }
+  },
+  "$defs": {
+    "process_card": {
+      "type": "object",
+      "required": [
+        "step_id",
+        "step_name",
+        "business_purpose",
+        "input",
+        "operation_summary",
+        "output",
+        "candidate_yingdao_capabilities",
+        "depends_on",
+        "prework_dependencies",
+        "handoff_to_exception_design",
+        "exception_design_notes"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "step_id": {
+          "type": "string",
+          "pattern": "^S[0-9]{2}$"
+        },
+        "step_name": {
+          "type": "string"
+        },
+        "business_purpose": {
+          "type": "string"
+        },
+        "input": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "operation_summary": {
+          "type": "string"
+        },
+        "output": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "candidate_yingdao_capabilities": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "depends_on": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^S[0-9]{2}$"
+          }
+        },
+        "prework_dependencies": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "handoff_to_exception_design": {
+          "type": "boolean"
+        },
+        "exception_design_notes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
