@@ -1,0 +1,39 @@
+{
+  "module": "module_3_rpa_boundary_check",
+  "retrieval_order": [
+    {
+      "source": "yingdao_instruction_search_keywords.xlsx",
+      "use": "normalize_customer_language"
+    },
+    {
+      "source": "yingdao_scenario_building_guide.md",
+      "use": "match_scenario_family"
+    },
+    {
+      "source": "yingdao_flow_chain_templates_v3.md",
+      "use": "check_mature_flow_chain_pattern"
+    },
+    {
+      "source": "yingdao_core_instruction_library.xlsx",
+      "use": "verify_high_priority_instruction_support"
+    },
+    {
+      "source": "yingdao_instruction_capability_library_cleaned.xlsx",
+      "use": "verify_broader_capability_and_constraints"
+    },
+    {
+      "source": "requirement_to_instruction_mapping.xlsx",
+      "use": "few_shot_examples_and_regression_cases"
+    },
+    {
+      "source": "agent_answer_templates.md",
+      "use": "answer_shape_only"
+    }
+  ],
+  "rules": [
+    "prefer_core_instruction_library_before_extended_capability_library",
+    "do_not_use_answer_template_as_capability_evidence",
+    "do_not_package_duplicate_flow_chain_template_copy",
+    "treat_instruction_match_as_evidence_not_decision"
+  ]
+}

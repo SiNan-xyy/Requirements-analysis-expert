@@ -1,0 +1,227 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://yingdao.local/rpa-requirements/rpa-boundary-result.schema.json",
+  "title": "RpaBoundaryResult",
+  "type": "object",
+  "required": [
+    "module",
+    "status",
+    "decision",
+    "dimension_results",
+    "matched_yingdao_capabilities",
+    "risks",
+    "capability_notes",
+    "required_prework",
+    "not_to_do_in_rpa",
+    "next_stage_recommendation",
+    "pending_questions"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "module": {
+      "const": "module_3_rpa_boundary_check"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["completed", "needs_more_information"]
+    },
+    "decision": {
+      "type": "object",
+      "required": ["classification", "summary", "confidence"],
+      "additionalProperties": false,
+      "properties": {
+        "classification": {
+          "type": "string",
+          "enum": ["suitable", "conditionally_suitable", "not_ready", "not_suitable_for_direct_rpa"]
+        },
+        "summary": {
+          "type": "string"
+        },
+        "confidence": {
+          "type": "string",
+          "enum": ["high", "medium_high", "medium", "low"]
+        }
+      }
+    },
+    "dimension_results": {
+      "type": "object",
+      "required": [
+        "scenario_match",
+        "instruction_support",
+        "input_readiness",
+        "rule_readiness",
+        "platform_operability",
+        "result_verifiability",
+        "exception_containment"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "scenario_match": {
+          "$ref": "#/$defs/dimension_result"
+        },
+        "instruction_support": {
+          "$ref": "#/$defs/dimension_result"
+        },
+        "input_readiness": {
+          "$ref": "#/$defs/dimension_result"
+        },
+        "rule_readiness": {
+          "$ref": "#/$defs/dimension_result"
+        },
+        "platform_operability": {
+          "$ref": "#/$defs/dimension_result"
+        },
+        "result_verifiability": {
+          "$ref": "#/$defs/dimension_result"
+        },
+        "exception_containment": {
+          "$ref": "#/$defs/dimension_result"
+        }
+      }
+    },
+    "matched_yingdao_capabilities": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/matched_capability"
+      }
+    },
+    "risks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/risk"
+      }
+    },
+    "capability_notes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/capability_note"
+      },
+      "uniqueItems": true
+    },
+    "required_prework": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "not_to_do_in_rpa": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "next_stage_recommendation": {
+      "type": "string",
+      "enum": ["process_breakdown", "return_to_requirement_clarification", "stop_with_gap_report", "stop_with_blocker"]
+    },
+    "pending_questions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "$defs": {
+    "dimension_status": {
+      "type": "string",
+      "enum": ["pass", "conditional", "fail", "unknown"]
+    },
+    "dimension_result": {
+      "type": "object",
+      "required": ["status", "evidence", "notes", "required_prework"],
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "$ref": "#/$defs/dimension_status"
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "notes": {
+          "type": "string"
+        },
+        "required_prework": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "matched_capability": {
+      "type": "object",
+      "required": ["scenario_family", "candidate_instruction_categories", "candidate_instruction_names", "source_material"],
+      "additionalProperties": false,
+      "properties": {
+        "scenario_family": {
+          "type": "string"
+        },
+        "candidate_instruction_categories": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "candidate_instruction_names": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "source_material": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "risk_type": {
+      "type": "string",
+      "enum": [
+        "semantic_judgment",
+        "missing_rules",
+        "unstable_input",
+        "unverifiable_result",
+        "unstable_platform",
+        "human_verification",
+        "open_ended_exceptions",
+        "low_roi"
+      ]
+    },
+    "risk": {
+      "type": "object",
+      "required": ["risk_type", "severity", "evidence", "mitigation"],
+      "additionalProperties": false,
+      "properties": {
+        "risk_type": {
+          "$ref": "#/$defs/risk_type"
+        },
+        "severity": {
+          "type": "string",
+          "enum": ["high", "medium", "low"]
+        },
+        "evidence": {
+          "type": "string"
+        },
+        "mitigation": {
+          "type": "string"
+        }
+      }
+    },
+    "capability_note": {
+      "type": "string",
+      "enum": [
+        "requires_api_or_data_export",
+        "requires_stable_login",
+        "requires_field_mapping",
+        "requires_template_standardization",
+        "requires_manual_review_queue",
+        "requires_result_log"
+      ]
+    }
+  }
+}

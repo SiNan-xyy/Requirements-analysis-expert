@@ -1,0 +1,76 @@
+{
+  "module": "module_3_rpa_boundary_check",
+  "design_choice": "conditional_admissibility",
+  "dimension_order": [
+    "scenario_match",
+    "instruction_support",
+    "input_readiness",
+    "rule_readiness",
+    "platform_operability",
+    "result_verifiability",
+    "exception_containment"
+  ],
+  "required_module_2_facts": [
+    "business_goal",
+    "input_data",
+    "operated_systems",
+    "output_result",
+    "completion_condition"
+  ],
+  "recommended_module_2_facts": [
+    "trigger",
+    "rule_clarity",
+    "input_stability",
+    "platform_operability",
+    "result_verifiability"
+  ],
+  "global_rules": [
+    "instruction_match_is_evidence_not_decision",
+    "missing_required_module_2_facts_returns_not_ready",
+    "module_3_must_not_repeat_module_2_boundary_clarification",
+    "module_3_must_not_generate_process_breakdown",
+    "module_3_questions_must_be_capability_critical"
+  ],
+  "classification_rules": {
+    "suitable": {
+      "required_dimension_statuses": {
+        "scenario_match": ["pass"],
+        "instruction_support": ["pass"],
+        "rule_readiness": ["pass"],
+        "platform_operability": ["pass"],
+        "result_verifiability": ["pass"]
+      },
+      "allows_minor_conditionals": ["input_readiness", "exception_containment"]
+    },
+    "conditionally_suitable": {
+      "default_for_real_customer_requirements": true,
+      "requires_supported_core": true,
+      "allows_prework_when_concrete": true,
+      "containment_strategies": [
+        "standardization",
+        "field_mapping",
+        "manual_review_queue",
+        "login_stabilization",
+        "result_logging",
+        "api_or_data_export"
+      ]
+    },
+    "not_ready": {
+      "use_when": [
+        "required_information_missing",
+        "boundary_facts_not_confirmed",
+        "input_rules_output_or_platform_access_cannot_be_judged_yet"
+      ]
+    },
+    "not_suitable_for_direct_rpa": {
+      "use_when": [
+        "core_task_depends_on_open_ended_semantic_judgment_without_rules_or_review",
+        "input_highly_unstable_and_cannot_be_standardized",
+        "target_platform_cannot_be_operated_or_accessed_reliably",
+        "strong_human_verification_is_frequent_and_cannot_be_separated",
+        "success_cannot_be_verified",
+        "process_is_low_frequency_high_variability_and_heavy_manual_judgment"
+      ]
+    }
+  }
+}
