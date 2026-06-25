@@ -80,7 +80,7 @@
         "candidate_risk_types": {
           "type": "array",
           "items": {
-            "type": "string"
+            "$ref": "#/$defs/risk_type"
           },
           "uniqueItems": true
         },
@@ -152,6 +152,19 @@
         "medium",
         "low",
         "unknown"
+      ]
+    },
+    "risk_type": {
+      "type": "string",
+      "enum": [
+        "semantic_judgment",
+        "missing_rules",
+        "unstable_input",
+        "unverifiable_result",
+        "unstable_platform",
+        "human_verification",
+        "open_ended_exceptions",
+        "low_roi"
       ]
     }
   }

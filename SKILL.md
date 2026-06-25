@@ -128,3 +128,18 @@ Allowed pre-screen values are only:
 - `unknown`
 
 Never output substitute field names such as `rpa_prescreen`, `candidate_risks`, `prework_recommendations`, or `next_action` for module 2 final output. Put explanatory notes into `stage_summary`, `pending_questions`, or `recommended_prework`.
+
+Use `candidate_risk_types` only for controlled identifiers. Allowed values are:
+
+- `semantic_judgment`
+- `missing_rules`
+- `unstable_input`
+- `unverifiable_result`
+- `unstable_platform`
+- `human_verification`
+- `open_ended_exceptions`
+- `low_roi`
+
+Do not put full Chinese risk sentences inside `candidate_risk_types`. Put explanations in `stage_summary`, `pending_questions`, or `recommended_prework`.
+
+All Chinese text in final answers must be readable UTF-8 Chinese. Never emit mojibake strings such as `鐗╂枡`, `鍏堢粺`, `鑷姩`, or `椋炰功`. If retrieved material appears garbled, ignore the garbled text and regenerate readable Chinese from the underlying meaning.

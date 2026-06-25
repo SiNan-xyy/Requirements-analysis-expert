@@ -104,6 +104,26 @@ class RequirementClarificationContractTests(unittest.TestCase):
         self.assertEqual(completion_rules["next_actions"]["prework_required"], "stop_with_blocker")
         self.assertTrue(set(completion_rules["next_actions"].values()) <= module_1_next_actions)
 
+    def test_candidate_risk_types_are_controlled_identifiers(self):
+        schema = load_json("agent_modules/requirement_clarification/schemas/clarification-result.schema.json")
+        risk_types = schema["$defs"]["risk_type"]["enum"]
+
+        self.assertEqual(
+            risk_types,
+            [
+                "semantic_judgment",
+                "missing_rules",
+                "unstable_input",
+                "unverifiable_result",
+                "unstable_platform",
+                "human_verification",
+                "open_ended_exceptions",
+                "low_roi",
+            ],
+        )
+        candidate_items = schema["properties"]["rpa_fit_prescreen"]["properties"]["candidate_risk_types"]["items"]
+        self.assertEqual(candidate_items["$ref"], "#/$defs/risk_type")
+
     def test_trigger_policy_never_concludes_from_initial_request(self):
         rules = load_json("agent_modules/requirement_clarification/rules/trigger-policy.json")
 
@@ -148,18 +168,38 @@ class RequirementClarificationContractTests(unittest.TestCase):
         library = load_json("agent_modules/requirement_clarification/materials/negative-examples.v1.json")
         examples = library["examples"]
         case_ids = {example["case_id"] for example in examples}
+        risk_types = {example["risk_type"] for example in examples}
 
         self.assertEqual(library["version"], "v1")
         self.assertEqual(len(examples), 8)
         self.assertIn("semantic-material-matching", case_ids)
         self.assertIn("missing-stable-business-rules", case_ids)
         self.assertIn("frequent-strong-verification", case_ids)
+        self.assertIn("semantic_judgment", risk_types)
+        self.assertIn("unverifiable_result", risk_types)
 
         for example in examples:
             self.assertEqual(example["module_2_action"], "flag_rpa_fit_risk")
             self.assertIn("trigger_policy", example)
             self.assertTrue(example["trigger_policy"]["confirmation_required"])
             self.assertTrue(example["trigger_policy"]["never_conclude_from_initial_request_only"])
+            self.assertIn("其他，请补充", example["options"])
+
+    def test_module_2_user_facing_materials_are_readable_utf8(self):
+        paths = [
+            "agent_modules/requirement_clarification/fixtures/clarification-result-ready.json",
+            "agent_modules/requirement_clarification/fixtures/semantic-risk-prescreen.json",
+            "agent_modules/requirement_clarification/materials/negative-examples.v1.json",
+        ]
+        mojibake_markers = ["鑷", "鐗", "鍏堢", "寤虹", "璇", "鎷︽", "椋炰功"]
+
+        combined = "\n".join((ROOT / path).read_text(encoding="utf-8") for path in paths)
+        for marker in mojibake_markers:
+            with self.subTest(marker=marker):
+                self.assertNotIn(marker, combined)
+        self.assertIn("自动完成物流拦截", combined)
+        self.assertIn("物料名称不统一", combined)
+        self.assertIn("结果不可验证", combined)
 
     def test_readme_lists_module_2_artifacts(self):
         text = (ROOT / "agent_modules/requirement_clarification/README.md").read_text(encoding="utf-8")

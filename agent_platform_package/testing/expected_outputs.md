@@ -111,6 +111,8 @@
 - 使用 `prework_recommendations` 代替 `recommended_prework`。
 - 使用 `next_action` 代替 `next_stage_recommendation`。
 - 使用 `medium_high` 等非枚举等级。
+- 在 `candidate_risk_types` 中放完整中文句子，而不是枚举标识。
+- 输出 `鐗╂枡`、`鍏堢粺`、`鑷姩`、`椋炰功` 等乱码。
 - 在模块 2 直接输出“可以做 RPA”或“不可以做 RPA”的最终结论。
 - 开始询问具体点击路径、页面字段、等待时间。
 

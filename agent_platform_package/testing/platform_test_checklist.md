@@ -85,3 +85,23 @@
 - `medium_high`
 - `medium_low`
 - 自定义等级
+
+`candidate_risk_types` 只能填写枚举标识：
+
+- `semantic_judgment`
+- `missing_rules`
+- `unstable_input`
+- `unverifiable_result`
+- `unstable_platform`
+- `human_verification`
+- `open_ended_exceptions`
+- `low_roi`
+
+不得把完整中文风险句子放入 `candidate_risk_types`。
+
+中文输出必须可读，不得出现典型乱码片段：
+
+- `鐗╂枡`
+- `鍏堢粺`
+- `鑷姩`
+- `椋炰功`
