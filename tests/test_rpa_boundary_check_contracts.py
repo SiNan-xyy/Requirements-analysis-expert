@@ -121,6 +121,13 @@ class RpaBoundaryCheckContractTests(unittest.TestCase):
         self.assertIn("Instruction existence is evidence, not a decision", text)
         self.assertIn("Ask capability-critical confirmation questions only", text)
 
+    def test_system_prompt_allows_module_3_boundary_result_in_single_wrapper(self):
+        text = (ROOT / "agent_platform_package/system_prompt/agent-system-prompt.md").read_text(encoding="utf-8")
+
+        self.assertIn("rpa_boundary_result", text)
+        self.assertIn("只能返回一个 JSON 对象", text)
+        self.assertNotIn("interaction_state`、`answer_batch`、`clarification_result` 三类结构", text)
+
     def test_email_sorting_fixture_is_conditionally_suitable(self):
         fixture = load_json("agent_modules/rpa_boundary_check/fixtures/email-sorting-boundary-result.json")
 
