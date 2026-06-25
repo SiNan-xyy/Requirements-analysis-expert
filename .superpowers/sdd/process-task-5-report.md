@@ -4,7 +4,7 @@
   - `agent_modules/process_breakdown/fixtures/ecommerce-daily-report-process-breakdown.json`
   - `tests/test_process_breakdown_contracts.py`
   - `.superpowers/sdd/process-task-5-report.md`
-- Commit hash: `a823eaf`
+- Commit hash: code-fix snapshot `5d021c1`; this report is finalized in the current HEAD commit.
 - Tests run:
   - `python -m unittest tests.test_process_breakdown_contracts -v`
   - `python -m unittest tests.test_interaction_schema_contracts tests.test_requirement_clarification_contracts tests.test_rpa_boundary_check_contracts tests.test_process_breakdown_contracts -v`
