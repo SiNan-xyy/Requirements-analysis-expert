@@ -49,7 +49,7 @@
   - `tests/test_process_breakdown_contracts.py`
   - `agent_platform_package/testing/expected_outputs.md`
   - `.superpowers/sdd/process-task-5-report.md`
-- Commit hash: pending at report-write time; updated in the final committed revision.
+- Commit hash: `9fb47f3` (the implementation commit that adds the Module 4 contract fix before this report-only update).
 - Tests run:
   - `python -m unittest tests.test_process_breakdown_contracts -v`
   - `python -m unittest tests.test_interaction_schema_contracts tests.test_requirement_clarification_contracts tests.test_rpa_boundary_check_contracts tests.test_process_breakdown_contracts -v`
