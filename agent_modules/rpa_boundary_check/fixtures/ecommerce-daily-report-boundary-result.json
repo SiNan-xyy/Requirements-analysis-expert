@@ -1,0 +1,86 @@
+{
+  "module": "module_3_rpa_boundary_check",
+  "status": "completed",
+  "decision": {
+    "classification": "conditionally_suitable",
+    "summary": "多平台电商日报需求具备固定频率、固定店铺范围和明确写入目标，适合优先进入RPA方案设计；进入流程拆解前需要确认平台-店铺清单、指标口径、日期范围和结果核对方式。",
+    "confidence": "medium_high"
+  },
+  "dimension_results": {
+    "scenario_match": {
+      "status": "pass",
+      "evidence": ["网页自动化数据采集", "网页自动化文件下载", "Excel/表格处理", "在线文档写入"],
+      "notes": "该需求符合多平台后台采集、表格处理和在线文档写入的组合场景。",
+      "required_prework": []
+    },
+    "instruction_support": {
+      "status": "pass",
+      "evidence": ["行业平台报表下载", "数据清洗与转换", "文件与办公文档处理"],
+      "notes": "候选能力覆盖登录、查询、下载或读取、汇总、写入。",
+      "required_prework": []
+    },
+    "input_readiness": {
+      "status": "conditional",
+      "evidence": ["多个电商平台和固定店铺", "指标包括GMV、支付订单数、退款金额、退款单数"],
+      "notes": "店铺数量固定有利于自动化，但多平台字段和口径需要映射。",
+      "required_prework": ["确认平台-店铺清单是否固定且完整。", "确认各平台指标与腾讯文档字段的一一对应关系。"]
+    },
+    "rule_readiness": {
+      "status": "conditional",
+      "evidence": ["各平台数据口径大体统一，只需按同一口径汇总"],
+      "notes": "汇总规则可自动化，但必须明确日报日期口径和指标口径。",
+      "required_prework": ["明确日报日期范围，例如自然日或前一日。", "明确退款金额和退款单数的统计口径。"]
+    },
+    "platform_operability": {
+      "status": "conditional",
+      "evidence": ["登录态相对稳定，基本不会频繁遇到验证码或设备确认"],
+      "notes": "平台可操作性较好，但多平台登录稳定性仍需作为前置条件。",
+      "required_prework": ["确认每个平台是否有稳定账号、权限和登录策略。"]
+    },
+    "result_verifiability": {
+      "status": "conditional",
+      "evidence": ["当前只要求成功写入，不要求与源平台逐项自动核对"],
+      "notes": "写入成功只能证明动作完成，不能证明数据本身正确。",
+      "required_prework": ["至少记录源平台取数值、写入值、处理时间和异常状态。"]
+    },
+    "exception_containment": {
+      "status": "conditional",
+      "evidence": ["多平台多店铺可能存在口径差异和登录异常"],
+      "notes": "常见异常可以通过平台级失败记录和人工复核收敛。",
+      "required_prework": ["定义平台登录失败、数据缺失、模板写入失败时的处理方式。"]
+    }
+  },
+  "matched_yingdao_capabilities": [
+    {
+      "scenario_family": "电商平台日报采集",
+      "candidate_instruction_categories": ["网页自动化", "文件下载", "Excel/表格处理", "在线文档写入"],
+      "candidate_instruction_names": ["打开网页", "下载文件", "读取Excel", "写入Excel", "条件判断"],
+      "source_material": ["yingdao_instruction_search_keywords.xlsx", "yingdao_scenario_building_guide.md", "yingdao_flow_chain_templates_v3.md"]
+    }
+  ],
+  "risks": [
+    {
+      "risk_type": "unstable_platform",
+      "severity": "medium",
+      "evidence": "涉及多个电商平台后台，登录态和页面结构可能变化。",
+      "mitigation": "优先确认账号权限、登录策略和是否可通过报表导出/API降低页面依赖。"
+    },
+    {
+      "risk_type": "unverifiable_result",
+      "severity": "medium",
+      "evidence": "当前只要求写入成功，不自动核对源数据。",
+      "mitigation": "增加源值、写入值和异常状态记录。"
+    }
+  ],
+  "capability_notes": ["requires_stable_login", "requires_field_mapping", "requires_result_log"],
+  "required_prework": [
+    "确认平台-店铺清单是否固定且完整。",
+    "确认各平台指标与腾讯文档字段的一一对应关系。",
+    "确认日报日期口径是自然日、前一日还是平台统计日。",
+    "确认每个平台的账号权限和登录稳定性。",
+    "确认最小结果核验方式，至少保留源平台取数值和写入值。"
+  ],
+  "not_to_do_in_rpa": ["不要只以腾讯文档写入成功作为数据正确性的唯一证明。"],
+  "next_stage_recommendation": "process_breakdown",
+  "pending_questions": []
+}

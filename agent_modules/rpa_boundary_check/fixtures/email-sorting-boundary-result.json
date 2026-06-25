@@ -1,0 +1,85 @@
+{
+  "module": "module_3_rpa_boundary_check",
+  "status": "completed",
+  "decision": {
+    "classification": "conditionally_suitable",
+    "summary": "邮件自动整理有明确规则、输入和输出记录，但正文语义分类仍有误判风险，适合在规则分类基础上加入低置信度人工确认。",
+    "confidence": "medium_high"
+  },
+  "dimension_results": {
+    "scenario_match": {
+      "status": "pass",
+      "evidence": ["邮件系统处理", "规则分类", "结果清单或日报"],
+      "notes": "需求可以映射到邮件读取、条件判断、分类写入和日志记录场景。",
+      "required_prework": []
+    },
+    "instruction_support": {
+      "status": "pass",
+      "evidence": ["系统集成/邮件", "数据清洗与转换", "条件判断"],
+      "notes": "发件人、发件域名和主题关键词可以按规则处理。",
+      "required_prework": []
+    },
+    "input_readiness": {
+      "status": "conditional",
+      "evidence": ["大部分邮件来源和格式固定", "偶尔会出现新类型邮件"],
+      "notes": "新类型邮件需要进入人工确认，避免直接误分。",
+      "required_prework": ["准备典型样例邮件和新类型邮件处理策略。"]
+    },
+    "rule_readiness": {
+      "status": "conditional",
+      "evidence": ["已有固定分类目录", "部分需要邮件语义判断"],
+      "notes": "关键词和发件人规则适合自动化；语义判断需要规则样例和置信度控制。",
+      "required_prework": ["为每个分类补充发件人、主题关键词、正文关键词和样例邮件。"]
+    },
+    "platform_operability": {
+      "status": "pass",
+      "evidence": ["Outlook / Microsoft 365 账户和邮箱权限稳定"],
+      "notes": "系统和权限边界清楚。",
+      "required_prework": []
+    },
+    "result_verifiability": {
+      "status": "pass",
+      "evidence": ["每封邮件记录目标文件夹、标签、判断依据、处理时间"],
+      "notes": "处理日志可以验证输出。",
+      "required_prework": []
+    },
+    "exception_containment": {
+      "status": "conditional",
+      "evidence": ["低置信度邮件进入待人工确认队列"],
+      "notes": "语义不确定性通过人工复核队列收敛。",
+      "required_prework": ["明确低置信度阈值和人工确认规则。"]
+    }
+  },
+  "matched_yingdao_capabilities": [
+    {
+      "scenario_family": "系统集成/邮件",
+      "candidate_instruction_categories": ["邮件", "条件判断", "数据处理"],
+      "candidate_instruction_names": ["邮件读取", "IF 条件", "写入Excel"],
+      "source_material": ["yingdao_instruction_search_keywords.xlsx", "yingdao_core_instruction_library.xlsx"]
+    }
+  ],
+  "risks": [
+    {
+      "risk_type": "semantic_judgment",
+      "severity": "medium",
+      "evidence": "部分分类依赖正文语义判断。",
+      "mitigation": "低置信度邮件进入待人工确认，并记录判断依据。"
+    },
+    {
+      "risk_type": "unstable_input",
+      "severity": "low",
+      "evidence": "偶尔出现新类型邮件。",
+      "mitigation": "在日报中标记未命中规则或低置信度邮件。"
+    }
+  ],
+  "capability_notes": ["requires_manual_review_queue", "requires_result_log"],
+  "required_prework": [
+    "准备固定分类目录或标签清单。",
+    "为每个分类补充发件人、主题关键词、正文关键词或样例邮件。",
+    "明确低置信度邮件进入待人工确认的规则。",
+    "确定处理日志字段：主题、发件人、分类结果、判断依据、处理时间、是否需人工确认。"
+  ],
+  "not_to_do_in_rpa": ["不要让机器人在没有规则或人工确认队列的情况下直接判断开放式语义分类。"],
+  "next_stage_recommendation": "process_breakdown",
+  "pending_questions": []
+}

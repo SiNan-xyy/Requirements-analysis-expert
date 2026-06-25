@@ -1,0 +1,42 @@
+{
+  "version": "v1",
+  "module": "module_3_rpa_boundary_check",
+  "sources": [
+    {
+      "source": "yingdao_instruction_capability_library_cleaned.xlsx",
+      "role": "skill_material_and_rag_source",
+      "purpose": "Main capability library for instruction capabilities, prerequisites, unsuitable scenarios, common errors, and handling suggestions."
+    },
+    {
+      "source": "yingdao_core_instruction_library.xlsx",
+      "role": "skill_material",
+      "purpose": "High-priority core instruction subset used before broader extended instruction matching."
+    },
+    {
+      "source": "yingdao_instruction_search_keywords.xlsx",
+      "role": "retrieval_normalization",
+      "purpose": "Maps customer wording to standard requirement types and candidate instruction keys."
+    },
+    {
+      "source": "requirement_to_instruction_mapping.xlsx",
+      "role": "few_shot_examples_and_tests",
+      "purpose": "Small demand-to-instruction examples for scenario mapping, risks, clarification questions, and regression tests."
+    },
+    {
+      "source": "yingdao_flow_chain_templates_v3.md",
+      "original_filename": "褰卞垁甯歌娴佺▼鎸囦护閾炬ā鏉縑3_閫昏緫缁撴瀯鐗?md",
+      "role": "module_4_primary_module_3_supporting",
+      "purpose": "Checks whether a mature flow-chain pattern exists without generating detailed process breakdown in module 3."
+    },
+    {
+      "source": "yingdao_scenario_building_guide.md",
+      "role": "scenario_level_rag_source",
+      "purpose": "Maps needs to broad scenario families such as web automation, Excel processing, file handling, login, collection, and notification."
+    },
+    {
+      "source": "agent_answer_templates.md",
+      "role": "answer_shape_only",
+      "purpose": "Constrains response shape after a decision; not used as capability evidence."
+    }
+  ]
+}
