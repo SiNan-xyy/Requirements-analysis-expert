@@ -29,6 +29,25 @@
 }
 ```
 
+## Module 4 Expected Output
+
+When module 4 completes, the platform should return a single top-level wrapper containing:
+
+- `interaction_state`
+- `clarification_result`
+- `rpa_boundary_result`
+- `process_breakdown_result`
+
+`process_breakdown_result.breakdown_depth` must be:
+
+- `business_process_cards_with_candidate_capabilities`
+
+Each process card should describe a business stage and candidate Yingdao capability families. It should not include selectors, exact click paths, wait times, retry counts, or instruction parameter values.
+
+The e-commerce daily report scenario should produce cards for report scope preparation, platform access, platform data collection, metric normalization, Tencent Docs writing, and result logging.
+
+The email sorting scenario should produce cards for classification scope preparation, email reading, signal extraction, classification, folder or label application, and result logging.
+
 其中 `answer_records` 在真实输出中应包含本轮问题的记录；上面为空数组只是说明外壳字段。
 
 ## 邮件自动整理：合格输出骨架
