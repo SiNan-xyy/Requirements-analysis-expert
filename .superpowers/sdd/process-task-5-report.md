@@ -9,7 +9,7 @@
   - `python -m unittest tests.test_process_breakdown_contracts -v`
   - `python -m unittest tests.test_interaction_schema_contracts tests.test_requirement_clarification_contracts tests.test_rpa_boundary_check_contracts tests.test_process_breakdown_contracts -v`
 - Scans run:
-  - `rg -n "褰卞|鍙ｅ緞|閼|閻|鐠|妞|鏈|閺" agent_modules/process_breakdown agent_platform_package tests .superpowers/sdd`
+  - `rg -n "<common mojibake fragment set>" agent_modules/process_breakdown agent_platform_package tests .superpowers/sdd`
   - Python equivalent scan over `agent_modules/process_breakdown`, `agent_platform_package`, `tests/test_process_breakdown_contracts.py`, and `.superpowers/sdd/process-task-5-brief.md`
 - Scan results:
   - No matches remain under `agent_modules/process_breakdown`.
