@@ -16,7 +16,7 @@
       "output": ["classification scope", "rule set"],
       "candidate_yingdao_capabilities": ["configuration reading", "table reading"],
       "depends_on": [],
-      "prework_dependencies": ["鍑嗗鍥哄畾鍒嗙被鐩綍鎴栨爣绛炬竻鍗?", "鍑嗗鍒嗙被瑙勫垯"],
+      "prework_dependencies": ["Confirm mailbox access permissions are stable.", "Confirm target folders or labels already exist."],
       "handoff_to_exception_design": false,
       "exception_design_notes": []
     },
@@ -29,7 +29,7 @@
       "output": ["email list", "email metadata and content"],
       "candidate_yingdao_capabilities": ["email processing", "system integration"],
       "depends_on": ["S01"],
-      "prework_dependencies": ["纭閭璁块棶鏉冮檺绋冲畾"],
+      "prework_dependencies": ["Confirm mailbox access permissions are stable."],
       "handoff_to_exception_design": true,
       "exception_design_notes": ["mailbox permission failure", "email read failure"]
     },
@@ -42,7 +42,7 @@
       "output": ["classification signals"],
       "candidate_yingdao_capabilities": ["text processing", "data extraction"],
       "depends_on": ["S02"],
-      "prework_dependencies": ["鍑嗗鍏稿瀷鍙戜欢浜恒€佷富棰樺叧閿瘝銆佹鏂囧叧閿瘝鎴栨牱渚嬮偖浠?"],
+      "prework_dependencies": ["Confirm the sender, subject, and body fields needed for classification can be read reliably."],
       "handoff_to_exception_design": true,
       "exception_design_notes": ["empty body", "unsupported format", "missing subject"]
     },
@@ -68,7 +68,7 @@
       "output": ["updated mailbox organization"],
       "candidate_yingdao_capabilities": ["email processing", "folder operation", "condition judgment"],
       "depends_on": ["S04"],
-      "prework_dependencies": ["纭鐩爣鏂囦欢澶规垨鏍囩宸茬粡瀛樺湪"],
+      "prework_dependencies": ["Confirm the target folder or label already exists."],
       "handoff_to_exception_design": true,
       "exception_design_notes": ["target folder missing", "move failure", "manual review routing"]
     },
@@ -81,7 +81,7 @@
       "output": ["sorting log", "daily summary"],
       "candidate_yingdao_capabilities": ["Excel writing", "report generation", "notification"],
       "depends_on": ["S05"],
-      "prework_dependencies": ["纭畾澶勭悊鏃ュ織瀛楁"],
+      "prework_dependencies": ["Confirm processing log fields are defined."],
       "handoff_to_exception_design": true,
       "exception_design_notes": ["log write failure", "summary generation failure"]
     }

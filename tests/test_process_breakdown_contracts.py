@@ -4,7 +4,23 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-COMMON_MOJIBAKE_FRAGMENTS = ("褰卞", "鍙ｅ緞", "閼", "閻", "鐠", "妞", "鏈", "閺")
+COMMON_MOJIBAKE_FRAGMENTS = (
+    "褰卞",
+    "鍙ｅ緞",
+    "閼",
+    "閻",
+    "鐠",
+    "妞",
+    "鏈",
+    "閺",
+    "纭",
+    "",
+    "",
+    "",
+    "鏃ユ",
+    "骞冲",
+    "鑵捐",
+)
 MODULE_4_READABILITY_PATHS = [
     "agent_modules/process_breakdown/fixtures/ecommerce-daily-report-process-breakdown.json",
     "agent_modules/process_breakdown/fixtures/email-sorting-process-breakdown.json",

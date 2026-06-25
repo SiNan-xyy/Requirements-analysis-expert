@@ -18,3 +18,23 @@
   - Replaced mojibake in the Module 4 ecommerce fixture with readable English while keeping the original schema and process meaning.
   - Added a contract test that checks Module 4 fixture and user-facing module assets for common mojibake fragments without tying the check to exact business sentences.
   - Kept the fix scoped to the requested Module 4 fixture and contract test; did not modify unrelated mojibake elsewhere in `agent_platform_package`.
+
+## 2026-06-26 Verification Fix
+
+- Files changed:
+  - `agent_modules/process_breakdown/fixtures/email-sorting-process-breakdown.json`
+  - `tests/test_process_breakdown_contracts.py`
+  - `.superpowers/sdd/process-task-5-report.md`
+- Commit hash: `399f2ce`
+- Tests run:
+  - `python -m unittest tests.test_process_breakdown_contracts -v`
+  - `python -m unittest tests.test_interaction_schema_contracts tests.test_requirement_clarification_contracts tests.test_rpa_boundary_check_contracts tests.test_process_breakdown_contracts -v`
+- Scans run:
+  - `rg -n "褰卞|鍙ｅ緞|閼|閻|鐠|妞|鏈|閺|纭||||鏃ユ|骞冲|鑵捐" agent_modules/process_breakdown agent_platform_package docs/superpowers/specs/2026-06-25-process-breakdown-design.md tests/test_process_breakdown_contracts.py`
+- Scan results:
+  - No matches remain under `agent_modules/process_breakdown`.
+  - Remaining matches are expected fragment literals in `tests/test_process_breakdown_contracts.py`.
+- Self-review notes:
+  - Replaced all unreadable `prework_dependencies` mojibake in the email sorting process breakdown fixture with readable business-language English.
+  - Expanded `COMMON_MOJIBAKE_FRAGMENTS` with representative bad-encoding markers from the current failure so the readability guard catches similar corruption earlier.
+  - Kept the change limited to the requested Module 4 fixture, contract test, and task report.
