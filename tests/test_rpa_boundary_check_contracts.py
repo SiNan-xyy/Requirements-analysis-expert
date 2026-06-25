@@ -111,7 +111,7 @@ class RpaBoundaryCheckContractTests(unittest.TestCase):
         self.assertIn("yingdao_flow_chain_templates_v3.md", source_names)
         self.assertIn("yingdao_scenario_building_guide.md", source_names)
         self.assertIn("agent_answer_templates.md", source_names)
-        self.assertNotIn("褰卞垁甯歌娴佺▼鎸囦护閾炬ā鏉縑3_閫昏緫缁撴瀯鐗?(1).md", source_names)
+        self.assertNotIn("yingdao_flow_chain_templates_v3_duplicate.md", source_names)
 
     def test_prompt_rules_keep_module_3_out_of_process_breakdown(self):
         text = (ROOT / "agent_modules/rpa_boundary_check/rules/prompt-rules.md").read_text(encoding="utf-8")
@@ -137,7 +137,7 @@ class RpaBoundaryCheckContractTests(unittest.TestCase):
         self.assertIn("requires_field_mapping", fixture["capability_notes"])
         self.assertIn("requires_result_log", fixture["capability_notes"])
         self.assertEqual(fixture["dimension_results"]["result_verifiability"]["status"], "conditional")
-        self.assertIn("骞冲彴-搴楅摵娓呭崟", " ".join(fixture["required_prework"]))
+        self.assertIn("平台-店铺清单", " ".join(fixture["required_prework"]))
 
     def test_readme_lists_module_3_artifacts(self):
         text = (ROOT / "agent_modules/rpa_boundary_check/README.md").read_text(encoding="utf-8")
