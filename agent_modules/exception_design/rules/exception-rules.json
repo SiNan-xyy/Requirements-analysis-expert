@@ -1,0 +1,65 @@
+{
+  "module": "module_5_exception_design",
+  "exception_depth": "semi_implementation_exception_flows",
+  "required_source_recommendation": "exception_design",
+  "source_priority": [
+    "module_4_focus_steps_are_primary",
+    "module_4_exception_notes_are_primary_topics",
+    "module_4_assumptions_validation_points_and_dependencies_are_context",
+    "module_3_risks_are_supporting_evidence",
+    "module_2_boundary_facts_are_wording_context_only"
+  ],
+  "severity_levels": [
+    "blocking",
+    "needs_manual_review",
+    "recoverable",
+    "log_only"
+  ],
+  "continue_policies": [
+    "stop_entire_run",
+    "stop_current_step",
+    "continue_other_items",
+    "skip_current_item",
+    "retry_then_escalate",
+    "wait_for_manual_review",
+    "log_and_continue"
+  ],
+  "human_intervention_values": [
+    "none",
+    "optional",
+    "required"
+  ],
+  "required_exception_card_fields": [
+    "exception_id",
+    "exception_type",
+    "severity",
+    "trigger_signal",
+    "detection_basis",
+    "handling_strategy",
+    "continue_policy",
+    "candidate_yingdao_capabilities",
+    "human_intervention",
+    "record_fields",
+    "related_upstream_risks"
+  ],
+  "generation_requirements": [
+    "expand exceptions by module 4 process step",
+    "link exception cards to module 3 risks or capability notes when relevant",
+    "preserve manual review policy",
+    "preserve logging policy",
+    "prefer scoped continuation when business-safe",
+    "ask only when exception handling would be unsafe without confirmation"
+  ],
+  "forbidden_behaviors": [
+    "do_not_override_module_3_decision",
+    "do_not_rebuild_module_4_happy_path",
+    "do_not_repeat_module_2_boundary_questions",
+    "do_not_generate_exact_click_paths",
+    "do_not_generate_selectors",
+    "do_not_generate_wait_times",
+    "do_not_generate_retry_counts_as_parameters",
+    "do_not_generate_instruction_parameters",
+    "do_not_generate_solution_blueprint",
+    "do_not_generate_html"
+  ]
+}

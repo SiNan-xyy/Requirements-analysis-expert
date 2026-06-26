@@ -1,0 +1,175 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ExceptionDesignResult",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "module",
+    "status",
+    "source_process_steps",
+    "exception_depth",
+    "exception_flows",
+    "global_exception_policies",
+    "manual_review_policy",
+    "logging_policy",
+    "open_questions",
+    "next_stage_recommendation"
+  ],
+  "properties": {
+    "module": { "const": "module_5_exception_design" },
+    "status": {
+      "enum": ["completed", "blocked_by_process_breakdown", "needs_more_information"]
+    },
+    "source_process_steps": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "exception_depth": { "const": "semi_implementation_exception_flows" },
+    "exception_flows": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/exception_flow" }
+    },
+    "global_exception_policies": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "manual_review_policy": { "$ref": "#/$defs/manual_review_policy" },
+    "logging_policy": { "$ref": "#/$defs/logging_policy" },
+    "open_questions": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "next_stage_recommendation": {
+      "enum": [
+        "solution_packaging",
+        "return_to_process_breakdown",
+        "return_to_rpa_boundary_check",
+        "return_to_requirement_clarification",
+        "stop_with_blocker"
+      ]
+    }
+  },
+  "$defs": {
+    "exception_flow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["step_id", "step_name", "source_exception_notes", "exception_cards"],
+      "properties": {
+        "step_id": { "type": "string" },
+        "step_name": { "type": "string" },
+        "source_exception_notes": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "exception_cards": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/exception_card" }
+        }
+      }
+    },
+    "exception_card": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "exception_id",
+        "exception_type",
+        "severity",
+        "trigger_signal",
+        "detection_basis",
+        "handling_strategy",
+        "continue_policy",
+        "candidate_yingdao_capabilities",
+        "human_intervention",
+        "record_fields",
+        "related_upstream_risks"
+      ],
+      "properties": {
+        "exception_id": { "type": "string", "pattern": "^E-S[0-9]{2}-[0-9]{2}$" },
+        "exception_type": { "$ref": "#/$defs/exception_type" },
+        "severity": { "$ref": "#/$defs/severity" },
+        "trigger_signal": { "type": "string", "minLength": 1 },
+        "detection_basis": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "handling_strategy": { "type": "string", "minLength": 1 },
+        "continue_policy": { "$ref": "#/$defs/continue_policy" },
+        "candidate_yingdao_capabilities": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "human_intervention": { "enum": ["none", "optional", "required"] },
+        "record_fields": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string" }
+        },
+        "related_upstream_risks": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "exception_type": {
+      "enum": [
+        "login_failure",
+        "permission_missing",
+        "captcha_or_device_verification",
+        "source_data_missing",
+        "source_field_missing",
+        "download_failure",
+        "file_format_unreadable",
+        "field_mapping_mismatch",
+        "rule_not_matched",
+        "low_confidence",
+        "target_template_changed",
+        "target_write_failure",
+        "result_verification_failed",
+        "notification_failure",
+        "manual_review_timeout",
+        "unknown_exception"
+      ]
+    },
+    "severity": {
+      "enum": ["blocking", "needs_manual_review", "recoverable", "log_only"]
+    },
+    "continue_policy": {
+      "enum": [
+        "stop_entire_run",
+        "stop_current_step",
+        "continue_other_items",
+        "skip_current_item",
+        "retry_then_escalate",
+        "wait_for_manual_review",
+        "log_and_continue"
+      ]
+    },
+    "manual_review_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["required", "review_queue_name", "review_record_fields"],
+      "properties": {
+        "required": { "type": "boolean" },
+        "review_queue_name": { "type": "string" },
+        "review_record_fields": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "logging_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["required", "minimum_record_fields"],
+      "properties": {
+        "required": { "type": "boolean" },
+        "minimum_record_fields": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    }
+  }
+}
