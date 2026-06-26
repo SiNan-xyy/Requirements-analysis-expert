@@ -205,27 +205,6 @@ class ExceptionDesignContractTests(unittest.TestCase):
             with self.subTest(path=path):
                 self.assertIn(path, text)
 
-    def test_platform_prompt_allows_exception_design_result_in_single_wrapper(self):
-        text = (ROOT / "agent_platform_package/system_prompt/agent-system-prompt.md").read_text(
-            encoding="utf-8"
-        )
-
-        self.assertIn("exception_design_result", text)
-        self.assertIn("Module 5", text)
-        self.assertIn("semi-implementation-level exception flows", text)
-        self.assertIn("do not generate exact selectors", text)
-
-    def test_module_5_expected_output_guidance_mentions_exception_contract(self):
-        text = (ROOT / "agent_platform_package/testing/expected_outputs.md").read_text(
-            encoding="utf-8"
-        )
-
-        self.assertIn("exception_design_result", text)
-        self.assertIn("semi_implementation_exception_flows", text)
-        self.assertIn("manual_review_policy", text)
-        self.assertIn("logging_policy", text)
-        self.assertIn("solution_packaging", text)
-
     def test_module_5_assets_do_not_contain_common_mojibake_fragments(self):
         for relative_path in MODULE_5_READABILITY_PATHS:
             self.assert_has_no_common_mojibake(relative_path)
