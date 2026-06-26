@@ -20,7 +20,7 @@
           "candidate_yingdao_capabilities": ["condition judgment", "logging", "notification"],
           "human_intervention": "required",
           "record_fields": ["mailbox", "folder_scope", "account", "access_result", "detected_at"],
-          "related_upstream_risks": ["unstable_input", "requires_result_log"]
+          "related_upstream_risks": ["requires_result_log"]
         },
         {
           "exception_id": "E-S02-02",
@@ -33,7 +33,7 @@
           "candidate_yingdao_capabilities": ["email processing", "condition judgment", "logging", "notification"],
           "human_intervention": "optional",
           "record_fields": ["mailbox", "batch_reference", "read_status", "failure_reason", "detected_at"],
-          "related_upstream_risks": ["unstable_input", "requires_result_log"]
+          "related_upstream_risks": ["requires_result_log"]
         }
       ]
     },
@@ -112,7 +112,7 @@
           "candidate_yingdao_capabilities": ["condition judgment", "email processing", "logging"],
           "human_intervention": "required",
           "record_fields": ["message_id", "sender", "subject", "rule_check_result", "detected_at"],
-          "related_upstream_risks": ["missing_rules", "semantic_judgment"]
+          "related_upstream_risks": ["unstable_input", "requires_manual_review_queue"]
         },
         {
           "exception_id": "E-S04-03",
@@ -125,7 +125,7 @@
           "candidate_yingdao_capabilities": ["condition judgment", "manual review queue", "logging", "notification"],
           "human_intervention": "required",
           "record_fields": ["message_id", "mailbox", "target_category", "permission_scope", "detected_at"],
-          "related_upstream_risks": ["semantic_judgment", "requires_manual_review_queue"]
+          "related_upstream_risks": ["requires_manual_review_queue", "requires_result_log"]
         }
       ]
     },
@@ -145,7 +145,7 @@
           "candidate_yingdao_capabilities": ["condition judgment", "manual review queue", "logging"],
           "human_intervention": "required",
           "record_fields": ["message_id", "mailbox", "expected_target", "target_check_result", "detected_at"],
-          "related_upstream_risks": ["missing_rules", "requires_manual_review_queue"]
+          "related_upstream_risks": ["requires_manual_review_queue"]
         },
         {
           "exception_id": "E-S05-02",
@@ -158,7 +158,7 @@
           "candidate_yingdao_capabilities": ["email processing", "condition judgment", "logging", "notification"],
           "human_intervention": "optional",
           "record_fields": ["message_id", "mailbox", "target_action", "target_name", "action_status", "detected_at"],
-          "related_upstream_risks": ["unstable_input", "requires_result_log"]
+          "related_upstream_risks": ["requires_result_log"]
         },
         {
           "exception_id": "E-S05-03",
@@ -171,7 +171,7 @@
           "candidate_yingdao_capabilities": ["manual review queue", "logging", "notification"],
           "human_intervention": "required",
           "record_fields": ["message_id", "mailbox", "queue_name", "route_status", "queue_owner", "detected_at"],
-          "related_upstream_risks": ["human_verification", "requires_manual_review_queue"]
+          "related_upstream_risks": ["requires_manual_review_queue", "requires_result_log"]
         }
       ]
     },
@@ -191,7 +191,7 @@
           "candidate_yingdao_capabilities": ["logging", "report generation", "condition judgment", "notification"],
           "human_intervention": "optional",
           "record_fields": ["message_id", "mailbox", "classification_result", "write_target", "write_status", "detected_at"],
-          "related_upstream_risks": ["unverifiable_result", "requires_result_log"]
+          "related_upstream_risks": ["requires_result_log"]
         },
         {
           "exception_id": "E-S06-02",
@@ -204,7 +204,7 @@
           "candidate_yingdao_capabilities": ["notification", "logging", "condition judgment"],
           "human_intervention": "optional",
           "record_fields": ["mailbox", "summary_target", "notification_status", "detected_at", "handling_result"],
-          "related_upstream_risks": ["unverifiable_result", "requires_result_log"]
+          "related_upstream_risks": ["requires_result_log"]
         }
       ]
     }

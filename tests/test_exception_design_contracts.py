@@ -70,6 +70,8 @@ class ExceptionDesignContractTests(unittest.TestCase):
             props["status"]["enum"],
             ["completed", "blocked_by_process_breakdown", "needs_more_information"],
         )
+        self.assertEqual(props["process_breakdown_blocker"]["type"], "string")
+        self.assertEqual(props["process_breakdown_blocker"]["minLength"], 1)
         self.assertEqual(
             props["next_stage_recommendation"]["enum"],
             [
@@ -135,7 +137,17 @@ class ExceptionDesignContractTests(unittest.TestCase):
             "solution_packaging",
         )
         self.assertEqual(completed_rule["then"]["properties"]["exception_flows"]["minItems"], 1)
+        self.assertIn("process_breakdown_blocker", blocked_rule["then"]["required"])
         self.assertEqual(blocked_rule["then"]["properties"]["exception_flows"]["maxItems"], 0)
+        self.assertEqual(
+            blocked_rule["then"]["properties"]["next_stage_recommendation"]["enum"],
+            [
+                "return_to_process_breakdown",
+                "return_to_rpa_boundary_check",
+                "return_to_requirement_clarification",
+                "stop_with_blocker",
+            ],
+        )
         self.assertIn("manual_review_policy", schema["required"])
         self.assertIn("logging_policy", schema["required"])
 
@@ -153,6 +165,10 @@ class ExceptionDesignContractTests(unittest.TestCase):
         )
         self.assertIn(
             "when status is completed route to solution_packaging",
+            rules["generation_requirements"],
+        )
+        self.assertIn(
+            "when status is blocked_by_process_breakdown require process_breakdown_blocker, keep exception_flows empty, and route to an upstream action",
             rules["generation_requirements"],
         )
         self.assertEqual(
@@ -175,6 +191,8 @@ class ExceptionDesignContractTests(unittest.TestCase):
         self.assertIn("Reference module 3 risks", text)
         self.assertIn("candidate Yingdao capability families", text)
         self.assertIn("solution_packaging", text)
+        self.assertIn("process_breakdown_blocker", text)
+        self.assertIn("upstream completion or clarification action", text)
         self.assertIn("Do not generate exact selectors", text)
         self.assertIn("Do not generate wait times", text)
         self.assertIn("Do not generate Yingdao instruction parameters", text)
@@ -272,12 +290,37 @@ class ExceptionDesignContractTests(unittest.TestCase):
         self.assertIn("semantic_judgment", card["related_upstream_risks"])
         self.assertIn("message_id", card["record_fields"])
 
-    def test_blocked_result_can_omit_exception_flows_but_completed_result_cannot(self):
+    def test_email_fixture_related_upstream_risks_match_module_3_email_context(self):
+        boundary_result = load_json(
+            "agent_modules/rpa_boundary_check/fixtures/email-sorting-boundary-result.json"
+        )
+        fixture = load_json("agent_modules/exception_design/fixtures/email-sorting-exception-design.json")
+
+        allowed_risk_types = {risk["risk_type"] for risk in boundary_result["risks"]}
+        allowed_capability_notes = set(boundary_result["capability_notes"])
+        allowed_related_values = allowed_risk_types | allowed_capability_notes
+        used_related_values = set()
+
+        for flow in fixture["exception_flows"]:
+            for card in flow["exception_cards"]:
+                for related_value in card["related_upstream_risks"]:
+                    used_related_values.add(related_value)
+                    with self.subTest(
+                        exception_id=card["exception_id"],
+                        related_value=related_value,
+                    ):
+                        self.assertIn(related_value, allowed_related_values)
+
+        self.assertTrue(used_related_values & allowed_risk_types)
+        self.assertTrue(used_related_values & allowed_capability_notes)
+
+    def test_blocked_result_requires_process_breakdown_blocker_and_upstream_routing(self):
         schema = load_json("agent_modules/exception_design/schemas/exception-design-result.schema.json")
 
         blocked_result = {
             "module": "module_5_exception_design",
             "status": "blocked_by_process_breakdown",
+            "process_breakdown_blocker": "Module 4 returned incomplete email classification dependencies and directed follow-up before exception design can start.",
             "source_process_steps": ["S03"],
             "exception_depth": "semi_implementation_exception_flows",
             "exception_flows": [],
@@ -296,7 +339,16 @@ class ExceptionDesignContractTests(unittest.TestCase):
         }
 
         if jsonschema is None:
-            self.assertEqual(schema["properties"]["status"]["enum"][1], "blocked_by_process_breakdown")
+            blocked_rule = next(
+                rule
+                for rule in schema["allOf"]
+                if rule["if"]["properties"]["status"]["const"] == "blocked_by_process_breakdown"
+            )
+            self.assertIn("process_breakdown_blocker", blocked_rule["then"]["required"])
+            self.assertNotIn(
+                "solution_packaging",
+                blocked_rule["then"]["properties"]["next_stage_recommendation"]["enum"],
+            )
             return
 
         jsonschema.validate(instance=blocked_result, schema=schema)
@@ -305,8 +357,134 @@ class ExceptionDesignContractTests(unittest.TestCase):
             jsonschema.validate(
                 instance={
                     **blocked_result,
-                    "status": "completed",
+                    "process_breakdown_blocker": "",
+                },
+                schema=schema,
+            )
+
+        with self.assertRaises(jsonschema.ValidationError):
+            jsonschema.validate(
+                instance={
+                    key: value
+                    for key, value in blocked_result.items()
+                    if key != "process_breakdown_blocker"
+                },
+                schema=schema,
+            )
+
+        with self.assertRaises(jsonschema.ValidationError):
+            jsonschema.validate(
+                instance={
+                    **blocked_result,
+                    "exception_flows": [
+                        {
+                            "step_id": "S03",
+                            "step_name": "Extract classification signals",
+                            "source_exception_notes": ["missing subject"],
+                            "exception_cards": [
+                                {
+                                    "exception_id": "E-S03-01",
+                                    "exception_type": "source_field_missing",
+                                    "severity": "needs_manual_review",
+                                    "trigger_signal": "Missing subject blocks safe classification.",
+                                    "detection_basis": ["email subject presence"],
+                                    "handling_strategy": "Hold the item for review.",
+                                    "continue_policy": "wait_for_manual_review",
+                                    "candidate_yingdao_capabilities": ["condition judgment"],
+                                    "human_intervention": "required",
+                                    "record_fields": ["message_id"],
+                                    "related_upstream_risks": ["requires_manual_review_queue"],
+                                }
+                            ],
+                        }
+                    ],
+                },
+                schema=schema,
+            )
+
+        with self.assertRaises(jsonschema.ValidationError):
+            jsonschema.validate(
+                instance={
+                    **blocked_result,
                     "next_stage_recommendation": "solution_packaging",
+                },
+                schema=schema,
+            )
+
+    def test_completed_result_requires_exception_flows_and_solution_packaging(self):
+        schema = load_json("agent_modules/exception_design/schemas/exception-design-result.schema.json")
+
+        completed_result = {
+            "module": "module_5_exception_design",
+            "status": "completed",
+            "source_process_steps": ["S03"],
+            "exception_depth": "semi_implementation_exception_flows",
+            "exception_flows": [
+                {
+                    "step_id": "S03",
+                    "step_name": "Extract classification signals",
+                    "source_exception_notes": ["missing subject"],
+                    "exception_cards": [
+                        {
+                            "exception_id": "E-S03-01",
+                            "exception_type": "source_field_missing",
+                            "severity": "needs_manual_review",
+                            "trigger_signal": "Missing subject blocks safe classification.",
+                            "detection_basis": ["email subject presence"],
+                            "handling_strategy": "Hold the item for review.",
+                            "continue_policy": "wait_for_manual_review",
+                            "candidate_yingdao_capabilities": ["condition judgment"],
+                            "human_intervention": "required",
+                            "record_fields": ["message_id"],
+                            "related_upstream_risks": ["requires_manual_review_queue"],
+                        }
+                    ],
+                }
+            ],
+            "global_exception_policies": [],
+            "manual_review_policy": {
+                "required": True,
+                "review_queue_name": "email_pending_manual_confirmation",
+                "review_record_fields": ["message_id"],
+            },
+            "logging_policy": {
+                "required": True,
+                "minimum_record_fields": ["run_id"],
+            },
+            "open_questions": [],
+            "next_stage_recommendation": "solution_packaging",
+        }
+
+        if jsonschema is None:
+            completed_rule = next(
+                rule
+                for rule in schema["allOf"]
+                if rule["if"]["properties"]["status"]["const"] == "completed"
+            )
+            self.assertEqual(
+                completed_rule["then"]["properties"]["next_stage_recommendation"]["const"],
+                "solution_packaging",
+            )
+            self.assertEqual(completed_rule["then"]["properties"]["exception_flows"]["minItems"], 1)
+            return
+
+        jsonschema.validate(instance=completed_result, schema=schema)
+
+        with self.assertRaises(jsonschema.ValidationError):
+            jsonschema.validate(
+                instance={
+                    **completed_result,
+                    "exception_flows": [],
+                },
+                schema=schema,
+            )
+
+        with self.assertRaises(jsonschema.ValidationError):
+            jsonschema.validate(
+                instance={
+                    **completed_result,
+                    "status": "completed",
+                    "next_stage_recommendation": "return_to_process_breakdown",
                 },
                 schema=schema,
             )

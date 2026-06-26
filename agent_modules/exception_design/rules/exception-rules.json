@@ -49,6 +49,7 @@
     "preserve manual review policy",
     "preserve logging policy",
     "when status is completed route to solution_packaging",
+    "when status is blocked_by_process_breakdown require process_breakdown_blocker, keep exception_flows empty, and route to an upstream action",
     "prefer scoped continuation when business-safe",
     "ask only when exception handling would be unsafe without confirmation"
   ],

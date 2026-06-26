@@ -20,6 +20,10 @@
     "status": {
       "enum": ["completed", "blocked_by_process_breakdown", "needs_more_information"]
     },
+    "process_breakdown_blocker": {
+      "type": "string",
+      "minLength": 1
+    },
     "source_process_steps": {
       "type": "array",
       "items": {
@@ -226,8 +230,17 @@
         "required": ["status"]
       },
       "then": {
+        "required": ["process_breakdown_blocker"],
         "properties": {
-          "exception_flows": { "maxItems": 0 }
+          "exception_flows": { "maxItems": 0 },
+          "next_stage_recommendation": {
+            "enum": [
+              "return_to_process_breakdown",
+              "return_to_rpa_boundary_check",
+              "return_to_requirement_clarification",
+              "stop_with_blocker"
+            ]
+          }
         }
       }
     }
