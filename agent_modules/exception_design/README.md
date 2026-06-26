@@ -4,7 +4,7 @@ Module 5 expands module 4 exception handoff points into semi-implementation-leve
 
 ## Scope
 
-This module consumes module 4 `process_breakdown_result` and references module 3 `rpa_boundary_result` risks. It does not repeat requirement clarification, override RPA boundary decisions, rebuild the happy path, generate exact selectors, generate wait times, produce Yingdao instruction parameters, or create HTML.
+This module consumes module 4 `process_breakdown_result` and references module 3 `rpa_boundary_result` risks. It only runs when module 4 returns `next_stage_recommendation = exception_design` and the relevant process cards mark `handoff_to_exception_design` as true. It does not repeat requirement clarification, override RPA boundary decisions, rebuild the happy path, generate exact selectors, generate wait times, produce Yingdao instruction parameters, or create HTML.
 
 ## Artifacts
 

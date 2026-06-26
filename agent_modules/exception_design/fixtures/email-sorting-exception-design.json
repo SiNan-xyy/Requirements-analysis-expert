@@ -5,6 +5,39 @@
   "exception_depth": "semi_implementation_exception_flows",
   "exception_flows": [
     {
+      "step_id": "S02",
+      "step_name": "Read new emails",
+      "source_exception_notes": ["mailbox permission failure", "email read failure"],
+      "exception_cards": [
+        {
+          "exception_id": "E-S02-01",
+          "exception_type": "permission_missing",
+          "severity": "blocking",
+          "trigger_signal": "The configured mailbox or target folder scope cannot be opened because the account lacks mailbox read permission.",
+          "detection_basis": ["mailbox access result", "folder availability", "account permission status"],
+          "handling_strategy": "Stop intake for the affected mailbox, preserve the missing-access context, and escalate to the mailbox owner before any email is classified.",
+          "continue_policy": "stop_current_step",
+          "candidate_yingdao_capabilities": ["condition judgment", "logging", "notification"],
+          "human_intervention": "required",
+          "record_fields": ["mailbox", "folder_scope", "account", "access_result", "detected_at"],
+          "related_upstream_risks": ["unstable_input", "requires_result_log"]
+        },
+        {
+          "exception_id": "E-S02-02",
+          "exception_type": "unknown_exception",
+          "severity": "recoverable",
+          "trigger_signal": "Mailbox access exists but a read attempt fails before message metadata or content can be collected for the selected batch.",
+          "detection_basis": ["mailbox read result", "message batch size", "error state"],
+          "handling_strategy": "Retry the mailbox read when the connection still appears valid; otherwise record the failed batch and notify a human operator to inspect the mailbox condition.",
+          "continue_policy": "retry_then_escalate",
+          "candidate_yingdao_capabilities": ["email processing", "condition judgment", "logging", "notification"],
+          "human_intervention": "optional",
+          "record_fields": ["mailbox", "batch_reference", "read_status", "failure_reason", "detected_at"],
+          "related_upstream_risks": ["unstable_input", "requires_result_log"]
+        }
+      ]
+    },
+    {
       "step_id": "S04",
       "step_name": "Classify email",
       "source_exception_notes": ["low confidence", "unknown category", "mailbox permission failure"],
@@ -34,6 +67,98 @@
           "human_intervention": "required",
           "record_fields": ["message_id", "sender", "subject", "rule_check_result", "detected_at"],
           "related_upstream_risks": ["missing_rules", "semantic_judgment"]
+        },
+        {
+          "exception_id": "E-S04-03",
+          "exception_type": "permission_missing",
+          "severity": "blocking",
+          "trigger_signal": "Classification can determine a target route, but the mailbox session lacks permission to inspect or use the required category context for that route.",
+          "detection_basis": ["mailbox permission status", "classification target availability", "message processing result"],
+          "handling_strategy": "Do not assign the final category automatically. Hold the email in the manual review queue and escalate the mailbox permission issue.",
+          "continue_policy": "wait_for_manual_review",
+          "candidate_yingdao_capabilities": ["condition judgment", "manual review queue", "logging", "notification"],
+          "human_intervention": "required",
+          "record_fields": ["message_id", "mailbox", "target_category", "permission_scope", "detected_at"],
+          "related_upstream_risks": ["semantic_judgment", "requires_manual_review_queue"]
+        }
+      ]
+    },
+    {
+      "step_id": "S05",
+      "step_name": "Apply folder or label",
+      "source_exception_notes": ["target folder missing", "move failure", "manual review routing"],
+      "exception_cards": [
+        {
+          "exception_id": "E-S05-01",
+          "exception_type": "rule_not_matched",
+          "severity": "needs_manual_review",
+          "trigger_signal": "The classification result points to a folder or label that is not available in the current mailbox taxonomy.",
+          "detection_basis": ["classification result", "target folder list", "target label list"],
+          "handling_strategy": "Do not move the email into a substitute location automatically. Route it into manual review with the missing target noted for taxonomy correction.",
+          "continue_policy": "continue_other_items",
+          "candidate_yingdao_capabilities": ["condition judgment", "manual review queue", "logging"],
+          "human_intervention": "required",
+          "record_fields": ["message_id", "mailbox", "expected_target", "target_check_result", "detected_at"],
+          "related_upstream_risks": ["missing_rules", "requires_manual_review_queue"]
+        },
+        {
+          "exception_id": "E-S05-02",
+          "exception_type": "target_write_failure",
+          "severity": "recoverable",
+          "trigger_signal": "The system identifies a valid folder or label, but applying the move or tag action does not complete successfully.",
+          "detection_basis": ["message action result", "target folder availability", "target label availability"],
+          "handling_strategy": "Retry the apply action within the same mailbox session when safe; otherwise keep the email in place, log the failure, and escalate for operator review.",
+          "continue_policy": "retry_then_escalate",
+          "candidate_yingdao_capabilities": ["email processing", "condition judgment", "logging", "notification"],
+          "human_intervention": "optional",
+          "record_fields": ["message_id", "mailbox", "target_action", "target_name", "action_status", "detected_at"],
+          "related_upstream_risks": ["unstable_input", "requires_result_log"]
+        },
+        {
+          "exception_id": "E-S05-03",
+          "exception_type": "manual_review_timeout",
+          "severity": "needs_manual_review",
+          "trigger_signal": "An email marked for manual review cannot be routed into the agreed pending queue or remains unassigned to the queue owner.",
+          "detection_basis": ["manual review queue status", "pending route result", "queue ownership status"],
+          "handling_strategy": "Hold the email in its current location, record the failed review routing context, and notify the manual review owner to take over the item.",
+          "continue_policy": "wait_for_manual_review",
+          "candidate_yingdao_capabilities": ["manual review queue", "logging", "notification"],
+          "human_intervention": "required",
+          "record_fields": ["message_id", "mailbox", "queue_name", "route_status", "queue_owner", "detected_at"],
+          "related_upstream_risks": ["human_verification", "requires_manual_review_queue"]
+        }
+      ]
+    },
+    {
+      "step_id": "S06",
+      "step_name": "Record sorting result",
+      "source_exception_notes": ["log write failure", "summary generation failure"],
+      "exception_cards": [
+        {
+          "exception_id": "E-S06-01",
+          "exception_type": "target_write_failure",
+          "severity": "recoverable",
+          "trigger_signal": "The email handling result cannot be written into the sorting log or daily summary output.",
+          "detection_basis": ["log write result", "summary update result", "target output availability"],
+          "handling_strategy": "Retry the result write when the target remains available; otherwise preserve the in-memory result context and escalate so the audit log can be completed manually.",
+          "continue_policy": "retry_then_escalate",
+          "candidate_yingdao_capabilities": ["logging", "report generation", "condition judgment", "notification"],
+          "human_intervention": "optional",
+          "record_fields": ["message_id", "mailbox", "classification_result", "write_target", "write_status", "detected_at"],
+          "related_upstream_risks": ["unverifiable_result", "requires_result_log"]
+        },
+        {
+          "exception_id": "E-S06-02",
+          "exception_type": "notification_failure",
+          "severity": "log_only",
+          "trigger_signal": "The sorting summary or exception notification cannot be delivered after the log record is created.",
+          "detection_basis": ["notification result", "summary delivery target", "log completion status"],
+          "handling_strategy": "Keep the run log as the source of truth, mark the missed notification, and continue while flagging the delivery gap for later follow-up.",
+          "continue_policy": "log_and_continue",
+          "candidate_yingdao_capabilities": ["notification", "logging", "condition judgment"],
+          "human_intervention": "optional",
+          "record_fields": ["mailbox", "summary_target", "notification_status", "detected_at", "handling_result"],
+          "related_upstream_risks": ["unverifiable_result", "requires_result_log"]
         }
       ]
     }

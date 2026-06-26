@@ -5,6 +5,52 @@
   "exception_depth": "semi_implementation_exception_flows",
   "exception_flows": [
     {
+      "step_id": "S02",
+      "step_name": "Enter platform accounts",
+      "source_exception_notes": ["login failure", "captcha or device verification", "permission missing"],
+      "exception_cards": [
+        {
+          "exception_id": "E-S02-01",
+          "exception_type": "login_failure",
+          "severity": "blocking",
+          "trigger_signal": "A platform account cannot establish a usable session because the configured login path fails before the report area can be reached.",
+          "detection_basis": ["account identity", "login result", "session availability"],
+          "handling_strategy": "Mark the platform account as blocked, preserve the failure context, and route the account to a human operator before any dependent collection work continues for that platform.",
+          "continue_policy": "continue_other_items",
+          "candidate_yingdao_capabilities": ["condition judgment", "logging", "notification"],
+          "human_intervention": "required",
+          "record_fields": ["platform", "account", "date", "login_status", "failure_reason", "detected_at"],
+          "related_upstream_risks": ["unstable_platform", "requires_stable_login"]
+        },
+        {
+          "exception_id": "E-S02-02",
+          "exception_type": "captcha_or_device_verification",
+          "severity": "blocking",
+          "trigger_signal": "A platform requests captcha, device confirmation, or another approval step that breaks unattended account entry.",
+          "detection_basis": ["page state", "secondary verification prompt", "session readiness"],
+          "handling_strategy": "Stop automated entry for the affected platform, notify the owner that a manual approval step is required, and resume downstream work only after a verified session is available.",
+          "continue_policy": "wait_for_manual_review",
+          "candidate_yingdao_capabilities": ["condition judgment", "logging", "notification"],
+          "human_intervention": "required",
+          "record_fields": ["platform", "account", "verification_type", "detected_at", "handling_result"],
+          "related_upstream_risks": ["unstable_platform", "requires_stable_login"]
+        },
+        {
+          "exception_id": "E-S02-03",
+          "exception_type": "permission_missing",
+          "severity": "blocking",
+          "trigger_signal": "The account signs in but lacks the permission needed to open the required backend area or report scope.",
+          "detection_basis": ["account permission status", "target page availability", "report scope access result"],
+          "handling_strategy": "Do not continue collection for the affected platform. Record the missing permission scope and escalate to the account owner for access correction.",
+          "continue_policy": "continue_other_items",
+          "candidate_yingdao_capabilities": ["condition judgment", "logging", "notification"],
+          "human_intervention": "required",
+          "record_fields": ["platform", "account", "required_scope", "access_result", "detected_at"],
+          "related_upstream_risks": ["unstable_platform", "requires_stable_login"]
+        }
+      ]
+    },
+    {
       "step_id": "S03",
       "step_name": "Collect platform daily data",
       "source_exception_notes": ["login failure", "missing data", "download failure"],
@@ -34,6 +80,65 @@
           "human_intervention": "required",
           "record_fields": ["platform", "store", "date", "missing_metric", "source_snapshot"],
           "related_upstream_risks": ["unstable_input", "requires_field_mapping"]
+        },
+        {
+          "exception_id": "E-S03-03",
+          "exception_type": "download_failure",
+          "severity": "recoverable",
+          "trigger_signal": "The platform query succeeds but the expected data export or downloaded file is not produced in a usable way.",
+          "detection_basis": ["report request result", "download status", "file availability"],
+          "handling_strategy": "Retry within the step only when the same platform session remains valid; otherwise log the failed export attempt and send the item to manual follow-up with the query context preserved.",
+          "continue_policy": "retry_then_escalate",
+          "candidate_yingdao_capabilities": ["condition judgment", "file handling", "logging", "notification"],
+          "human_intervention": "optional",
+          "record_fields": ["platform", "store", "date", "report_name", "download_status", "detected_at"],
+          "related_upstream_risks": ["unstable_platform", "requires_result_log"]
+        }
+      ]
+    },
+    {
+      "step_id": "S04",
+      "step_name": "Normalize metrics",
+      "source_exception_notes": ["missing field", "metric definition mismatch", "empty value"],
+      "exception_cards": [
+        {
+          "exception_id": "E-S04-01",
+          "exception_type": "source_field_missing",
+          "severity": "needs_manual_review",
+          "trigger_signal": "A required source field for the report mapping is absent from the collected platform data.",
+          "detection_basis": ["source field list", "metric mapping rules", "normalized record completeness"],
+          "handling_strategy": "Do not infer a replacement value. Record the missing field, hold the affected metric for review, and keep the original source payload for traceability.",
+          "continue_policy": "skip_current_item",
+          "candidate_yingdao_capabilities": ["data processing", "condition judgment", "logging"],
+          "human_intervention": "required",
+          "record_fields": ["platform", "store", "date", "missing_field", "target_metric", "source_snapshot"],
+          "related_upstream_risks": ["unstable_input", "requires_field_mapping"]
+        },
+        {
+          "exception_id": "E-S04-02",
+          "exception_type": "field_mapping_mismatch",
+          "severity": "needs_manual_review",
+          "trigger_signal": "The collected platform field definition does not align with the agreed report metric definition or target template meaning.",
+          "detection_basis": ["metric mapping rules", "source metric definition", "target metric definition"],
+          "handling_strategy": "Stop normalization for the affected metric until a human confirms the correct mapping or business definition. Preserve both source and target field context.",
+          "continue_policy": "wait_for_manual_review",
+          "candidate_yingdao_capabilities": ["data processing", "condition judgment", "logging", "notification"],
+          "human_intervention": "required",
+          "record_fields": ["platform", "store", "date", "source_field", "target_metric", "mismatch_reason"],
+          "related_upstream_risks": ["unstable_input", "requires_field_mapping"]
+        },
+        {
+          "exception_id": "E-S04-03",
+          "exception_type": "source_data_missing",
+          "severity": "needs_manual_review",
+          "trigger_signal": "A mapped metric resolves to an empty value after normalization even though the report requires a populated result.",
+          "detection_basis": ["normalized metric value", "required metric list", "source snapshot"],
+          "handling_strategy": "Flag the metric as incomplete, keep the empty-result evidence, and route it to manual review instead of writing a guessed value.",
+          "continue_policy": "skip_current_item",
+          "candidate_yingdao_capabilities": ["data processing", "condition judgment", "logging"],
+          "human_intervention": "required",
+          "record_fields": ["platform", "store", "date", "target_metric", "normalized_value", "detected_at"],
+          "related_upstream_risks": ["unstable_input", "requires_field_mapping"]
         }
       ]
     },
@@ -54,6 +159,65 @@
           "human_intervention": "required",
           "record_fields": ["document", "target_position", "write_status", "failure_reason", "detected_at"],
           "related_upstream_risks": ["unverifiable_result", "requires_result_log"]
+        },
+        {
+          "exception_id": "E-S05-02",
+          "exception_type": "target_template_changed",
+          "severity": "blocking",
+          "trigger_signal": "The target Tencent Docs structure no longer matches the expected report layout or field arrangement.",
+          "detection_basis": ["template structure", "target field names", "write target availability"],
+          "handling_strategy": "Stop automated writeback, capture which report areas no longer align, and require a human to confirm or update the template mapping before resuming.",
+          "continue_policy": "stop_current_step",
+          "candidate_yingdao_capabilities": ["condition judgment", "online document editing", "logging", "notification"],
+          "human_intervention": "required",
+          "record_fields": ["document", "template_version_hint", "affected_metric", "mismatch_reason", "detected_at"],
+          "related_upstream_risks": ["unverifiable_result", "requires_field_mapping"]
+        },
+        {
+          "exception_id": "E-S05-03",
+          "exception_type": "permission_missing",
+          "severity": "blocking",
+          "trigger_signal": "The target Tencent Docs file is reachable but the current run lacks edit permission for the required report area.",
+          "detection_basis": ["target document state", "edit permission status", "write result"],
+          "handling_strategy": "Do not attempt partial writeback. Record the permission gap and notify the owner so the write scope can be restored before delivery resumes.",
+          "continue_policy": "stop_current_step",
+          "candidate_yingdao_capabilities": ["condition judgment", "logging", "notification"],
+          "human_intervention": "required",
+          "record_fields": ["document", "required_scope", "write_status", "failure_reason", "detected_at"],
+          "related_upstream_risks": ["unverifiable_result", "requires_result_log"]
+        }
+      ]
+    },
+    {
+      "step_id": "S06",
+      "step_name": "Record execution result",
+      "source_exception_notes": ["source-write mismatch", "manual review required"],
+      "exception_cards": [
+        {
+          "exception_id": "E-S06-01",
+          "exception_type": "result_verification_failed",
+          "severity": "needs_manual_review",
+          "trigger_signal": "The preserved source totals or spot-check values do not match the values written into the report output.",
+          "detection_basis": ["source values", "written values", "verification result"],
+          "handling_strategy": "Keep the report item in a review state, log both values, and require a human comparison before the run is treated as complete.",
+          "continue_policy": "wait_for_manual_review",
+          "candidate_yingdao_capabilities": ["condition judgment", "logging", "notification"],
+          "human_intervention": "required",
+          "record_fields": ["platform", "store", "date", "metric", "source_value", "written_value", "detected_at"],
+          "related_upstream_risks": ["unverifiable_result", "requires_result_log"]
+        },
+        {
+          "exception_id": "E-S06-02",
+          "exception_type": "manual_review_timeout",
+          "severity": "needs_manual_review",
+          "trigger_signal": "A platform-store metric remains in the manual review queue beyond the agreed review window and the report cannot be signed off automatically.",
+          "detection_basis": ["manual review queue status", "review age", "pending exception count"],
+          "handling_strategy": "Escalate the unresolved review item to the owner, keep the evidence package attached, and prevent the run from being marked fully delivered.",
+          "continue_policy": "wait_for_manual_review",
+          "candidate_yingdao_capabilities": ["manual review queue", "logging", "notification"],
+          "human_intervention": "required",
+          "record_fields": ["platform", "store", "date", "exception_type", "queue_age", "detected_at"],
+          "related_upstream_risks": ["human_verification", "requires_result_log"]
         }
       ]
     }
