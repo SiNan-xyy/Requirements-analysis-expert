@@ -124,11 +124,12 @@ class RpaBoundaryCheckContractTests(unittest.TestCase):
     def test_system_prompt_allows_module_3_boundary_result_in_single_wrapper(self):
         text = (ROOT / "agent_platform_package/system_prompt/agent-system-prompt.md").read_text(encoding="utf-8")
 
+        self.assertIn("Structured output must always be a single top-level JSON wrapper.", text)
         self.assertIn("rpa_boundary_result", text)
-        self.assertIn("只能返回一个顶层 JSON wrapper", text)
         self.assertIn("clarification_result", text)
         self.assertIn("process_breakdown_result", text)
-        self.assertNotIn("保持 `interaction_state`、`answer_batch`、`clarification_result`、`rpa_boundary_result` 四类结构", text)
+        self.assertIn("do not describe the top-level structure as a fixed four-part wrapper.", text)
+        self.assertNotIn("The top-level wrapper must contain exactly four parts", text)
 
     def test_email_sorting_fixture_is_conditionally_suitable(self):
         fixture = load_json("agent_modules/rpa_boundary_check/fixtures/email-sorting-boundary-result.json")
@@ -146,7 +147,8 @@ class RpaBoundaryCheckContractTests(unittest.TestCase):
         self.assertIn("requires_field_mapping", fixture["capability_notes"])
         self.assertIn("requires_result_log", fixture["capability_notes"])
         self.assertEqual(fixture["dimension_results"]["result_verifiability"]["status"], "conditional")
-        self.assertIn("平台-店铺清单", " ".join(fixture["required_prework"]))
+        self.assertEqual(len(fixture["required_prework"]), 5)
+        self.assertTrue(all(isinstance(item, str) and item for item in fixture["required_prework"]))
 
     def test_readme_lists_module_3_artifacts(self):
         text = (ROOT / "agent_modules/rpa_boundary_check/README.md").read_text(encoding="utf-8")
