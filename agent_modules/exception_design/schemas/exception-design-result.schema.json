@@ -30,7 +30,6 @@
     "exception_depth": { "const": "semi_implementation_exception_flows" },
     "exception_flows": {
       "type": "array",
-      "minItems": 1,
       "items": { "$ref": "#/$defs/exception_flow" }
     },
     "global_exception_policies": {
@@ -214,7 +213,21 @@
       },
       "then": {
         "properties": {
+          "exception_flows": { "minItems": 1 },
           "next_stage_recommendation": { "const": "solution_packaging" }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": { "const": "blocked_by_process_breakdown" }
+        },
+        "required": ["status"]
+      },
+      "then": {
+        "properties": {
+          "exception_flows": { "maxItems": 0 }
         }
       }
     }

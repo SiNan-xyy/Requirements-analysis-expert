@@ -1,4 +1,5 @@
 import json
+import re
 import unittest
 from pathlib import Path
 
@@ -35,6 +36,17 @@ COMMON_MOJIBAKE_FRAGMENTS = (
 
 def load_json(relative_path: str) -> dict:
     return json.loads((ROOT / relative_path).read_text(encoding="utf-8"))
+
+
+def iter_strings(value):
+    if isinstance(value, str):
+        yield value
+    elif isinstance(value, list):
+        for item in value:
+            yield from iter_strings(item)
+    elif isinstance(value, dict):
+        for item in value.values():
+            yield from iter_strings(item)
 
 
 class ExceptionDesignContractTests(unittest.TestCase):
@@ -108,10 +120,22 @@ class ExceptionDesignContractTests(unittest.TestCase):
             schema["$defs"]["module_3_capability_note"]["pattern"],
             "^requires_[a-z0-9_]+$",
         )
+        completed_rule = next(
+            rule
+            for rule in schema["allOf"]
+            if rule["if"]["properties"]["status"]["const"] == "completed"
+        )
+        blocked_rule = next(
+            rule
+            for rule in schema["allOf"]
+            if rule["if"]["properties"]["status"]["const"] == "blocked_by_process_breakdown"
+        )
         self.assertEqual(
-            schema["allOf"][0]["then"]["properties"]["next_stage_recommendation"]["const"],
+            completed_rule["then"]["properties"]["next_stage_recommendation"]["const"],
             "solution_packaging",
         )
+        self.assertEqual(completed_rule["then"]["properties"]["exception_flows"]["minItems"], 1)
+        self.assertEqual(blocked_rule["then"]["properties"]["exception_flows"]["maxItems"], 0)
         self.assertIn("manual_review_policy", schema["required"])
         self.assertIn("logging_policy", schema["required"])
 
@@ -184,12 +208,53 @@ class ExceptionDesignContractTests(unittest.TestCase):
         self.assertIn("unstable_platform", login_card["related_upstream_risks"])
         self.assertIn("platform", login_card["record_fields"])
 
-    def test_email_fixture_expands_low_confidence_exception(self):
+    def test_email_fixture_covers_module_4_focus_steps(self):
+        process_breakdown = load_json(
+            "agent_modules/process_breakdown/fixtures/email-sorting-process-breakdown.json"
+        )
+        fixture = load_json("agent_modules/exception_design/fixtures/email-sorting-exception-design.json")
+
+        expected_focus_steps = process_breakdown["handoff_to_exception_design"]["focus_steps"]
+
+        self.assertEqual(fixture["source_process_steps"], expected_focus_steps)
+        self.assertEqual(
+            [flow["step_id"] for flow in fixture["exception_flows"]],
+            expected_focus_steps,
+        )
+
+    def test_email_fixture_expands_signal_extraction_and_low_confidence_exceptions(self):
         fixture = load_json("agent_modules/exception_design/fixtures/email-sorting-exception-design.json")
 
         self.assertEqual(fixture["module"], "module_5_exception_design")
         self.assertEqual(fixture["next_stage_recommendation"], "solution_packaging")
+        self.assertIn("S03", fixture["source_process_steps"])
         self.assertIn("S04", fixture["source_process_steps"])
+
+        signal_flow = next(flow for flow in fixture["exception_flows"] if flow["step_id"] == "S03")
+        self.assertEqual(
+            signal_flow["source_exception_notes"],
+            ["empty body", "unsupported format", "missing subject"],
+        )
+        self.assertEqual(len(signal_flow["exception_cards"]), 3)
+        empty_body_card = next(
+            card for card in signal_flow["exception_cards"] if card["exception_id"] == "E-S03-01"
+        )
+        self.assertEqual(empty_body_card["exception_type"], "source_field_missing")
+        self.assertEqual(empty_body_card["severity"], "needs_manual_review")
+        self.assertIn("manual review queue", empty_body_card["candidate_yingdao_capabilities"])
+        self.assertIn("semantic_judgment", empty_body_card["related_upstream_risks"])
+        unsupported_format_card = next(
+            card for card in signal_flow["exception_cards"] if card["exception_id"] == "E-S03-02"
+        )
+        self.assertEqual(unsupported_format_card["exception_type"], "file_format_unreadable")
+        self.assertIn("data extraction", unsupported_format_card["candidate_yingdao_capabilities"])
+        self.assertIn("unstable_input", unsupported_format_card["related_upstream_risks"])
+        missing_subject_card = next(
+            card for card in signal_flow["exception_cards"] if card["exception_id"] == "E-S03-03"
+        )
+        self.assertEqual(missing_subject_card["exception_type"], "source_field_missing")
+        self.assertEqual(missing_subject_card["continue_policy"], "continue_other_items")
+        self.assertIn("requires_manual_review_queue", missing_subject_card["related_upstream_risks"])
 
         all_cards = [
             card
@@ -206,6 +271,45 @@ class ExceptionDesignContractTests(unittest.TestCase):
         self.assertIn("manual review queue", card["candidate_yingdao_capabilities"])
         self.assertIn("semantic_judgment", card["related_upstream_risks"])
         self.assertIn("message_id", card["record_fields"])
+
+    def test_blocked_result_can_omit_exception_flows_but_completed_result_cannot(self):
+        schema = load_json("agent_modules/exception_design/schemas/exception-design-result.schema.json")
+
+        blocked_result = {
+            "module": "module_5_exception_design",
+            "status": "blocked_by_process_breakdown",
+            "source_process_steps": ["S03"],
+            "exception_depth": "semi_implementation_exception_flows",
+            "exception_flows": [],
+            "global_exception_policies": [],
+            "manual_review_policy": {
+                "required": False,
+                "review_queue_name": "",
+                "review_record_fields": [],
+            },
+            "logging_policy": {
+                "required": False,
+                "minimum_record_fields": [],
+            },
+            "open_questions": [],
+            "next_stage_recommendation": "return_to_process_breakdown",
+        }
+
+        if jsonschema is None:
+            self.assertEqual(schema["properties"]["status"]["enum"][1], "blocked_by_process_breakdown")
+            return
+
+        jsonschema.validate(instance=blocked_result, schema=schema)
+
+        with self.assertRaises(jsonschema.ValidationError):
+            jsonschema.validate(
+                instance={
+                    **blocked_result,
+                    "status": "completed",
+                    "next_stage_recommendation": "solution_packaging",
+                },
+                schema=schema,
+            )
 
     def test_platform_package_guidance_mentions_module_5_wrapper_and_output_contract(self):
         prompt_text = (ROOT / "agent_platform_package/system_prompt/agent-system-prompt.md").read_text(
@@ -249,6 +353,36 @@ class ExceptionDesignContractTests(unittest.TestCase):
         for relative_path in fixtures:
             with self.subTest(path=relative_path):
                 jsonschema.validate(instance=load_json(relative_path), schema=schema)
+
+    def test_exception_design_fixtures_remain_semi_implementation_level(self):
+        fixtures = [
+            load_json("agent_modules/exception_design/fixtures/ecommerce-daily-report-exception-design.json"),
+            load_json("agent_modules/exception_design/fixtures/email-sorting-exception-design.json"),
+        ]
+        forbidden_terms = (
+            "selector",
+            "xpath",
+            "click path",
+            "instruction parameter",
+            "solution blueprint",
+            "html",
+        )
+        forbidden_patterns = (
+            re.compile(r"\bwait(?:\s+\d+)?\b", re.IGNORECASE),
+            re.compile(r"\b\d+\s+(?:second|seconds|minute|minutes)\b", re.IGNORECASE),
+            re.compile(r"\bretry\s+\d+\b", re.IGNORECASE),
+            re.compile(r"\b\d+\s+times\b", re.IGNORECASE),
+        )
+
+        for fixture in fixtures:
+            for text in iter_strings(fixture):
+                lowered = text.lower()
+                for term in forbidden_terms:
+                    with self.subTest(term=term, text=text):
+                        self.assertNotIn(term, lowered)
+                for pattern in forbidden_patterns:
+                    with self.subTest(pattern=pattern.pattern, text=text):
+                        self.assertIsNone(pattern.search(text))
 
     def test_readme_lists_module_5_artifacts(self):
         text = (ROOT / "agent_modules/exception_design/README.md").read_text(encoding="utf-8")
