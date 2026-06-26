@@ -45,8 +45,10 @@
   "generation_requirements": [
     "expand exceptions by module 4 process step",
     "link exception cards to module 3 risks or capability notes when relevant",
+    "include candidate Yingdao capability families for each exception card",
     "preserve manual review policy",
     "preserve logging policy",
+    "when status is completed route to solution_packaging",
     "prefer scoped continuation when business-safe",
     "ask only when exception handling would be unsafe without confirmation"
   ],

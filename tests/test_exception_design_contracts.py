@@ -73,9 +73,14 @@ class ExceptionDesignContractTests(unittest.TestCase):
             "string",
         )
         self.assertEqual(
+            props["source_process_steps"]["items"]["pattern"],
+            "^S[0-9]{2}$",
+        )
+        self.assertEqual(
             list(flow_props.keys()),
             ["step_id", "step_name", "source_exception_notes", "exception_cards"],
         )
+        self.assertEqual(flow_props["step_id"]["pattern"], "^S[0-9]{2}$")
         self.assertEqual(
             list(card_props.keys()),
             [
@@ -92,6 +97,21 @@ class ExceptionDesignContractTests(unittest.TestCase):
                 "related_upstream_risks",
             ],
         )
+        self.assertEqual(card_props["detection_basis"]["minItems"], 1)
+        self.assertEqual(card_props["candidate_yingdao_capabilities"]["minItems"], 1)
+        self.assertEqual(card_props["related_upstream_risks"]["minItems"], 1)
+        related_risk_def = schema["$defs"]["related_upstream_risk"]["oneOf"]
+        self.assertEqual(len(related_risk_def), 2)
+        self.assertEqual(related_risk_def[0]["$ref"], "#/$defs/module_3_risk_type")
+        self.assertEqual(related_risk_def[1]["$ref"], "#/$defs/module_3_capability_note")
+        self.assertEqual(
+            schema["$defs"]["module_3_capability_note"]["pattern"],
+            "^requires_[a-z0-9_]+$",
+        )
+        self.assertEqual(
+            schema["allOf"][0]["then"]["properties"]["next_stage_recommendation"]["const"],
+            "solution_packaging",
+        )
         self.assertIn("manual_review_policy", schema["required"])
         self.assertIn("logging_policy", schema["required"])
 
@@ -103,6 +123,14 @@ class ExceptionDesignContractTests(unittest.TestCase):
         self.assertEqual(rules["required_source_recommendation"], "exception_design")
         self.assertIn("module_4_focus_steps_are_primary", rules["source_priority"])
         self.assertIn("module_3_risks_are_supporting_evidence", rules["source_priority"])
+        self.assertIn(
+            "include candidate Yingdao capability families for each exception card",
+            rules["generation_requirements"],
+        )
+        self.assertIn(
+            "when status is completed route to solution_packaging",
+            rules["generation_requirements"],
+        )
         self.assertEqual(
             rules["severity_levels"],
             ["blocking", "needs_manual_review", "recoverable", "log_only"],
@@ -121,6 +149,8 @@ class ExceptionDesignContractTests(unittest.TestCase):
 
         self.assertIn("Start from module 4 focus steps", text)
         self.assertIn("Reference module 3 risks", text)
+        self.assertIn("candidate Yingdao capability families", text)
+        self.assertIn("solution_packaging", text)
         self.assertIn("Do not generate exact selectors", text)
         self.assertIn("Do not generate wait times", text)
         self.assertIn("Do not generate Yingdao instruction parameters", text)

@@ -6,8 +6,9 @@
 - Reference module 3 risks and capability notes as exception evidence.
 - Keep exception handling semi-implementation-level.
 - Produce step-level exception flows.
-- Define severity, trigger signal, detection basis, handling strategy, continuation policy, human intervention, record fields, and related upstream risks.
+- Define severity, trigger signal, detection basis, handling strategy, continuation policy, human intervention, record fields, related upstream risks, and candidate Yingdao capability families for each exception card.
 - Preserve manual review and logging requirements.
+- When status is `completed`, set `next_stage_recommendation` to `solution_packaging`.
 - Use module 1 choice-first format when exception handling cannot be safely designed from upstream facts.
 
 ## Do Not
