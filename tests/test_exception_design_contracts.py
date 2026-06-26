@@ -207,6 +207,35 @@ class ExceptionDesignContractTests(unittest.TestCase):
         self.assertIn("semantic_judgment", card["related_upstream_risks"])
         self.assertIn("message_id", card["record_fields"])
 
+    def test_platform_package_guidance_mentions_module_5_wrapper_and_output_contract(self):
+        prompt_text = (ROOT / "agent_platform_package/system_prompt/agent-system-prompt.md").read_text(
+            encoding="utf-8"
+        )
+        expected_output_text = (
+            ROOT / "agent_platform_package/testing/expected_outputs.md"
+        ).read_text(encoding="utf-8")
+
+        self.assertIn("exception_design_result", prompt_text)
+        self.assertIn(
+            "Module 5 must produce one `exception_design_result` object.",
+            prompt_text,
+        )
+        self.assertIn(
+            "Module 5 must produce semi-implementation-level exception flows by process step.",
+            prompt_text,
+        )
+        self.assertIn(
+            "Module 5 must start from module 4 focus steps and exception notes, and reference module 3 risks and capability notes as supporting evidence.",
+            prompt_text,
+        )
+        self.assertIn("single top-level JSON wrapper", expected_output_text)
+        self.assertIn("## Module 5 Expected Output", expected_output_text)
+        self.assertIn("semi_implementation_exception_flows", expected_output_text)
+        self.assertIn("global_exception_policies", expected_output_text)
+        self.assertIn("manual_review_policy", expected_output_text)
+        self.assertIn("logging_policy", expected_output_text)
+        self.assertIn("solution_packaging", expected_output_text)
+
     def test_exception_design_fixtures_validate_against_schema_when_validator_available(self):
         if jsonschema is None:
             self.skipTest("jsonschema is not installed in this environment")
