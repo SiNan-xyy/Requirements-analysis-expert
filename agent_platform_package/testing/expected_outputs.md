@@ -1,8 +1,16 @@
 # 平台测试期望输出
 
-## 完整结构化输出外壳
+## 通用结构化输出外壳
 
-合格输出必须是一个 JSON 对象，而不是三个连续 JSON 对象。
+合格输出必须是一个顶层 JSON 对象。Agent 可以根据当前阶段按需包含以下对象，但不得连续输出多个相邻 JSON：
+
+- `interaction_state`
+- `answer_batch`
+- `clarification_result`
+- `rpa_boundary_result`
+- `process_breakdown_result`
+
+示例外壳：
 
 ```json
 {
@@ -25,215 +33,126 @@
       "review_notes": []
     }
   },
-  "clarification_result": {}
+  "clarification_result": {},
+  "rpa_boundary_result": {},
+  "process_breakdown_result": {}
 }
 ```
 
-## Module 4 Expected Output
+真实输出可以只包含当前阶段需要的对象，但必须保持一个顶层 JSON wrapper。
 
-When module 4 completes, the platform should return a single top-level wrapper containing:
+## Module 1 Expected Output
 
-- `interaction_state`
-- `clarification_result`
-- `rpa_boundary_result`
-- `process_breakdown_result`
+模块 1 负责记录选择题答案、自由补充、状态补丁和下一步动作。
 
-`process_breakdown_result.breakdown_depth` must be:
+必须使用：
 
-- `business_process_cards_with_candidate_capabilities`
+- `answer_batch.answer_records`
+- `answer_batch.state_patch`
+- `answer_batch.impact`
+- `interaction_state.next_action`
 
-Each process card should describe a business stage and candidate Yingdao capability families. It should not include selectors, exact click paths, wait times, retry counts, or instruction parameter values.
+不得使用自由字段替代标准字段，例如：
 
-Module 4 output should also preserve prior-stage dependency and assumption context instead of flattening it away:
+- `answers`
+- `topic`
+- `field`
 
-- Keep cross-step dependencies and `prework_dependencies` aligned with unresolved assumptions or required prework inherited from module 2 or module 3.
-- Preserve validation points that still need confirmation, such as field mapping, date scope, stable login, template readiness, result logging, or manual-review thresholds.
-- Surface follow-up questions in `open_questions` when the process cards cannot safely assume a missing rule or readiness condition.
-- Do not erase the distinction between required/recommended/optional upstream items; preserve the three-way classification when those differences still affect delivery risk, blockers, or sequencing, including any prior mandatory vs optional guidance.
+## Module 2 Expected Output
 
-The e-commerce daily report scenario should produce cards for report scope preparation, platform access, platform data collection, metric normalization, Tencent Docs writing, and result logging.
+模块 2 输出 `clarification_result`，只做边界澄清和 RPA 预筛，不做最终可行性结论。
 
-The email sorting scenario should produce cards for classification scope preparation, email reading, signal extraction, classification, folder or label application, and result logging.
+必须包含：
 
-其中 `answer_records` 在真实输出中应包含本轮问题的记录；上面为空数组只是说明外壳字段。
+- `clarification_depth`
+- `boundary_facts`
+- `rpa_fit_prescreen`
+- `pending_questions`
+- `stage_summary`
+- `next_stage_recommendation`
 
-## 邮件自动整理：合格输出骨架
+`boundary_facts` 必须覆盖：
 
-```json
-{
-  "clarification_depth": "boundary_only",
-  "boundary_facts": {
-    "business_goal": {
-      "value": "自动整理 Outlook/Microsoft 365 邮件，按发件人、主题关键词和正文规则分类到文件夹或标签，并生成清单或日报。",
-      "confidence": "high",
-      "source": "user_answer"
-    },
-    "trigger": {
-      "value": "新邮件到达时自动触发",
-      "confidence": "high",
-      "source": "user_answer"
-    },
-    "completion_condition": {
-      "value": "邮件被移动到对应文件夹或打上对应标签，并生成处理记录。",
-      "confidence": "high",
-      "source": "user_answer"
-    },
-    "input_data": {
-      "value": [
-        "发件人或发件域名",
-        "邮件主题关键词",
-        "邮件正文关键词或语义"
-      ],
-      "confidence": "high",
-      "source": "user_answer"
-    },
-    "operated_systems": {
-      "value": [
-        "Outlook",
-        "Microsoft 365"
-      ],
-      "confidence": "high",
-      "source": "user_answer"
-    },
-    "output_result": {
-      "value": "目标文件夹或标签、整理清单或日报、逐封邮件处理记录。",
-      "confidence": "high",
-      "source": "user_answer"
-    }
-  },
-  "rpa_fit_prescreen": {
-    "input_stability": "medium",
-    "rule_clarity": "medium",
-    "action_repeatability": "medium",
-    "platform_operability": "high",
-    "result_verifiability": "high",
-    "candidate_risk_types": [
-      "semantic_judgment",
-      "unstable_input"
-    ],
-    "pre_screen_flags": [],
-    "recommended_prework": [
-      "准备固定分类目录或标签清单。",
-      "为每个分类补充典型发件人、主题关键词、正文关键词或样例邮件。",
-      "明确低置信度邮件进入待人工确认的规则。",
-      "确定日报字段：主题、发件人、分类结果、判断依据、处理时间、是否需人工确认。"
-    ]
-  },
-  "pending_questions": [],
-  "stage_summary": "当前需求边界已基本清晰：新邮件到达后，机器人根据发件人、主题和正文规则整理邮件，并记录处理结果。正文语义判断和新类型邮件属于后续能力边界评估需要重点确认的风险，但已有待人工确认机制，当前可进入 RPA 能力边界评估。",
-  "next_stage_recommendation": "rpa_boundary_check"
-}
-```
+- `business_goal`
+- `trigger`
+- `completion_condition`
+- `input_data`
+- `operated_systems`
+- `output_result`
 
-## 不合格输出特征
+`rpa_fit_prescreen` 必须覆盖：
 
-如果出现以下情况，需要调整 Skill 或系统提示词：
-
-- 连续输出多个 JSON 对象，而不是一个顶层 wrapper。
-- `interaction_state` 使用 `module`、`confidence_overview`、`known_facts`、`notes` 等自由字段。
-- `answer_batch` 使用 `answers`、`topic`、`field` 等自由字段。
-- 使用 `rpa_prescreen` 代替 `rpa_fit_prescreen`。
-- 使用 `candidate_risks` 代替 `candidate_risk_types` 或 `pre_screen_flags`。
-- 使用 `prework_recommendations` 代替 `recommended_prework`。
-- 使用 `next_action` 代替 `next_stage_recommendation`。
-- 使用 `medium_high` 等非枚举等级。
-- 在 `candidate_risk_types` 中放完整中文句子，而不是枚举标识。
-- 输出 `鐗╂枡`、`鍏堢粺`、`鑷姩`、`椋炰功` 等乱码。
-- 在模块 2 直接输出“可以做 RPA”或“不可以做 RPA”的最终结论。
-- 开始询问具体点击路径、页面字段、等待时间。
+- `input_stability`
+- `rule_clarity`
+- `action_repeatability`
+- `platform_operability`
+- `result_verifiability`
 
 ## Module 3 Expected Output
 
-The platform should return a single top-level wrapper containing:
+模块 3 输出 `rpa_boundary_result`，判断需求是否适合进入流程拆解。
 
-- `interaction_state`
-- `answer_batch` when user answers were recorded in the same turn
-- `clarification_result` when module 2 facts are still relevant
-- `rpa_boundary_result` when module 3 has completed
-
-For module 3, `rpa_boundary_result.decision.classification` must be one of:
+`rpa_boundary_result.decision.classification` 只能是：
 
 - `suitable`
 - `conditionally_suitable`
 - `not_ready`
 - `not_suitable_for_direct_rpa`
 
-`candidate_instruction_names` may appear as evidence, but the final decision must also cite input readiness, rule readiness, platform operability, result verifiability, and exception containment.
+判断必须同时参考：
 
-The e-commerce daily report scenario should normally be `conditionally_suitable`, not automatically `suitable`, until platform-store mapping, metric mapping, date scope, login stability, and result verification are confirmed.
+- 输入准备度
+- 规则准备度
+- 平台可操作性
+- 结果可验证性
+- 异常可收敛性
 
-## 电商多平台日报：合格 clarification_result 骨架
+候选影刀指令可以作为证据，但不能单独决定是否适合 RPA。
 
-```json
-{
-  "clarification_depth": "boundary_only",
-  "boundary_facts": {
-    "business_goal": {
-      "value": "自动汇总多个电商平台及固定店铺的日经营数据，并写入腾讯文档形成日报。",
-      "confidence": "high",
-      "source": "user_answer"
-    },
-    "trigger": {
-      "value": "每天固定时间自动执行",
-      "confidence": "high",
-      "source": "user_answer"
-    },
-    "completion_condition": {
-      "value": "所有平台数据成功写入腾讯文档固定日报表。",
-      "confidence": "high",
-      "source": "user_answer"
-    },
-    "input_data": {
-      "value": [
-        "销售额或 GMV",
-        "支付订单数",
-        "退款金额或退款单数",
-        "平台下固定店铺的日数据"
-      ],
-      "confidence": "high",
-      "source": "user_answer"
-    },
-    "operated_systems": {
-      "value": [
-        "淘宝/天猫",
-        "京东",
-        "拼多多",
-        "抖音电商",
-        "快手电商",
-        "腾讯文档"
-      ],
-      "confidence": "high",
-      "source": "user_answer"
-    },
-    "output_result": {
-      "value": "腾讯文档固定日报表中生成每日数据记录。",
-      "confidence": "high",
-      "source": "user_answer"
-    }
-  },
-  "rpa_fit_prescreen": {
-    "input_stability": "medium",
-    "rule_clarity": "medium",
-    "action_repeatability": "high",
-    "platform_operability": "high",
-    "result_verifiability": "medium",
-    "candidate_risk_types": [
-      "missing_rules",
-      "unstable_input"
-    ],
-    "pre_screen_flags": [],
-    "recommended_prework": [
-      "准备平台与店铺清单。",
-      "准备各平台指标与腾讯文档字段的映射表。",
-      "确认日报日期口径是自然日、前一日还是平台结算日。",
-      "确认是否需要把写入结果与源平台数据做自动核对。"
-    ]
-  },
-  "pending_questions": [
-    "后续能力边界评估需确认各平台是否有稳定导出入口或接口。",
-    "后续能力边界评估需确认登录态、验证码和设备验证情况。"
-  ],
-  "stage_summary": "当前需求边界已基本清晰：每天定时从多个电商平台和固定店铺获取日经营数据，并按固定模板写入腾讯文档。场景具备重复性和明确输出，但多平台指标口径、日期口径和结果核对方式需要在下一阶段确认。",
-  "next_stage_recommendation": "rpa_boundary_check"
-}
-```
+## Module 4 Expected Output
+
+模块 4 输出 `process_breakdown_result`。
+
+`process_breakdown_result.breakdown_depth` 必须是：
+
+- `business_process_cards_with_candidate_capabilities`
+
+每张流程卡片描述业务阶段和候选影刀能力族，不得包含：
+
+- 选择器
+- 精确点击路径
+- 等待时间
+- 重试次数
+- 指令参数
+
+模块 4 必须保留：
+
+- `assumptions`
+- `validation_points`
+- `cross_step_dependencies`
+- `open_questions`
+- `prework_dependencies`
+- required/recommended/optional 的上游分类差异
+
+英文验收锚点：
+
+- Preserve cross-step dependencies through `cross_step_dependencies`.
+- Preserve validation points through `validation_points`.
+- Preserve follow-up questions through `open_questions`.
+- Preserve prior mandatory vs optional guidance, and do not erase the required/recommended/optional distinction.
+
+## 合格场景期望
+
+电商日报场景通常应先判定为 `conditionally_suitable`，直到平台-店铺清单、指标映射、日期口径、登录稳定性和结果核验方式确认后，再进入更细设计。
+
+邮件整理场景如果涉及正文语义判断，应保留低置信度人工确认或待确认分类，不应直接当作完全无人值守流程。
+
+## 不合格输出特征
+
+- 连续输出多个 JSON 对象。
+- 用 `rpa_prescreen` 替代 `rpa_fit_prescreen`。
+- 用 `candidate_risks` 替代 `candidate_risk_types`。
+- 用 `prework_recommendations` 替代 `recommended_prework`。
+- 在模块 2 直接输出“可以做 RPA”或“不可以做 RPA”的最终结论。
+- 在模块 3 或模块 4 开始询问具体点击路径、页面选择器、等待时间或指令参数。
+- 中文输出不可读或出现乱码。
