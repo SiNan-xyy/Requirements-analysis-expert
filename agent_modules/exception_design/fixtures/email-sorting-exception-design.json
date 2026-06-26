@@ -1,0 +1,57 @@
+{
+  "module": "module_5_exception_design",
+  "status": "completed",
+  "source_process_steps": ["S02", "S04", "S05", "S06"],
+  "exception_depth": "semi_implementation_exception_flows",
+  "exception_flows": [
+    {
+      "step_id": "S04",
+      "step_name": "Classify email",
+      "source_exception_notes": ["low confidence", "unknown category", "mailbox permission failure"],
+      "exception_cards": [
+        {
+          "exception_id": "E-S04-01",
+          "exception_type": "low_confidence",
+          "severity": "needs_manual_review",
+          "trigger_signal": "The email does not match sender, subject, keyword, or sample-message rules with enough confidence.",
+          "detection_basis": ["classification rules", "matched signals", "manual review threshold"],
+          "handling_strategy": "Move or label the email as pending manual confirmation instead of assigning a final category.",
+          "continue_policy": "continue_other_items",
+          "candidate_yingdao_capabilities": ["condition judgment", "manual review queue", "logging"],
+          "human_intervention": "required",
+          "record_fields": ["message_id", "sender", "subject", "matched_signals", "detected_at"],
+          "related_upstream_risks": ["semantic_judgment", "requires_manual_review_queue"]
+        },
+        {
+          "exception_id": "E-S04-02",
+          "exception_type": "rule_not_matched",
+          "severity": "needs_manual_review",
+          "trigger_signal": "No folder or label rule matches the email after sender, subject, and body checks.",
+          "detection_basis": ["classification taxonomy", "sender rules", "subject rules", "body keyword rules"],
+          "handling_strategy": "Place the email into the pending category and record why no rule matched.",
+          "continue_policy": "continue_other_items",
+          "candidate_yingdao_capabilities": ["condition judgment", "email processing", "logging"],
+          "human_intervention": "required",
+          "record_fields": ["message_id", "sender", "subject", "rule_check_result", "detected_at"],
+          "related_upstream_risks": ["missing_rules", "semantic_judgment"]
+        }
+      ]
+    }
+  ],
+  "global_exception_policies": [
+    "Do not permanently classify low-confidence emails without a manual review route.",
+    "Keep the original email available for review.",
+    "Log classification evidence for every manually reviewed message."
+  ],
+  "manual_review_policy": {
+    "required": true,
+    "review_queue_name": "email_pending_manual_confirmation",
+    "review_record_fields": ["message_id", "sender", "subject", "matched_signals", "exception_type"]
+  },
+  "logging_policy": {
+    "required": true,
+    "minimum_record_fields": ["run_id", "step_id", "exception_id", "message_id", "detected_at", "handling_result"]
+  },
+  "open_questions": [],
+  "next_stage_recommendation": "solution_packaging"
+}

@@ -1,0 +1,77 @@
+{
+  "module": "module_5_exception_design",
+  "status": "completed",
+  "source_process_steps": ["S02", "S03", "S04", "S05", "S06"],
+  "exception_depth": "semi_implementation_exception_flows",
+  "exception_flows": [
+    {
+      "step_id": "S03",
+      "step_name": "Collect platform daily data",
+      "source_exception_notes": ["login failure", "missing data", "download failure"],
+      "exception_cards": [
+        {
+          "exception_id": "E-S03-01",
+          "exception_type": "login_failure",
+          "severity": "blocking",
+          "trigger_signal": "A platform account cannot reach the daily report page because login fails, captcha appears, or device verification is required.",
+          "detection_basis": ["login result", "page state", "account permission status"],
+          "handling_strategy": "Mark the affected platform as blocked, notify a human operator, and continue other platforms only when platform-level isolation is allowed.",
+          "continue_policy": "continue_other_items",
+          "candidate_yingdao_capabilities": ["condition judgment", "logging", "notification"],
+          "human_intervention": "required",
+          "record_fields": ["platform", "account", "date", "failure_reason", "detected_at"],
+          "related_upstream_risks": ["unstable_platform", "requires_stable_login"]
+        },
+        {
+          "exception_id": "E-S03-02",
+          "exception_type": "source_data_missing",
+          "severity": "needs_manual_review",
+          "trigger_signal": "A configured platform-store-date combination returns no data or misses a required metric.",
+          "detection_basis": ["platform-store list", "metric mapping", "raw data fields"],
+          "handling_strategy": "Do not write an inferred value into the report. Add the item to the manual review list and keep source evidence.",
+          "continue_policy": "continue_other_items",
+          "candidate_yingdao_capabilities": ["condition judgment", "table processing", "logging"],
+          "human_intervention": "required",
+          "record_fields": ["platform", "store", "date", "missing_metric", "source_snapshot"],
+          "related_upstream_risks": ["unstable_input", "requires_field_mapping"]
+        }
+      ]
+    },
+    {
+      "step_id": "S05",
+      "step_name": "Write Tencent Docs report",
+      "source_exception_notes": ["write failure", "template changed", "permission missing"],
+      "exception_cards": [
+        {
+          "exception_id": "E-S05-01",
+          "exception_type": "target_write_failure",
+          "severity": "blocking",
+          "trigger_signal": "The Tencent Docs template cannot be opened, edited, or saved to the configured position.",
+          "detection_basis": ["target document state", "write result", "permission status"],
+          "handling_strategy": "Stop report delivery, notify a human operator, and preserve normalized data so it can be written manually or retried later.",
+          "continue_policy": "stop_current_step",
+          "candidate_yingdao_capabilities": ["condition judgment", "online document editing", "logging", "notification"],
+          "human_intervention": "required",
+          "record_fields": ["document", "target_position", "write_status", "failure_reason", "detected_at"],
+          "related_upstream_risks": ["unverifiable_result", "requires_result_log"]
+        }
+      ]
+    }
+  ],
+  "global_exception_policies": [
+    "Do not overwrite report values when source data is missing or mapping is uncertain.",
+    "Continue unaffected platforms only when each platform can be isolated in the report.",
+    "Preserve source value and written value evidence for every abnormal item."
+  ],
+  "manual_review_policy": {
+    "required": true,
+    "review_queue_name": "daily_report_manual_review",
+    "review_record_fields": ["platform", "store", "date", "metric", "exception_type", "source_evidence"]
+  },
+  "logging_policy": {
+    "required": true,
+    "minimum_record_fields": ["run_id", "step_id", "exception_id", "severity", "detected_at", "handling_result"]
+  },
+  "open_questions": [],
+  "next_stage_recommendation": "solution_packaging"
+}
