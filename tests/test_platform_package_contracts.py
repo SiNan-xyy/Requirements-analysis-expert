@@ -38,6 +38,29 @@ class PlatformPackageContractTests(unittest.TestCase):
                 for fragment in COMMON_MOJIBAKE_FRAGMENTS:
                     self.assertNotIn(fragment, text)
 
+    def test_module_1_to_4_flow_guide_names_handoff_gates(self):
+        text = (ROOT / "agent_platform_package/testing/module_1_to_4_flow_test.md").read_text(
+            encoding="utf-8"
+        )
+
+        expected_terms = [
+            "模块 1",
+            "模块 2",
+            "模块 3",
+            "模块 4",
+            "enter_next_module",
+            "rpa_boundary_check",
+            "process_breakdown",
+            "exception_design",
+            "suitable",
+            "conditionally_suitable",
+            "business_process_cards_with_candidate_capabilities",
+        ]
+
+        for term in expected_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, text)
+
 
 if __name__ == "__main__":
     unittest.main()
