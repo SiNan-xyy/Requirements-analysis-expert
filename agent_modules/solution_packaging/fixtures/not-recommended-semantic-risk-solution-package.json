@@ -1,0 +1,162 @@
+{
+  "module": "module_6_solution_packaging",
+  "module_status": "completed",
+  "developer_alignment_status": "not_recommended",
+  "source_modules": {
+    "module_1_interaction_schema": {
+      "status": "completed",
+      "summary": "Customer interaction answers and state were captured."
+    },
+    "module_2_requirement_clarification": {
+      "status": "boundary_ready",
+      "summary": "A high-semantic-judgment requirement was clarified."
+    },
+    "module_3_rpa_boundary_check": {
+      "status": "completed",
+      "summary": "Direct RPA is not recommended because the key judgment cannot be rule-defined."
+    },
+    "module_4_process_breakdown": {
+      "status": "blocked_by_boundary_result",
+      "summary": "Process breakdown is not produced for direct implementation."
+    },
+    "module_5_exception_design": {
+      "status": "blocked_by_process_breakdown",
+      "summary": "Exception design is not produced because there is no approved process breakdown."
+    }
+  },
+  "fact_base": {
+    "confirmed_facts": [
+      {
+        "fact_id": "F001",
+        "topic": "business_goal",
+        "value": "Identify whether supplier material names refer to the same physical item.",
+        "source_module": "module_2_requirement_clarification",
+        "source_type": "user_answer",
+        "confidence": "high",
+        "can_be_used_for_development": true
+      }
+    ],
+    "inferred_recommendations": [
+      {
+        "item_id": "I001",
+        "topic": "data_governance_first",
+        "value": "Build a standard material naming and mapping governance process before reevaluating RPA.",
+        "basis": [
+          "Module 3 identified semantic judgment and missing rules.",
+          "RPA should execute stable rules rather than invent them."
+        ],
+        "requires_confirmation": true,
+        "can_be_used_for_development": false
+      }
+    ],
+    "missing_required_items": [
+      {
+        "item_id": "M001",
+        "topic": "standard_mapping_rules",
+        "question": "Is there a stable rule or approved mapping table for same-material judgment?",
+        "why_it_matters": "Without a rule or mapping table, RPA cannot safely classify materials.",
+        "blocking_level": "high",
+        "owner": "customer_or_business_owner"
+      }
+    ],
+    "conflict_or_uncertainty": [
+      {
+        "item_id": "U001",
+        "topic": "semantic_judgment",
+        "description": "The core decision relies on human semantic understanding rather than a stable rule.",
+        "impact": "Direct RPA may create duplicate or incorrect material records.",
+        "resolution_needed": true
+      }
+    ]
+  },
+  "decision_summary": {
+    "recommendation": "not_recommended",
+    "headline": "Direct RPA is not recommended until material governance rules exist.",
+    "confidence": "high",
+    "reasoning_points": [
+      "The key judgment cannot be written as a stable rule.",
+      "Governance must precede automation."
+    ]
+  },
+  "customer_view_model": {
+    "report_type": "solution_report",
+    "headline": "Direct RPA is not recommended for this requirement now.",
+    "recommendation": "Create governance rules and reevaluation criteria before automation.",
+    "requirement_understanding": "The requirement depends on deciding whether different names refer to the same item.",
+    "rpa_fit_summary": [
+      "Semantic judgment is the core task",
+      "Stable rules are missing"
+    ],
+    "business_scope_included": [
+      "Governance recommendation",
+      "Reevaluation condition"
+    ],
+    "business_scope_excluded": [
+      "Direct automated same-item judgment"
+    ],
+    "process_cards": [],
+    "risk_and_manual_intervention": [
+      "Incorrect classification may create wrong material records."
+    ],
+    "customer_preparation_items": [
+      "Create standard naming rules.",
+      "Create a verified mapping table."
+    ],
+    "next_steps": [
+      "Complete governance prework.",
+      "Reevaluate after rules are stable."
+    ],
+    "referenced_fact_ids": [
+      "F001"
+    ]
+  },
+  "developer_view_model": {
+    "report_type": "solution_report",
+    "implementation_status": "not_recommended",
+    "confirmed_development_basis": [
+      "The business goal is known, but direct implementation is not recommended."
+    ],
+    "blocking_confirmation_items": [
+      "standard_mapping_rules"
+    ],
+    "agent_inferred_recommendations": [
+      "data_governance_first"
+    ],
+    "rpa_capability_boundary": [
+      "RPA can execute stable mapping rules after governance.",
+      "RPA should not invent same-material rules."
+    ],
+    "process_breakdown": {
+      "process_cards": [],
+      "dependencies": [
+        "Approved naming rules",
+        "Approved mapping table"
+      ],
+      "validation_points": []
+    },
+    "field_and_data_mapping": [
+      "Mapping table required before automation."
+    ],
+    "exception_handling": [
+      "No implementation exception design should be generated before governance."
+    ],
+    "acceptance_criteria": [
+      "Reevaluation only after stable rules exist."
+    ],
+    "traceability": [
+      "Boundary decision from Module 3"
+    ],
+    "structured_data_appendix": {
+      "included": true,
+      "source": "solution_package_result.fact_base"
+    },
+    "referenced_fact_ids": [
+      "F001"
+    ]
+  },
+  "render_outputs": {
+    "customer_html": "<section class=\"summary-card\"><h1>RPA not recommended</h1><div class=\"card\">Governance and reevaluation are required before automation.</div></section>",
+    "developer_html": "<section class=\"developer-card\"><h1>No direct implementation package</h1><div class=\"card\">Direct RPA is not recommended. Build governance rules first.</div></section>"
+  },
+  "next_stage_recommendation": "stop_with_blocker"
+}

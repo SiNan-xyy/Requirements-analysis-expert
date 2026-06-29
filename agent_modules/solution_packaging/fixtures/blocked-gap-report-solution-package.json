@@ -1,0 +1,109 @@
+{
+  "module": "module_6_solution_packaging",
+  "module_status": "blocked",
+  "developer_alignment_status": "blocked",
+  "source_modules": {
+    "module_1_interaction_schema": {
+      "status": "completed",
+      "summary": "Initial interaction was captured, but core boundary facts are missing."
+    },
+    "module_2_requirement_clarification": {
+      "status": "stop_with_gap_report",
+      "summary": "Core boundary facts are missing."
+    },
+    "module_3_rpa_boundary_check": {
+      "status": "not_started",
+      "summary": "Boundary check cannot run without core facts."
+    },
+    "module_4_process_breakdown": {
+      "status": "not_started",
+      "summary": "Process breakdown cannot run without boundary check."
+    },
+    "module_5_exception_design": {
+      "status": "not_started",
+      "summary": "Exception design cannot run without process breakdown."
+    }
+  },
+  "fact_base": {
+    "confirmed_facts": [],
+    "inferred_recommendations": [],
+    "missing_required_items": [
+      {
+        "item_id": "M001",
+        "topic": "business_goal",
+        "question": "What business outcome should the automation achieve?",
+        "why_it_matters": "Without a business goal, the agent cannot build a reliable package.",
+        "blocking_level": "high",
+        "owner": "customer"
+      },
+      {
+        "item_id": "M002",
+        "topic": "operated_systems",
+        "question": "Which systems or platforms will be operated?",
+        "why_it_matters": "System scope is required for RPA boundary analysis.",
+        "blocking_level": "high",
+        "owner": "customer"
+      }
+    ],
+    "conflict_or_uncertainty": []
+  },
+  "decision_summary": {
+    "recommendation": "blocked",
+    "headline": "The package cannot be generated because core facts are missing.",
+    "confidence": "high",
+    "reasoning_points": [
+      "Business goal and operated systems are missing."
+    ]
+  },
+  "customer_view_model": {
+    "report_type": "gap_report",
+    "headline": "More information is required before a solution report can be generated.",
+    "recommendation": "Answer the missing boundary questions first.",
+    "requirement_understanding": "The current request does not contain enough confirmed facts.",
+    "rpa_fit_summary": [],
+    "business_scope_included": [],
+    "business_scope_excluded": [],
+    "process_cards": [],
+    "risk_and_manual_intervention": [],
+    "customer_preparation_items": [
+      "Clarify business goal.",
+      "Clarify operated systems."
+    ],
+    "next_steps": [
+      "Return to requirement clarification."
+    ],
+    "referenced_fact_ids": []
+  },
+  "developer_view_model": {
+    "report_type": "gap_report",
+    "implementation_status": "blocked",
+    "confirmed_development_basis": [],
+    "blocking_confirmation_items": [
+      "business_goal",
+      "operated_systems"
+    ],
+    "agent_inferred_recommendations": [],
+    "rpa_capability_boundary": [],
+    "process_breakdown": {
+      "process_cards": [],
+      "dependencies": [],
+      "validation_points": []
+    },
+    "field_and_data_mapping": [],
+    "exception_handling": [],
+    "acceptance_criteria": [],
+    "traceability": [
+      "Blocked by Module 2 gap report."
+    ],
+    "structured_data_appendix": {
+      "included": true,
+      "source": "solution_package_result.fact_base"
+    },
+    "referenced_fact_ids": []
+  },
+  "render_outputs": {
+    "customer_html": "<section class=\"gap-card\"><h1>Information required</h1><div class=\"card\">Please clarify the business goal and operated systems.</div></section>",
+    "developer_html": "<section class=\"gap-card\"><h1>Package blocked</h1><div class=\"card\">Core boundary facts are missing. Return to requirement clarification.</div></section>"
+  },
+  "next_stage_recommendation": "return_to_requirement_clarification"
+}
