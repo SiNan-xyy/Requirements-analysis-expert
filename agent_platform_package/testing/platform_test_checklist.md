@@ -8,6 +8,7 @@
 - Agent 可以读取根目录 `SKILL.md`。
 - Agent 可以引用 `agent_modules/` 下的规则、schema 和 fixtures。
 - RAG 可以检索 `agent_platform_package/rag_upload/` 中的材料。
+- RAG 可以检索 11 份上传材料，包括影刀能力中文卡、腾讯文档/在线表格能力、报表采集场景、分支异常确认规则、HTML 中文词典和报告质量规则。
 - 系统提示词使用 `agent_platform_package/system_prompt/agent-system-prompt.md`。
 
 ## 交互行为
@@ -44,8 +45,11 @@
 - `solution_package_result.fact_base.confirmed_facts` 只包含已确认事实。
 - `inferred_recommendations` 必须 `requires_confirmation = true` 且 `can_be_used_for_development = false`。
 - 当存在 high 阻塞缺失项时，不得输出 `developer_alignment_status = ready_for_development`。
-- 对客 HTML 和对开发 HTML 必须来自同一份结构化事实源。
-- 对开发 HTML 是开发对齐包，不是最终构建指南。
+- 对客 HTML 和实施对齐 HTML 必须来自同一份结构化事实源。
+- 实施对齐 HTML 是搭建对齐包，不是最终构建指南。
+- 实施对齐 HTML 应中文优先，不应直接暴露大量英文枚举、机器字段或 IT 技术术语。
+- 实施对齐 HTML 的每个关键流程步骤应展示可参考的影刀能力或说明暂无明确能力依据。
+- 分支和异常必须标注来源：客户已确认、RAG 建议、Agent 推断待确认或搭建前必补。
 - 不得出现精确点击路径、选择器、等待 N 秒、重试 N 次、影刀指令参数等实现细节。
 
 ## 可读性

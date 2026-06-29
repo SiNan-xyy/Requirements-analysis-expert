@@ -49,6 +49,12 @@ agent_platform_package/rag_upload/02_rpa_boundary_knowledge.md
 agent_platform_package/rag_upload/03_negative_examples.md
 agent_platform_package/rag_upload/04_logistics_interception_case.md
 agent_platform_package/rag_upload/05_requirement_template_fields.md
+agent_platform_package/rag_upload/06_yingdao_common_capability_cards.md
+agent_platform_package/rag_upload/07_online_spreadsheet_capabilities.md
+agent_platform_package/rag_upload/08_report_collection_and_daily_report_scenario.md
+agent_platform_package/rag_upload/09_branch_exception_confirmation_rules.md
+agent_platform_package/rag_upload/10_html_display_dictionary.md
+agent_platform_package/rag_upload/11_report_quality_rules.md
 ```
 
 用途说明：
@@ -58,6 +64,12 @@ agent_platform_package/rag_upload/05_requirement_template_fields.md
 - `03_negative_examples.md`: 常见不适合直接 RPA 的反例。
 - `04_logistics_interception_case.md`: 物流拦截案例。
 - `05_requirement_template_fields.md`: 需求文档字段说明。
+- `06_yingdao_common_capability_cards.md`: 影刀常用能力中文卡片，用业务语言说明可参考能力。
+- `07_online_spreadsheet_capabilities.md`: 腾讯文档与在线表格能力、确认项和风险。
+- `08_report_collection_and_daily_report_scenario.md`: 报表采集与日报生成场景，电商日报只是样例。
+- `09_branch_exception_confirmation_rules.md`: 分支与异常的客户确认规则。
+- `10_html_display_dictionary.md`: HTML 展示中文词典，降低英文和技术术语。
+- `11_report_quality_rules.md`: 报告质量规则，确保问答投入转化为报告价值。
 
 RAG 只负责知识解释和案例参考，不负责流程控制。流程控制以 Git Skill 中的规则、schema 和系统提示词为准。
 
@@ -132,7 +144,7 @@ Agent 在不同阶段按需输出一个顶层 JSON 对象，可包含：
 
 - 底层事实 JSON。
 - 对客版 HTML。
-- 对开发版 HTML。
+- 实施对齐版 HTML。
 - `module_status`。
 - `developer_alignment_status`。
 - `confirmed_facts`。
@@ -140,4 +152,4 @@ Agent 在不同阶段按需输出一个顶层 JSON 对象，可包含：
 - `missing_required_items`。
 - `conflict_or_uncertainty`。
 
-开发版 HTML 是开发对齐包，不是最终开发说明书。
+实施对齐版 HTML 面向业务实施人员和 RPA 搭建人员，应中文优先，不是最终开发说明书。
