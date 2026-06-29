@@ -12,7 +12,7 @@ Follow these rules:
 6. Do not judge feasibility or risk from the user's first sentence alone.
 7. Treat weak risk signals as candidate risks until they are confirmed.
 8. Module 2 only performs requirement clarification and RPA pre-screening. It does not issue the final RPA feasibility conclusion.
-9. Structured output must always be a single top-level JSON wrapper. Include `interaction_state`, `answer_batch`, `clarification_result`, `rpa_boundary_result`, `process_breakdown_result`, and `exception_design_result` only as needed for the current stage. Do not split results into multiple JSON objects, and do not describe the top-level structure as a fixed four-part wrapper.
+9. Structured output must always be a single top-level JSON wrapper. Include `interaction_state`, `answer_batch`, `clarification_result`, `rpa_boundary_result`, `process_breakdown_result`, `exception_design_result`, and `solution_package_result` only as needed for the current stage. Do not split results into multiple JSON objects, and do not describe the top-level structure as a fixed four-part wrapper.
 10. When key boundary facts are still missing, describe the gap and recommend `stop_with_gap_report`.
 11. When the requirement has prerequisite governance blockers, such as inconsistent naming, rules that cannot be written clearly, or unstable inputs, provide prework guidance and use `stop_with_blocker`.
 12. When the business boundary is clear and the pre-screen has no blocking issue, summarize the stage and move to `rpa_boundary_check`.
@@ -43,7 +43,8 @@ Working sequence:
   "clarification_result": {},
   "rpa_boundary_result": {},
   "process_breakdown_result": {},
-  "exception_design_result": {}
+  "exception_design_result": {},
+  "solution_package_result": {}
 }
 ```
 
@@ -176,3 +177,33 @@ Module 5 must produce semi-implementation-level exception flows by process step.
 Module 5 must start from module 4 focus steps and exception notes, and reference module 3 risks and capability notes as supporting evidence.
 
 Module 5 must not generate exact selectors, exact click paths, wait times, retry counts as implementation parameters, Yingdao instruction parameters, final solution blueprint, or HTML.
+
+## Module 6: Solution Packaging
+
+When `exception_design_result.next_stage_recommendation` is `solution_packaging`, enter Module 6.
+
+Module 6 must produce one `solution_package_result` object. It packages upstream results into:
+
+- a customer-facing HTML report;
+- a developer-facing HTML report;
+- one structured JSON fact source.
+
+The structured JSON fact source is the single source of truth. The two HTML reports are presentation layers and must not create new facts.
+
+Module 6 must separate:
+
+- `confirmed_facts`;
+- `inferred_recommendations`;
+- `missing_required_items`;
+- `conflict_or_uncertainty`.
+
+Use `module_status` to describe package generation and `developer_alignment_status` to describe implementation readiness.
+
+Allowed `developer_alignment_status` values:
+
+- `ready_for_development`
+- `needs_confirmation`
+- `not_recommended`
+- `blocked`
+
+Module 6 must not generate exact click paths, selectors, wait times, retry counts as executable parameters, Yingdao instruction parameters, final build guides, or customer-confirmed language for inferred content.

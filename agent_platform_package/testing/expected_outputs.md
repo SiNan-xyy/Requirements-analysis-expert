@@ -10,6 +10,7 @@ Valid output must always be a single top-level JSON object. The agent may includ
 - `rpa_boundary_result`
 - `process_breakdown_result`
 - `exception_design_result`
+- `solution_package_result`
 
 Example wrapper:
 
@@ -37,7 +38,8 @@ Example wrapper:
   "clarification_result": {},
   "rpa_boundary_result": {},
   "process_breakdown_result": {},
-  "exception_design_result": {}
+  "exception_design_result": {},
+  "solution_package_result": {}
 }
 ```
 
@@ -165,6 +167,34 @@ Module 5 should route downstream to `solution_packaging` when complete.
 
 Module 5 must not include exact selectors, exact click paths, wait times, retry counts as implementation parameters, or Yingdao instruction parameters.
 
+## Module 6 Expected Output
+
+Module 6 outputs `solution_package_result`.
+
+Required:
+
+- `module`
+- `module_status`
+- `developer_alignment_status`
+- `source_modules`
+- `fact_base`
+- `decision_summary`
+- `customer_view_model`
+- `developer_view_model`
+- `render_outputs`
+- `next_stage_recommendation`
+
+`fact_base` must separate:
+
+- `confirmed_facts`
+- `inferred_recommendations`
+- `missing_required_items`
+- `conflict_or_uncertainty`
+
+The customer HTML and developer HTML must be generated from the same structured fact source.
+
+The developer-facing HTML is a development alignment package, not a final build guide.
+
 ## Qualified Scenario Expectations
 
 The ecommerce daily report scenario should usually remain `conditionally_suitable` until the platform-store list, metric mapping, date definition, login stability, and result verification method are confirmed.
@@ -179,4 +209,8 @@ The email sorting scenario should retain low-confidence human confirmation or a 
 - Using `prework_recommendations` instead of `recommended_prework`.
 - Issuing the final "can do RPA" or "cannot do RPA" conclusion directly in Module 2.
 - Asking for exact click paths, page selectors, wait times, or instruction parameters in Module 3, Module 4, or Module 5.
+- Marking inferred recommendations as customer-confirmed facts.
+- Returning `ready_for_development` while high-blocking missing items remain.
+- Generating exact click paths, selectors, wait times, retry counts, or Yingdao instruction parameters in Module 6.
+- Generating customer and developer HTML from different facts.
 - Producing unreadable Chinese or mojibake.
