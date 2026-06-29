@@ -67,11 +67,14 @@ class SolutionPackagingContractTests(unittest.TestCase):
         schema = load_json("agent_modules/solution_packaging/schemas/solution-package-result.schema.json")
         props = schema["properties"]
         fact_props = props["fact_base"]["properties"]
+        source_modules = props["source_modules"]
 
         self.assertEqual(schema["title"], "SolutionPackageResult")
         self.assertEqual(props["module"]["const"], "module_6_solution_packaging")
         self.assertIn("module_status", schema["required"])
         self.assertIn("developer_alignment_status", schema["required"])
+        self.assertIn("module_1_interaction_schema", source_modules["required"])
+        self.assertIn("module_1_interaction_schema", source_modules["properties"])
         self.assertEqual(
             props["developer_alignment_status"]["enum"],
             ["ready_for_development", "needs_confirmation", "not_recommended", "blocked"],

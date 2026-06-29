@@ -26,12 +26,14 @@
       "type": "object",
       "additionalProperties": false,
       "required": [
+        "module_1_interaction_schema",
         "module_2_requirement_clarification",
         "module_3_rpa_boundary_check",
         "module_4_process_breakdown",
         "module_5_exception_design"
       ],
       "properties": {
+        "module_1_interaction_schema": { "$ref": "#/$defs/source_module_ref" },
         "module_2_requirement_clarification": { "$ref": "#/$defs/source_module_ref" },
         "module_3_rpa_boundary_check": { "$ref": "#/$defs/source_module_ref" },
         "module_4_process_breakdown": { "$ref": "#/$defs/source_module_ref" },

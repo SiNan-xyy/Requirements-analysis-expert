@@ -318,12 +318,14 @@ Create `agent_modules/solution_packaging/schemas/solution-package-result.schema.
       "type": "object",
       "additionalProperties": false,
       "required": [
+        "module_1_interaction_schema",
         "module_2_requirement_clarification",
         "module_3_rpa_boundary_check",
         "module_4_process_breakdown",
         "module_5_exception_design"
       ],
       "properties": {
+        "module_1_interaction_schema": { "$ref": "#/$defs/source_module_ref" },
         "module_2_requirement_clarification": { "$ref": "#/$defs/source_module_ref" },
         "module_3_rpa_boundary_check": { "$ref": "#/$defs/source_module_ref" },
         "module_4_process_breakdown": { "$ref": "#/$defs/source_module_ref" },
@@ -825,6 +827,10 @@ Create `agent_modules/solution_packaging/fixtures/ecommerce-daily-report-solutio
   "module_status": "completed",
   "developer_alignment_status": "needs_confirmation",
   "source_modules": {
+    "module_1_interaction_schema": {
+      "status": "completed",
+      "summary": "Customer interaction answers and state were captured."
+    },
     "module_2_requirement_clarification": {
       "status": "boundary_ready",
       "summary": "Daily e-commerce report boundary facts are available."
@@ -1016,6 +1022,10 @@ Create `agent_modules/solution_packaging/fixtures/email-sorting-solution-package
   "module_status": "completed",
   "developer_alignment_status": "needs_confirmation",
   "source_modules": {
+    "module_1_interaction_schema": {
+      "status": "completed",
+      "summary": "Customer interaction answers and state were captured."
+    },
     "module_2_requirement_clarification": {
       "status": "boundary_ready",
       "summary": "Email sorting boundary facts are available."
@@ -1182,6 +1192,10 @@ Create `agent_modules/solution_packaging/fixtures/not-recommended-semantic-risk-
   "module_status": "completed",
   "developer_alignment_status": "not_recommended",
   "source_modules": {
+    "module_1_interaction_schema": {
+      "status": "completed",
+      "summary": "Customer interaction answers and state were captured."
+    },
     "module_2_requirement_clarification": {
       "status": "boundary_ready",
       "summary": "A high-semantic-judgment requirement was clarified."
@@ -1301,6 +1315,10 @@ Create `agent_modules/solution_packaging/fixtures/blocked-gap-report-solution-pa
   "module_status": "blocked",
   "developer_alignment_status": "blocked",
   "source_modules": {
+    "module_1_interaction_schema": {
+      "status": "completed",
+      "summary": "Initial interaction was captured, but core boundary facts are missing."
+    },
     "module_2_requirement_clarification": {
       "status": "stop_with_gap_report",
       "summary": "Core boundary facts are missing."
