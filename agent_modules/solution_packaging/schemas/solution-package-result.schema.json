@@ -144,8 +144,8 @@
         "topic": { "type": "string" },
         "value": { "type": "string" },
         "basis": { "type": "array", "items": { "type": "string" } },
-        "requires_confirmation": { "type": "boolean" },
-        "can_be_used_for_development": { "type": "boolean" }
+        "requires_confirmation": { "const": true },
+        "can_be_used_for_development": { "const": false }
       }
     },
     "missing_required_item": {
@@ -295,6 +295,31 @@
       "then": {
         "properties": {
           "module_status": { "const": "blocked" }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "developer_alignment_status": { "const": "ready_for_development" } },
+        "required": ["developer_alignment_status"]
+      },
+      "then": {
+        "properties": {
+          "fact_base": {
+            "properties": {
+              "missing_required_items": {
+                "not": {
+                  "contains": {
+                    "type": "object",
+                    "properties": {
+                      "blocking_level": { "const": "high" }
+                    },
+                    "required": ["blocking_level"]
+                  }
+                }
+              }
+            }
+          }
         }
       }
     }

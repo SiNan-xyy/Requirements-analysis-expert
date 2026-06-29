@@ -155,8 +155,8 @@
     ]
   },
   "render_outputs": {
-    "customer_html": "<section class=\"summary-card\"><h1>RPA not recommended</h1><div class=\"card\">Governance and reevaluation are required before automation.</div></section>",
-    "developer_html": "<section class=\"developer-card\"><h1>No direct implementation package</h1><div class=\"card\">Direct RPA is not recommended. Build governance rules first.</div></section>"
+    "customer_html": "<section class=\"summary-card\"><h1>Direct RPA is not recommended for this requirement now.</h1><div class=\"card\">Governance and reevaluation are required before automation.</div></section>",
+    "developer_html": "<section class=\"developer-card\"><h1>No direct implementation package</h1><div class=\"card\">Status: not_recommended. Build governance rules first.</div></section>"
   },
   "next_stage_recommendation": "stop_with_blocker"
 }

@@ -1,4 +1,6 @@
 import json
+import copy
+import re
 import unittest
 from pathlib import Path
 
@@ -19,6 +21,13 @@ MODULE_6_READABILITY_PATHS = [
     "agent_modules/solution_packaging/rules/prompt-rules.md",
 ]
 
+SOLUTION_PACKAGE_FIXTURE_PATHS = [
+    "agent_modules/solution_packaging/fixtures/ecommerce-daily-report-solution-package.json",
+    "agent_modules/solution_packaging/fixtures/email-sorting-solution-package.json",
+    "agent_modules/solution_packaging/fixtures/not-recommended-semantic-risk-solution-package.json",
+    "agent_modules/solution_packaging/fixtures/blocked-gap-report-solution-package.json",
+]
+
 COMMON_MOJIBAKE_FRAGMENTS = (
     "濡ょ姷鍋?",
     "鐟滄澘宕?",
@@ -30,14 +39,22 @@ COMMON_MOJIBAKE_FRAGMENTS = (
     "椤?",
 )
 
-PROHIBITED_HTML_TERMS = (
-    "selector",
-    "xpath",
-    "css selector",
-    "click path",
-    "wait 3 seconds",
-    "retry count =",
+PROHIBITED_IMPLEMENTATION_DETAIL_PATTERNS = (
+    re.compile(r"\bcss\s+selector\b", re.IGNORECASE),
+    re.compile(r"\bselector\b", re.IGNORECASE),
+    re.compile(r"\bxpath\b", re.IGNORECASE),
+    re.compile(r"\bclick\s+path\b", re.IGNORECASE),
+    re.compile(r"\bwait\s+\d+\s+seconds?\b", re.IGNORECASE),
+    re.compile(r"\bretry\s+\d+\s+times?\b", re.IGNORECASE),
+    re.compile(r"\bretry\s+count\s*=", re.IGNORECASE),
+    re.compile(r"点击路径"),
+    re.compile(r"选择器"),
+    re.compile(r"等待\s*\d+\s*秒"),
+    re.compile(r"重试\s*\d+\s*次"),
+    re.compile(r"指令参数"),
 )
+
+INVENTED_FACT_MARKER = "UNSOURCED_FACT"
 
 
 def load_json(relative_path: str) -> dict:
@@ -90,16 +107,38 @@ class SolutionPackagingContractTests(unittest.TestCase):
     @unittest.skipIf(jsonschema is None, "jsonschema not installed")
     def test_all_solution_package_fixtures_validate_against_schema(self):
         schema = load_json("agent_modules/solution_packaging/schemas/solution-package-result.schema.json")
-        fixture_paths = [
-            "agent_modules/solution_packaging/fixtures/ecommerce-daily-report-solution-package.json",
-            "agent_modules/solution_packaging/fixtures/email-sorting-solution-package.json",
-            "agent_modules/solution_packaging/fixtures/not-recommended-semantic-risk-solution-package.json",
-            "agent_modules/solution_packaging/fixtures/blocked-gap-report-solution-package.json",
-        ]
 
-        for path in fixture_paths:
+        for path in SOLUTION_PACKAGE_FIXTURE_PATHS:
             with self.subTest(path=path):
                 jsonschema.validate(load_json(path), schema)
+
+    @unittest.skipIf(jsonschema is None, "jsonschema not installed")
+    def test_schema_rejects_ready_for_development_with_high_blocking_missing_items(self):
+        schema = load_json("agent_modules/solution_packaging/schemas/solution-package-result.schema.json")
+        fixture = copy.deepcopy(load_json("agent_modules/solution_packaging/fixtures/ecommerce-daily-report-solution-package.json"))
+
+        fixture["developer_alignment_status"] = "ready_for_development"
+        fixture["next_stage_recommendation"] = "implementation_planning"
+
+        with self.assertRaises(jsonschema.ValidationError):
+            jsonschema.validate(fixture, schema)
+
+    @unittest.skipIf(jsonschema is None, "jsonschema not installed")
+    def test_schema_rejects_inferred_recommendations_marked_as_development_ready(self):
+        schema = load_json("agent_modules/solution_packaging/schemas/solution-package-result.schema.json")
+        base_fixture = load_json("agent_modules/solution_packaging/fixtures/ecommerce-daily-report-solution-package.json")
+        invalid_cases = [
+            ("requires_confirmation_false", {"requires_confirmation": False}),
+            ("can_be_used_for_development_true", {"can_be_used_for_development": True}),
+        ]
+
+        for case_name, override in invalid_cases:
+            with self.subTest(case=case_name):
+                fixture = copy.deepcopy(base_fixture)
+                fixture["fact_base"]["inferred_recommendations"][0].update(override)
+
+                with self.assertRaises(jsonschema.ValidationError):
+                    jsonschema.validate(fixture, schema)
 
     def test_ecommerce_daily_report_remains_needs_confirmation(self):
         fixture = load_json("agent_modules/solution_packaging/fixtures/ecommerce-daily-report-solution-package.json")
@@ -148,30 +187,48 @@ class SolutionPackagingContractTests(unittest.TestCase):
                 self.assertTrue(item["requires_confirmation"])
                 self.assertFalse(item["can_be_used_for_development"])
 
-    def test_customer_and_developer_html_use_same_fact_ids(self):
-        fixture = load_json("agent_modules/solution_packaging/fixtures/ecommerce-daily-report-solution-package.json")
-        fact_ids = {fact["fact_id"] for fact in fixture["fact_base"]["confirmed_facts"]}
-        customer_refs = set(fixture["customer_view_model"]["referenced_fact_ids"])
-        developer_refs = set(fixture["developer_view_model"]["referenced_fact_ids"])
+    def test_customer_and_developer_outputs_use_same_source_facts(self):
+        for path in SOLUTION_PACKAGE_FIXTURE_PATHS:
+            with self.subTest(path=path):
+                fixture = load_json(path)
+                fact_ids = {fact["fact_id"] for fact in fixture["fact_base"]["confirmed_facts"]}
+                customer_refs = set(fixture["customer_view_model"]["referenced_fact_ids"])
+                developer_refs = set(fixture["developer_view_model"]["referenced_fact_ids"])
 
-        self.assertTrue(customer_refs.issubset(fact_ids))
-        self.assertTrue(developer_refs.issubset(fact_ids))
-        self.assertGreater(len(customer_refs), 0)
-        self.assertGreater(len(developer_refs), 0)
+                self.assertTrue(customer_refs.issubset(fact_ids))
+                self.assertTrue(developer_refs.issubset(fact_ids))
+                self.assertNotIn(INVENTED_FACT_MARKER, fixture["render_outputs"]["customer_html"])
+                self.assertNotIn(INVENTED_FACT_MARKER, fixture["render_outputs"]["developer_html"])
+                self.assertIn(
+                    fixture["customer_view_model"]["headline"],
+                    fixture["render_outputs"]["customer_html"],
+                )
+                self.assertIn(
+                    fixture["developer_view_model"]["implementation_status"],
+                    fixture["render_outputs"]["developer_html"],
+                )
 
-    def test_render_outputs_are_html_strings_without_prohibited_implementation_details(self):
-        fixture = load_json("agent_modules/solution_packaging/fixtures/ecommerce-daily-report-solution-package.json")
-        html = (
-            fixture["render_outputs"]["customer_html"]
-            + "\n"
-            + fixture["render_outputs"]["developer_html"]
-        ).lower()
+                if fact_ids:
+                    self.assertGreater(len(customer_refs), 0)
+                    self.assertGreater(len(developer_refs), 0)
 
-        self.assertIn("<section", html)
-        self.assertIn("card", html)
-        for term in PROHIBITED_HTML_TERMS:
-            with self.subTest(term=term):
-                self.assertNotIn(term, html)
+    def test_render_outputs_are_html_strings(self):
+        for path in SOLUTION_PACKAGE_FIXTURE_PATHS:
+            fixture = load_json(path)
+            for html_key in ("customer_html", "developer_html"):
+                with self.subTest(path=path, html_key=html_key):
+                    html = fixture["render_outputs"][html_key].lower()
+
+                    self.assertIn("<section", html)
+                    self.assertIn("card", html)
+
+    def test_solution_packages_do_not_expose_prohibited_implementation_details(self):
+        for path in SOLUTION_PACKAGE_FIXTURE_PATHS:
+            fixture = load_json(path)
+            for value in iter_strings(fixture):
+                for pattern in PROHIBITED_IMPLEMENTATION_DETAIL_PATTERNS:
+                    with self.subTest(path=path, pattern=pattern.pattern, value=value):
+                        self.assertIsNone(pattern.search(value))
 
     def test_packaging_rules_define_status_fact_and_rendering_constraints(self):
         rules = load_json("agent_modules/solution_packaging/rules/packaging-rules.json")

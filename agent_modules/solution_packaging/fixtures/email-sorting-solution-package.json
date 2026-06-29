@@ -175,8 +175,8 @@
     ]
   },
   "render_outputs": {
-    "customer_html": "<section class=\"summary-card\"><h1>Email sorting automation</h1><div class=\"card\">Conditionally suitable with manual review for low-confidence semantic decisions.</div></section>",
-    "developer_html": "<section class=\"developer-card\"><h1>Implementation alignment</h1><div class=\"card\">Status: needs confirmation. Semantic low-confidence handling must remain manual.</div></section>"
+    "customer_html": "<section class=\"summary-card\"><h1>Email sorting can be automated with manual review for uncertain emails.</h1><div class=\"card\">Conditionally suitable with manual review for low-confidence semantic decisions.</div></section>",
+    "developer_html": "<section class=\"developer-card\"><h1>Implementation alignment</h1><div class=\"card\">Status: needs_confirmation. Semantic low-confidence handling must remain manual.</div></section>"
   },
   "next_stage_recommendation": "manual_review_before_implementation"
 }

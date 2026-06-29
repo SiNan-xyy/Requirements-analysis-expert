@@ -102,8 +102,8 @@
     "referenced_fact_ids": []
   },
   "render_outputs": {
-    "customer_html": "<section class=\"gap-card\"><h1>Information required</h1><div class=\"card\">Please clarify the business goal and operated systems.</div></section>",
-    "developer_html": "<section class=\"gap-card\"><h1>Package blocked</h1><div class=\"card\">Core boundary facts are missing. Return to requirement clarification.</div></section>"
+    "customer_html": "<section class=\"gap-card\"><h1>More information is required before a solution report can be generated.</h1><div class=\"card\">Please clarify the business goal and operated systems.</div></section>",
+    "developer_html": "<section class=\"gap-card\"><h1>Package blocked</h1><div class=\"card\">Status: blocked. Core boundary facts are missing. Return to requirement clarification.</div></section>"
   },
   "next_stage_recommendation": "return_to_requirement_clarification"
 }

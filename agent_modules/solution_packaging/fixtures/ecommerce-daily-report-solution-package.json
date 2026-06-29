@@ -250,8 +250,8 @@
     ]
   },
   "render_outputs": {
-    "customer_html": "<section class=\"summary-card\"><h1>Daily e-commerce report automation</h1><div class=\"card\">Conditionally suitable for RPA after mapping confirmation.</div></section>",
-    "developer_html": "<section class=\"developer-card\"><h1>Implementation alignment</h1><div class=\"card\">Status: needs confirmation. Missing: field mapping, metric definition, date definition.</div></section>"
+    "customer_html": "<section class=\"summary-card\"><h1>Daily e-commerce report automation is conditionally suitable for RPA.</h1><div class=\"card\">Conditionally suitable for RPA after mapping confirmation.</div></section>",
+    "developer_html": "<section class=\"developer-card\"><h1>Implementation alignment</h1><div class=\"card\">Status: needs_confirmation. Missing: field mapping, metric definition, date definition.</div></section>"
   },
   "next_stage_recommendation": "manual_review_before_implementation"
 }
