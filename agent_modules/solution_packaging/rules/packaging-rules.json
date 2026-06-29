@@ -30,7 +30,9 @@
     "conflict_or_uncertainty": "Low-confidence or inconsistent facts must be carried forward for review."
   },
   "rendering_rules": {
-    "single_source_of_truth": "Customer HTML and developer HTML must be rendered from the same structured JSON fact source.",
+    "default_output": "unified_chinese_html_report",
+    "single_source_of_truth": "The unified HTML report and any compatibility HTML views must be rendered from the same structured JSON fact source.",
+    "unified_html": "Default output. Use one Chinese RPA landing analysis report for customer, business implementer, and RPA builder alignment.",
     "customer_html": "Use business-facing sections and process cards.",
     "developer_html": "Use implementation-readiness sections and include a structured data appendix.",
     "insufficient_data": "Show gaps or pending confirmation instead of inventing missing content."

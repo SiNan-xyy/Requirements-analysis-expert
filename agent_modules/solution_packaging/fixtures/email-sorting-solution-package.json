@@ -78,6 +78,59 @@
       "Semantic judgment requires containment."
     ]
   },
+  "unified_view_model": {
+    "report_type": "solution_report",
+    "headline": "Email sorting can be automated with manual review for uncertain emails.",
+    "recommendation": "Confirm category examples and low-confidence handling before implementation.",
+    "audience": "customer_business_owner_and_rpa_builder",
+    "requirement_understanding": "Classify incoming Outlook or Microsoft 365 emails by sender, subject, keywords, and semantic meaning.",
+    "rpa_fit_summary": [
+      "Repeatable folder or label actions",
+      "Semantic judgment risk remains",
+      "Manual review queue is required"
+    ],
+    "scope": [
+      "Classify incoming emails",
+      "Move or label emails",
+      "Record low-confidence items"
+    ],
+    "process_and_branch_cards": [
+      {
+        "step_id": "U01",
+        "title": "Extract email signals",
+        "summary": "Read sender, subject, keywords, and available body signals.",
+        "source_step_id": "S03"
+      },
+      {
+        "step_id": "U02",
+        "title": "Route uncertain emails",
+        "summary": "Send low-confidence emails to manual review instead of forcing an automatic decision.",
+        "source_step_id": "S04"
+      }
+    ],
+    "exception_handling": [
+      "Empty body, unsupported format, and missing subject require handling.",
+      "Low-confidence semantic results must enter manual review."
+    ],
+    "candidate_yingdao_capabilities": [
+      "Email processing",
+      "Condition judgment",
+      "Manual review queue",
+      "Execution logging"
+    ],
+    "prework_and_pending_confirmations": [
+      "Confirm category examples.",
+      "Confirm low-confidence handling rule.",
+      "Confirm review queue owner."
+    ],
+    "implementation_json_summary": {
+      "status": "needs_confirmation",
+      "source": "solution_package_result.fact_base"
+    },
+    "referenced_fact_ids": [
+      "F001"
+    ]
+  },
   "customer_view_model": {
     "report_type": "solution_report",
     "headline": "Email sorting can be automated with manual review for uncertain emails.",
@@ -175,6 +228,7 @@
     ]
   },
   "render_outputs": {
+    "unified_html": "<section class=\"unified-card\"><h1>Email sorting can be automated with manual review for uncertain emails.</h1><div class=\"card\">Unified report: keep low-confidence semantic decisions in manual review.</div></section>",
     "customer_html": "<section class=\"summary-card\"><h1>Email sorting can be automated with manual review for uncertain emails.</h1><div class=\"card\">Conditionally suitable with manual review for low-confidence semantic decisions.</div></section>",
     "developer_html": "<section class=\"developer-card\"><h1>Implementation alignment</h1><div class=\"card\">Status: needs_confirmation. Semantic low-confidence handling must remain manual.</div></section>"
   },

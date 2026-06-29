@@ -58,6 +58,10 @@ class RpaBoundaryCheckContractTests(unittest.TestCase):
             [
                 "requires_api_or_data_export",
                 "requires_stable_login",
+                "requires_captcha_type_confirmation",
+                "requires_captcha_instruction_validation",
+                "requires_paid_captcha_approval",
+                "requires_human_verification_fallback",
                 "requires_field_mapping",
                 "requires_template_standardization",
                 "requires_manual_review_queue",
@@ -84,7 +88,14 @@ class RpaBoundaryCheckContractTests(unittest.TestCase):
         )
         self.assertIn("instruction_match_is_evidence_not_decision", rules["global_rules"])
         self.assertIn("missing_required_module_2_facts_returns_not_ready", rules["global_rules"])
+        self.assertIn("captcha_is_conditional_capability_not_automatic_blocker", rules["global_rules"])
         self.assertEqual(rules["classification_rules"]["conditionally_suitable"]["default_for_real_customer_requirements"], True)
+        self.assertIn("captcha_instruction_matching", rules["classification_rules"]["conditionally_suitable"]["containment_strategies"])
+        self.assertIn("captcha_assessment", rules)
+        self.assertNotIn(
+            "strong_human_verification_is_frequent_and_cannot_be_separated",
+            rules["classification_rules"]["not_suitable_for_direct_rpa"]["use_when"],
+        )
 
     def test_material_retrieval_policy_orders_yingdao_sources(self):
         policy = load_json("agent_modules/rpa_boundary_check/rules/material-retrieval-policy.json")
@@ -94,16 +105,22 @@ class RpaBoundaryCheckContractTests(unittest.TestCase):
         self.assertEqual(names[0], "yingdao_instruction_search_keywords.xlsx")
         self.assertEqual(names[1], "yingdao_scenario_building_guide.md")
         self.assertEqual(names[2], "yingdao_flow_chain_templates_v3.md")
-        self.assertEqual(names[-1], "agent_answer_templates.md")
-        self.assertEqual(steps[-1]["use"], "answer_shape_only")
+        self.assertEqual(names[-2], "agent_answer_templates.md")
+        self.assertEqual(steps[-2]["use"], "answer_shape_only")
+        self.assertEqual(names[-1], "agent_platform_package/rag_upload/12_captcha_capability_boundary.md")
+        self.assertEqual(steps[-1]["use"], "check_captcha_type_instruction_cost_accuracy_fallback_and_compliance")
+        self.assertIn(
+            "retrieve_captcha_boundary_rag_before_concluding_human_verification_is_blocking",
+            policy["rules"],
+        )
 
-    def test_source_material_manifest_classifies_seven_approved_files(self):
+    def test_source_material_manifest_classifies_approved_files(self):
         manifest = load_json("agent_modules/rpa_boundary_check/materials/source-material-manifest.json")
         sources = manifest["sources"]
         source_names = {source["source"] for source in sources}
 
         self.assertEqual(manifest["version"], "v1")
-        self.assertEqual(len(sources), 7)
+        self.assertEqual(len(sources), 8)
         self.assertIn("yingdao_instruction_capability_library_cleaned.xlsx", source_names)
         self.assertIn("yingdao_core_instruction_library.xlsx", source_names)
         self.assertIn("yingdao_instruction_search_keywords.xlsx", source_names)
@@ -111,6 +128,7 @@ class RpaBoundaryCheckContractTests(unittest.TestCase):
         self.assertIn("yingdao_flow_chain_templates_v3.md", source_names)
         self.assertIn("yingdao_scenario_building_guide.md", source_names)
         self.assertIn("agent_answer_templates.md", source_names)
+        self.assertIn("agent_platform_package/rag_upload/12_captcha_capability_boundary.md", source_names)
         self.assertNotIn("yingdao_flow_chain_templates_v3_duplicate.md", source_names)
 
     def test_prompt_rules_keep_module_3_out_of_process_breakdown(self):
@@ -120,6 +138,8 @@ class RpaBoundaryCheckContractTests(unittest.TestCase):
         self.assertIn("Do not produce the happy-path process breakdown", text)
         self.assertIn("Instruction existence is evidence, not a decision", text)
         self.assertIn("Ask capability-critical confirmation questions only", text)
+        self.assertIn("Do not treat captcha as an automatic blocker", text)
+        self.assertIn("Ask captcha-critical confirmation questions", text)
 
     def test_system_prompt_allows_module_3_boundary_result_in_single_wrapper(self):
         text = (ROOT / "agent_platform_package/system_prompt/agent-system-prompt.md").read_text(encoding="utf-8")

@@ -140,6 +140,9 @@ class RequirementClarificationContractTests(unittest.TestCase):
 
         self.assertIn("Do not ask for exact click paths", rules)
         self.assertIn("Do not decide final RPA feasibility", rules)
+        self.assertIn("Module 2 question trigger policy", rules)
+        self.assertIn("Ask only for boundary-ready facts", rules)
+        self.assertIn("Auto-transition to module 3 when boundary facts are ready", rules)
         self.assertIn("# Requirement Clarification Prompt Rules", rules)
         self.assertIn("## Do", rules)
         self.assertIn("## Do Not", rules)

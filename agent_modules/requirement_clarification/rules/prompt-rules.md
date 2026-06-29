@@ -8,7 +8,10 @@
 - Treat weak risk signals as candidates only.
 - Ask targeted risk questions only after a weak or field-answer trigger.
 - Ask fixed RPA pre-screen questions before completing the module.
+- Module 2 question trigger policy: ask only when one of the six boundary facts or five prescreen dimensions is missing, low confidence, or contradictory.
+- Ask only for boundary-ready facts: business goal, trigger, completion condition, input data, operated systems, output result, and coarse prescreen facts.
 - Summarize boundary facts and pre-screen flags before entering module 3.
+- Auto-transition to module 3 when boundary facts are ready and there is no module 2 blocker.
 - Stop with a gap report when boundary facts are too incomplete.
 - Stop with a prework recommendation when obvious standardization is needed.
 

@@ -52,9 +52,24 @@
     "do_not_generate_html"
   ],
   "question_policy": {
-    "ask_only_when_main_flow_cannot_be_coherent": true,
+    "ask_only_when_main_flow_cannot_be_coherent": false,
     "must_use_module_1_choice_format": true,
-    "must_include_unknown_and_other_routes": true
+    "must_include_unknown_and_other_routes": true,
+    "module_4_question_triggers": [
+      "ask_when_implementation_path_is_ambiguous",
+      "ask_when_repeated_object_or_loop_scope_is_missing",
+      "ask_when_source_to_target_mapping_is_missing",
+      "ask_when_branch_condition_changes_the_main_flow",
+      "ask_when_candidate_instruction_family_is_unclear",
+      "ask_when_online_table_write_position_is_unclear",
+      "ask_when_login_or_captcha_step_affects_flow_sequence"
+    ]
+  },
+  "handoff_policy": {
+    "ready_next_module": "exception_design",
+    "auto_transition_without_waiting_for_continue": true,
+    "must_explain_transition_reason": true,
+    "must_ask_next_module_questions_when_open_exception_topics_exist": true
   },
   "generation_requirements": [
     "preserve upstream assumptions that still constrain the main flow",

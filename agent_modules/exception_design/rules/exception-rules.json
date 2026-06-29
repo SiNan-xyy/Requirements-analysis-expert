@@ -51,8 +51,24 @@
     "when status is completed route to solution_packaging",
     "when status is blocked_by_process_breakdown require process_breakdown_blocker, keep exception_flows empty, and route to an upstream action",
     "prefer scoped continuation when business-safe",
-    "ask only when exception handling would be unsafe without confirmation"
+    "ask only when exception handling would be unsafe without confirmation",
+    "label each exception as customer_confirmed, rag_suggested, agent_inferred_pending_confirmation, or required_before_build"
   ],
+  "source_label_policy": {
+    "allowed_values": [
+      "customer_confirmed",
+      "rag_suggested",
+      "agent_inferred_pending_confirmation",
+      "required_before_build"
+    ],
+    "default_for_unasked_exception": "agent_inferred_pending_confirmation",
+    "must_not_write_inferred_exception_as_customer_confirmed": true
+  },
+  "handoff_policy": {
+    "ready_next_module": "solution_packaging",
+    "auto_transition_without_waiting_for_continue": true,
+    "must_explain_transition_reason": true
+  },
   "forbidden_behaviors": [
     "do_not_override_module_3_decision",
     "do_not_rebuild_module_4_happy_path",

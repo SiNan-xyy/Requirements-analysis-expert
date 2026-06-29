@@ -53,7 +53,7 @@ Use this skill to turn a vague customer automation request into a structured, an
 - In module 3, make the final RPA boundary classification and preserve capability risks, prework, and `not_to_do_in_rpa`.
 - In module 4, produce business process cards with dependencies and validation points, not exact implementation details.
 - In module 5, produce semi-implementation exception flows, manual review policy, and logging policy.
-- In module 6, package the upstream results into customer HTML, developer HTML, and one structured fact source.
+- In module 6, package the upstream results into one unified Chinese HTML landing report and one structured fact source; legacy customer/developer HTML views are compatibility outputs only.
 - In module 6, never treat inferred recommendations as customer-confirmed development facts.
 
 ## Output

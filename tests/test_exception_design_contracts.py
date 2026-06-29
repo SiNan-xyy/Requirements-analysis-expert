@@ -168,6 +168,10 @@ class ExceptionDesignContractTests(unittest.TestCase):
             rules["generation_requirements"],
         )
         self.assertIn(
+            "label each exception as customer_confirmed, rag_suggested, agent_inferred_pending_confirmation, or required_before_build",
+            rules["generation_requirements"],
+        )
+        self.assertIn(
             "when status is blocked_by_process_breakdown require process_breakdown_blocker, keep exception_flows empty, and route to an upstream action",
             rules["generation_requirements"],
         )
@@ -193,6 +197,8 @@ class ExceptionDesignContractTests(unittest.TestCase):
         self.assertIn("solution_packaging", text)
         self.assertIn("process_breakdown_blocker", text)
         self.assertIn("upstream completion or clarification action", text)
+        self.assertIn("Ask module 5 exception confirmation questions", text)
+        self.assertIn("Auto-transition to module 6", text)
         self.assertIn("Do not generate exact selectors", text)
         self.assertIn("Do not generate wait times", text)
         self.assertIn("Do not generate Yingdao instruction parameters", text)
@@ -517,6 +523,17 @@ class ExceptionDesignContractTests(unittest.TestCase):
         self.assertIn("manual_review_policy", expected_output_text)
         self.assertIn("logging_policy", expected_output_text)
         self.assertIn("solution_packaging", expected_output_text)
+
+    def test_system_prompt_requires_automatic_module_transitions(self):
+        prompt_text = (ROOT / "agent_platform_package/system_prompt/agent-system-prompt.md").read_text(
+            encoding="utf-8"
+        )
+
+        self.assertIn("Automatic module transition policy", prompt_text)
+        self.assertIn("Do not wait for the user to type 继续", prompt_text)
+        self.assertIn("Module 3 asks RPA capability questions", prompt_text)
+        self.assertIn("Module 4 asks process breakdown questions", prompt_text)
+        self.assertIn("Module 5 asks exception confirmation questions", prompt_text)
 
     def test_exception_design_fixtures_validate_against_schema_when_validator_available(self):
         if jsonschema is None:

@@ -11,6 +11,7 @@
     "source_modules",
     "fact_base",
     "decision_summary",
+    "unified_view_model",
     "customer_view_model",
     "developer_view_model",
     "render_outputs",
@@ -69,13 +70,15 @@
       }
     },
     "decision_summary": { "$ref": "#/$defs/decision_summary" },
+    "unified_view_model": { "$ref": "#/$defs/unified_view_model" },
     "customer_view_model": { "$ref": "#/$defs/customer_view_model" },
     "developer_view_model": { "$ref": "#/$defs/developer_view_model" },
     "render_outputs": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["customer_html", "developer_html"],
+      "required": ["unified_html", "customer_html", "developer_html"],
       "properties": {
+        "unified_html": { "type": "string", "minLength": 1 },
         "customer_html": { "type": "string", "minLength": 1 },
         "developer_html": { "type": "string", "minLength": 1 }
       }
@@ -222,6 +225,43 @@
         "risk_and_manual_intervention": { "type": "array", "items": { "type": "string" } },
         "customer_preparation_items": { "type": "array", "items": { "type": "string" } },
         "next_steps": { "type": "array", "items": { "type": "string" } },
+        "referenced_fact_ids": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^F[0-9]{3}$" }
+        }
+      }
+    },
+    "unified_view_model": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "report_type",
+        "headline",
+        "recommendation",
+        "audience",
+        "requirement_understanding",
+        "rpa_fit_summary",
+        "scope",
+        "process_and_branch_cards",
+        "exception_handling",
+        "candidate_yingdao_capabilities",
+        "prework_and_pending_confirmations",
+        "implementation_json_summary",
+        "referenced_fact_ids"
+      ],
+      "properties": {
+        "report_type": { "enum": ["solution_report", "gap_report"] },
+        "headline": { "type": "string" },
+        "recommendation": { "type": "string" },
+        "audience": { "type": "string" },
+        "requirement_understanding": { "type": "string" },
+        "rpa_fit_summary": { "type": "array", "items": { "type": "string" } },
+        "scope": { "type": "array", "items": { "type": "string" } },
+        "process_and_branch_cards": { "type": "array", "items": { "$ref": "#/$defs/view_process_card" } },
+        "exception_handling": { "type": "array", "items": { "type": "string" } },
+        "candidate_yingdao_capabilities": { "type": "array", "items": { "type": "string" } },
+        "prework_and_pending_confirmations": { "type": "array", "items": { "type": "string" } },
+        "implementation_json_summary": { "type": "object" },
         "referenced_fact_ids": {
           "type": "array",
           "items": { "type": "string", "pattern": "^F[0-9]{3}$" }

@@ -128,6 +128,62 @@
       "Development-critical mapping details remain open."
     ]
   },
+  "unified_view_model": {
+    "report_type": "solution_report",
+    "headline": "Daily e-commerce report automation is conditionally suitable for RPA.",
+    "recommendation": "Confirm field mapping, metric definitions, date definition, and validation method before implementation.",
+    "audience": "customer_business_owner_and_rpa_builder",
+    "requirement_understanding": "Collect daily operating data from fixed e-commerce platforms and write it into a fixed Tencent Docs report.",
+    "rpa_fit_summary": [
+      "Repeatable daily task",
+      "Fixed target report",
+      "Mapping and validation confirmation required"
+    ],
+    "scope": [
+      "Collect daily metrics",
+      "Write Tencent Docs report",
+      "Record execution result"
+    ],
+    "process_and_branch_cards": [
+      {
+        "step_id": "U01",
+        "title": "Collect platform data",
+        "summary": "Access each configured platform and collect the required daily metrics.",
+        "source_step_id": "S02"
+      },
+      {
+        "step_id": "U02",
+        "title": "Write report",
+        "summary": "Write mapped values into the fixed Tencent Docs report.",
+        "source_step_id": "S05"
+      }
+    ],
+    "exception_handling": [
+      "Login verification may require manual handling.",
+      "Missing source fields require review.",
+      "Target write failure must be logged and escalated."
+    ],
+    "candidate_yingdao_capabilities": [
+      "Web automation",
+      "Online spreadsheet writing",
+      "Execution logging"
+    ],
+    "prework_and_pending_confirmations": [
+      "Confirm platform-store list.",
+      "Confirm metric definitions.",
+      "Confirm report field mapping.",
+      "Confirm result validation method."
+    ],
+    "implementation_json_summary": {
+      "status": "needs_confirmation",
+      "source": "solution_package_result.fact_base"
+    },
+    "referenced_fact_ids": [
+      "F001",
+      "F002",
+      "F003"
+    ]
+  },
   "customer_view_model": {
     "report_type": "solution_report",
     "headline": "Daily e-commerce report automation is conditionally suitable for RPA.",
@@ -250,6 +306,7 @@
     ]
   },
   "render_outputs": {
+    "unified_html": "<section class=\"unified-card\"><h1>Daily e-commerce report automation is conditionally suitable for RPA.</h1><div class=\"card\">Unified report: confirm field mapping, metric definition, date definition, and validation method before implementation.</div></section>",
     "customer_html": "<section class=\"summary-card\"><h1>Daily e-commerce report automation is conditionally suitable for RPA.</h1><div class=\"card\">Conditionally suitable for RPA after mapping confirmation.</div></section>",
     "developer_html": "<section class=\"developer-card\"><h1>Implementation alignment</h1><div class=\"card\">Status: needs_confirmation. Missing: field mapping, metric definition, date definition.</div></section>"
   },

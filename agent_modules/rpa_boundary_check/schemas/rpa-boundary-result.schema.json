@@ -217,6 +217,10 @@
       "enum": [
         "requires_api_or_data_export",
         "requires_stable_login",
+        "requires_captcha_type_confirmation",
+        "requires_captcha_instruction_validation",
+        "requires_paid_captcha_approval",
+        "requires_human_verification_fallback",
         "requires_field_mapping",
         "requires_template_standardization",
         "requires_manual_review_queue",

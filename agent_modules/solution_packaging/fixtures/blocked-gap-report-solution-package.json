@@ -55,6 +55,27 @@
       "Business goal and operated systems are missing."
     ]
   },
+  "unified_view_model": {
+    "report_type": "gap_report",
+    "headline": "More information is required before a solution report can be generated.",
+    "recommendation": "Answer the missing boundary questions first.",
+    "audience": "customer_business_owner_and_rpa_builder",
+    "requirement_understanding": "The current request does not contain enough confirmed facts.",
+    "rpa_fit_summary": [],
+    "scope": [],
+    "process_and_branch_cards": [],
+    "exception_handling": [],
+    "candidate_yingdao_capabilities": [],
+    "prework_and_pending_confirmations": [
+      "Clarify business goal.",
+      "Clarify operated systems."
+    ],
+    "implementation_json_summary": {
+      "status": "blocked",
+      "source": "solution_package_result.fact_base"
+    },
+    "referenced_fact_ids": []
+  },
   "customer_view_model": {
     "report_type": "gap_report",
     "headline": "More information is required before a solution report can be generated.",
@@ -102,6 +123,7 @@
     "referenced_fact_ids": []
   },
   "render_outputs": {
+    "unified_html": "<section class=\"gap-card\"><h1>More information is required before a solution report can be generated.</h1><div class=\"card\">Unified report: please clarify the business goal and operated systems.</div></section>",
     "customer_html": "<section class=\"gap-card\"><h1>More information is required before a solution report can be generated.</h1><div class=\"card\">Please clarify the business goal and operated systems.</div></section>",
     "developer_html": "<section class=\"gap-card\"><h1>Package blocked</h1><div class=\"card\">Status: blocked. Core boundary facts are missing. Return to requirement clarification.</div></section>"
   },

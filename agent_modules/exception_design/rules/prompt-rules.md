@@ -8,7 +8,10 @@
 - Produce step-level exception flows.
 - Define severity, trigger signal, detection basis, handling strategy, continuation policy, human intervention, record fields, related upstream risks, and candidate Yingdao capability families for each exception card.
 - Preserve manual review and logging requirements.
+- Ask module 5 exception confirmation questions when the handling strategy, continuation policy, manual review owner, log fields, or business-safe skip/continue rule is not confirmed.
+- Label each exception source as customer confirmed, RAG suggested, Agent inferred pending confirmation, or required before build.
 - When status is `completed`, set `next_stage_recommendation` to `solution_packaging`.
+- Auto-transition to module 6 when exception flows, manual review policy, logging policy, and open confirmations are packaged.
 - When status is `blocked_by_process_breakdown`, name the upstream Module 4 blocker in `process_breakdown_blocker`, keep `exception_flows` empty, and route to an upstream completion or clarification action.
 - Use module 1 choice-first format when exception handling cannot be safely designed from upstream facts.
 

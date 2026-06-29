@@ -37,6 +37,12 @@
       "source": "agent_answer_templates.md",
       "role": "answer_shape_only",
       "purpose": "Constrains response shape after a decision; not used as capability evidence."
+    },
+    {
+      "source": "agent_platform_package/rag_upload/12_captcha_capability_boundary.md",
+      "original_filename": "验证码问题及对应指令汇总表.xlsx",
+      "role": "captcha_boundary_rag_source",
+      "purpose": "Treats captcha as a conditional capability item and checks captcha type, adapted instructions, cost, accuracy, human fallback, and compliance before marking human verification as a blocker."
     }
   ]
 }

@@ -4,8 +4,8 @@ When `exception_design_result.next_stage_recommendation` is `solution_packaging`
 
 Module 6 must produce one `solution_package_result` object. It packages upstream results into:
 
-- a customer-facing HTML report;
-- a developer-facing HTML report;
+- one unified Chinese HTML report named `unified_html`;
+- optional compatibility customer-facing and developer-facing HTML views when the platform still needs them;
 - a structured JSON fact source.
 
 The structured JSON is the single source of truth. Do not create facts directly in HTML.
@@ -36,7 +36,9 @@ Most real requirements with missing field mapping, metric definition, template l
 
 ## HTML Rules
 
-Customer HTML is for business alignment. Developer HTML is for pre-implementation alignment. Both must be generated from the same structured fact source.
+The unified HTML report is the default deliverable. It should combine customer-readable explanation and development alignment in one Chinese report.
+
+Customer HTML and developer HTML are compatibility views only. All HTML views must be generated from the same structured fact source.
 
 Use card-style process sections instead of swimlane diagrams.
 

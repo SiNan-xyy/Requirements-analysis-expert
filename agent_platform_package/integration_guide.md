@@ -1,12 +1,12 @@
 # Agent 平台集成说明
 
-这份说明用于把当前项目接入你的 Agent 平台。你的平台目前支持三类能力：
+这份说明用于把当前项目接入 Agent 平台。平台当前支持：
 
 - 从 Git 下载 Skill。
 - 本地上传 RAG 材料。
 - 手动编辑系统提示词。
 
-当前项目已经完成模块 1-6，可以支撑客户把模糊 RPA 需求推进到需求澄清、RPA 能力边界判断、流程拆解、异常设计和方案打包。
+当前项目已覆盖模块 1 到模块 6，可支持客户把模糊 RPA 需求推进到需求澄清、RPA 能力边界判断、流程拆解、异常设计和方案打包。
 
 ## 1. Git Skill 配置
 
@@ -55,6 +55,7 @@ agent_platform_package/rag_upload/08_report_collection_and_daily_report_scenario
 agent_platform_package/rag_upload/09_branch_exception_confirmation_rules.md
 agent_platform_package/rag_upload/10_html_display_dictionary.md
 agent_platform_package/rag_upload/11_report_quality_rules.md
+agent_platform_package/rag_upload/12_captcha_capability_boundary.md
 ```
 
 用途说明：
@@ -70,6 +71,7 @@ agent_platform_package/rag_upload/11_report_quality_rules.md
 - `09_branch_exception_confirmation_rules.md`: 分支与异常的客户确认规则。
 - `10_html_display_dictionary.md`: HTML 展示中文词典，降低英文和技术术语。
 - `11_report_quality_rules.md`: 报告质量规则，确保问答投入转化为报告价值。
+- `12_captcha_capability_boundary.md`: 验证码能力边界规则，说明验证码不是天然不可做，需结合适配指令、费用、准确率、人工兜底和授权合规判断。
 
 RAG 只负责知识解释和案例参考，不负责流程控制。流程控制以 Git Skill 中的规则、schema 和系统提示词为准。
 
@@ -85,12 +87,13 @@ agent_platform_package/system_prompt/agent-system-prompt.md
 
 - 优先使用选择题澄清。
 - 每题保留“不确定”或“其他，请补充”的路径。
-- 不从客户第一句话直接下 RPA 可行性结论。
+- 不从客户第一句话直接给 RPA 可行性结论。
 - 模块 2 只做需求边界澄清和预筛，不做最终可行性判断。
-- 模块 3 才做 RPA 能力边界判断。
-- 模块 4 只拆业务流程卡片，不生成精确点击路径。
-- 模块 5 只做半实施级异常、人审和日志设计。
-- 模块 6 只做方案打包，不把未确认内容伪装成开发事实。
+- 模块 3 做 RPA 能力边界判断，验证码按条件能力项处理。
+- 模块 4 拆业务流程卡片，不生成精确点击路径。
+- 模块 5 做半实施级异常、人工复核和日志设计。
+- 模块 6 输出一份统一中文落地分析报告，不把未确认内容伪装成开发事实。
+- 当当前模块已满足进入下一模块的条件时，自动说明原因并进入下一模块提问，不要求用户手动发送“继续”。
 
 ## 4. 推荐首轮测试
 
@@ -105,7 +108,7 @@ agent_platform_package/system_prompt/agent-system-prompt.md
 - 物流单号从哪里来？
 - 机器人需要在哪个系统里拦截？
 - 拦截完成后如何通知结果？
-- 是否存在验证码或人工复核？
+- 是否存在验证码、扫码或人工复核？
 
 ## 5. 端到端测试路径
 
@@ -143,8 +146,7 @@ Agent 在不同阶段按需输出一个顶层 JSON 对象，可包含：
 模块 6 完成时，`solution_package_result` 应包含：
 
 - 底层事实 JSON。
-- 对客版 HTML。
-- 实施对齐版 HTML。
+- 统一中文 HTML 报告。
 - `module_status`。
 - `developer_alignment_status`。
 - `confirmed_facts`。
@@ -152,4 +154,4 @@ Agent 在不同阶段按需输出一个顶层 JSON 对象，可包含：
 - `missing_required_items`。
 - `conflict_or_uncertainty`。
 
-实施对齐版 HTML 面向业务实施人员和 RPA 搭建人员，应中文优先，不是最终开发说明书。
+统一中文 HTML 报告同时面向提需人、业务实施人员和 RPA 搭建人员，要求业务可读、实施可对齐，但不是最终开发说明书。

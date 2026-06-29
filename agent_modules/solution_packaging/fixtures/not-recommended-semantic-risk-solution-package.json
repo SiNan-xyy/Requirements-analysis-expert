@@ -78,6 +78,40 @@
       "Governance must precede automation."
     ]
   },
+  "unified_view_model": {
+    "report_type": "gap_report",
+    "headline": "Direct RPA is not recommended for this requirement now.",
+    "recommendation": "Create governance rules and reevaluation criteria before automation.",
+    "audience": "customer_business_owner_and_rpa_builder",
+    "requirement_understanding": "The requirement depends on deciding whether different names refer to the same item.",
+    "rpa_fit_summary": [
+      "Semantic judgment is the core task",
+      "Stable rules are missing",
+      "Governance must precede automation"
+    ],
+    "scope": [
+      "Prepare material naming governance",
+      "Build mapping table",
+      "Reevaluate automation after rules exist"
+    ],
+    "process_and_branch_cards": [],
+    "exception_handling": [
+      "Do not force RPA to decide item sameness without stable rules."
+    ],
+    "candidate_yingdao_capabilities": [],
+    "prework_and_pending_confirmations": [
+      "Confirm naming rules.",
+      "Confirm supplier-name to standard-material mapping.",
+      "Define reevaluation criteria."
+    ],
+    "implementation_json_summary": {
+      "status": "not_recommended",
+      "source": "solution_package_result.fact_base"
+    },
+    "referenced_fact_ids": [
+      "F001"
+    ]
+  },
   "customer_view_model": {
     "report_type": "solution_report",
     "headline": "Direct RPA is not recommended for this requirement now.",
@@ -155,6 +189,7 @@
     ]
   },
   "render_outputs": {
+    "unified_html": "<section class=\"unified-card\"><h1>Direct RPA is not recommended for this requirement now.</h1><div class=\"card\">Unified report: governance and reevaluation are required before automation.</div></section>",
     "customer_html": "<section class=\"summary-card\"><h1>Direct RPA is not recommended for this requirement now.</h1><div class=\"card\">Governance and reevaluation are required before automation.</div></section>",
     "developer_html": "<section class=\"developer-card\"><h1>No direct implementation package</h1><div class=\"card\">Status: not_recommended. Build governance rules first.</div></section>"
   },

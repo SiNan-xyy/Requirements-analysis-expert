@@ -18,7 +18,7 @@ Verify that a vague RPA requirement can flow from interaction capture to solutio
 - `solution_package_result.fact_base.confirmed_facts` only contains confirmed or upstream-preserved facts.
 - `inferred_recommendations` require confirmation.
 - `missing_required_items` preserves upstream pending questions and prework.
-- Customer HTML and developer HTML are present.
+- Unified HTML is present; customer and developer HTML may exist as compatibility views.
 - The process presentation uses cards.
 - `developer_alignment_status` reflects readiness instead of simply mirroring package completion.
 
@@ -27,4 +27,4 @@ Verify that a vague RPA requirement can flow from interaction capture to solutio
 - Module 6 hides field mapping, metric definition, permissions, template, validation, or manual review gaps.
 - Module 6 claims development readiness while high-blocking missing items remain.
 - Module 6 generates exact implementation parameters.
-- Module 6 produces different facts in customer and developer reports.
+- Module 6 produces different facts across unified, customer, and developer report views.

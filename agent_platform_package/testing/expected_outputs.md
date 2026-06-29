@@ -179,6 +179,7 @@ Required:
 - `source_modules`
 - `fact_base`
 - `decision_summary`
+- `unified_view_model`
 - `customer_view_model`
 - `developer_view_model`
 - `render_outputs`
@@ -191,7 +192,13 @@ Required:
 - `missing_required_items`
 - `conflict_or_uncertainty`
 
-The customer HTML and developer HTML must be generated from the same structured fact source.
+`render_outputs` must include:
+
+- `unified_html`
+- optional compatibility `customer_html`
+- optional compatibility `developer_html`
+
+The unified HTML, customer HTML, and developer HTML must be generated from the same structured fact source.
 
 The developer-facing HTML is a development alignment package, not a final build guide.
 

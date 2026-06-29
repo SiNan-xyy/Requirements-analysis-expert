@@ -28,10 +28,15 @@
     {
       "source": "agent_answer_templates.md",
       "use": "answer_shape_only"
+    },
+    {
+      "source": "agent_platform_package/rag_upload/12_captcha_capability_boundary.md",
+      "use": "check_captcha_type_instruction_cost_accuracy_fallback_and_compliance"
     }
   ],
   "rules": [
     "prefer_core_instruction_library_before_extended_capability_library",
+    "retrieve_captcha_boundary_rag_before_concluding_human_verification_is_blocking",
     "do_not_use_answer_template_as_capability_evidence",
     "do_not_package_duplicate_flow_chain_template_copy",
     "treat_instruction_match_as_evidence_not_decision"

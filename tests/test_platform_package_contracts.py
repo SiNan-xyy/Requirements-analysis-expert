@@ -61,6 +61,27 @@ class PlatformPackageContractTests(unittest.TestCase):
             with self.subTest(term=term):
                 self.assertIn(term, text)
 
+    def test_captcha_capability_rag_is_registered(self):
+        rag_path = ROOT / "agent_platform_package/rag_upload/12_captcha_capability_boundary.md"
+        integration_guide = (ROOT / "agent_platform_package/integration_guide.md").read_text(
+            encoding="utf-8"
+        )
+
+        self.assertIn("12_captcha_capability_boundary.md", integration_guide)
+        self.assertTrue(rag_path.exists())
+
+        text = rag_path.read_text(encoding="utf-8")
+        expected_terms = [
+            "验证码不是天然不可做",
+            "适配指令",
+            "费用",
+            "准确率",
+            "人工兜底",
+        ]
+        for term in expected_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, text)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -29,7 +29,8 @@
     "missing_required_module_2_facts_returns_not_ready",
     "module_3_must_not_repeat_module_2_boundary_clarification",
     "module_3_must_not_generate_process_breakdown",
-    "module_3_questions_must_be_capability_critical"
+    "module_3_questions_must_be_capability_critical",
+    "captcha_is_conditional_capability_not_automatic_blocker"
   ],
   "classification_rules": {
     "suitable": {
@@ -51,6 +52,9 @@
         "field_mapping",
         "manual_review_queue",
         "login_stabilization",
+        "captcha_instruction_matching",
+        "paid_captcha_service_validation",
+        "captcha_human_fallback",
         "result_logging",
         "api_or_data_export"
       ]
@@ -67,10 +71,39 @@
         "core_task_depends_on_open_ended_semantic_judgment_without_rules_or_review",
         "input_highly_unstable_and_cannot_be_standardized",
         "target_platform_cannot_be_operated_or_accessed_reliably",
-        "strong_human_verification_is_frequent_and_cannot_be_separated",
+        "verification_has_no_supported_instruction_no_human_fallback_and_requires_unattended_high_frequency_execution",
         "success_cannot_be_verified",
         "process_is_low_frequency_high_variability_and_heavy_manual_judgment"
       ]
     }
+  },
+  "captcha_assessment": {
+    "principle": "captcha_is_conditional_capability_not_automatic_blocker",
+    "must_check": [
+      "captcha_type",
+      "appearance_frequency",
+      "adapted_instruction_or_candidate_capability",
+      "paid_service_acceptance",
+      "accuracy_acceptance",
+      "human_fallback_allowed",
+      "customer_authorization_and_platform_compliance"
+    ],
+    "conditional_when": [
+      "captcha_type_is_common_or_has_candidate_instruction",
+      "captcha_is_first_login_or_low_frequency",
+      "customer_accepts_paid_service_accuracy_limit_or_human_fallback"
+    ],
+    "blocking_when": [
+      "captcha_type_has_no_supported_instruction",
+      "customer_disallows_paid_service_and_human_fallback",
+      "captcha_appears_high_frequency",
+      "customer_requires_fully_unattended_execution"
+    ],
+    "recommended_capability_notes": [
+      "requires_captcha_type_confirmation",
+      "requires_captcha_instruction_validation",
+      "requires_paid_captcha_approval",
+      "requires_human_verification_fallback"
+    ]
   }
 }

@@ -109,6 +109,10 @@ class ProcessBreakdownContractTests(unittest.TestCase):
         self.assertIn("do_not_override_module_3_decision", rules["forbidden_behaviors"])
         self.assertEqual(rules["default_card_count"]["minimum"], 4)
         self.assertEqual(rules["default_card_count"]["maximum"], 8)
+        self.assertIn("ask_when_implementation_path_is_ambiguous", rules["question_policy"]["module_4_question_triggers"])
+        self.assertIn("ask_when_repeated_object_or_loop_scope_is_missing", rules["question_policy"]["module_4_question_triggers"])
+        self.assertEqual(rules["handoff_policy"]["ready_next_module"], "exception_design")
+        self.assertTrue(rules["handoff_policy"]["auto_transition_without_waiting_for_continue"])
         self.assertIn("assumptions", rules["required_result_fields"])
         self.assertIn("validation_points", rules["required_result_fields"])
         self.assertTrue(
@@ -139,6 +143,8 @@ class ProcessBreakdownContractTests(unittest.TestCase):
         self.assertIn("Do not design exception branches", text)
         self.assertIn("Attach candidate Yingdao capability families", text)
         self.assertIn("Start from module 3's decision and prework", text)
+        self.assertIn("Ask module 4 process questions", text)
+        self.assertIn("Auto-transition to module 5", text)
 
     def test_ecommerce_fixture_has_business_cards_with_capabilities(self):
         fixture = load_json("agent_modules/process_breakdown/fixtures/ecommerce-daily-report-process-breakdown.json")

@@ -100,9 +100,12 @@ class SolutionPackagingContractTests(unittest.TestCase):
         self.assertIn("inferred_recommendations", fact_props)
         self.assertIn("missing_required_items", fact_props)
         self.assertIn("conflict_or_uncertainty", fact_props)
+        self.assertIn("unified_view_model", schema["required"])
+        self.assertIn("unified_view_model", props)
         self.assertIn("customer_view_model", props)
         self.assertIn("developer_view_model", props)
         self.assertIn("render_outputs", props)
+        self.assertIn("unified_html", props["render_outputs"]["required"])
 
     @unittest.skipIf(jsonschema is None, "jsonschema not installed")
     def test_all_solution_package_fixtures_validate_against_schema(self):
@@ -167,6 +170,7 @@ class SolutionPackagingContractTests(unittest.TestCase):
 
         self.assertEqual(fixture["developer_alignment_status"], "not_recommended")
         self.assertEqual(process_cards, [])
+        self.assertEqual(fixture["unified_view_model"]["report_type"], "gap_report")
         self.assertIn("governance", " ".join(iter_strings(fixture)).lower())
         self.assertIn("reevaluation", " ".join(iter_strings(fixture)).lower())
 
@@ -176,6 +180,7 @@ class SolutionPackagingContractTests(unittest.TestCase):
         self.assertEqual(fixture["developer_alignment_status"], "blocked")
         self.assertEqual(fixture["module_status"], "blocked")
         self.assertGreater(len(fixture["fact_base"]["missing_required_items"]), 0)
+        self.assertEqual(fixture["unified_view_model"]["report_type"], "gap_report")
         self.assertEqual(fixture["customer_view_model"]["report_type"], "gap_report")
         self.assertEqual(fixture["developer_view_model"]["report_type"], "gap_report")
 
@@ -194,11 +199,18 @@ class SolutionPackagingContractTests(unittest.TestCase):
                 fact_ids = {fact["fact_id"] for fact in fixture["fact_base"]["confirmed_facts"]}
                 customer_refs = set(fixture["customer_view_model"]["referenced_fact_ids"])
                 developer_refs = set(fixture["developer_view_model"]["referenced_fact_ids"])
+                unified_refs = set(fixture["unified_view_model"]["referenced_fact_ids"])
 
                 self.assertTrue(customer_refs.issubset(fact_ids))
                 self.assertTrue(developer_refs.issubset(fact_ids))
+                self.assertTrue(unified_refs.issubset(fact_ids))
+                self.assertNotIn(INVENTED_FACT_MARKER, fixture["render_outputs"]["unified_html"])
                 self.assertNotIn(INVENTED_FACT_MARKER, fixture["render_outputs"]["customer_html"])
                 self.assertNotIn(INVENTED_FACT_MARKER, fixture["render_outputs"]["developer_html"])
+                self.assertIn(
+                    fixture["unified_view_model"]["headline"],
+                    fixture["render_outputs"]["unified_html"],
+                )
                 self.assertIn(
                     fixture["customer_view_model"]["headline"],
                     fixture["render_outputs"]["customer_html"],
@@ -209,13 +221,14 @@ class SolutionPackagingContractTests(unittest.TestCase):
                 )
 
                 if fact_ids:
+                    self.assertGreater(len(unified_refs), 0)
                     self.assertGreater(len(customer_refs), 0)
                     self.assertGreater(len(developer_refs), 0)
 
     def test_render_outputs_are_html_strings(self):
         for path in SOLUTION_PACKAGE_FIXTURE_PATHS:
             fixture = load_json(path)
-            for html_key in ("customer_html", "developer_html"):
+            for html_key in ("unified_html", "customer_html", "developer_html"):
                 with self.subTest(path=path, html_key=html_key):
                     html = fixture["render_outputs"][html_key].lower()
 
@@ -238,6 +251,11 @@ class SolutionPackagingContractTests(unittest.TestCase):
         self.assertIn("rendering_rules", rules)
         self.assertIn("prohibited_content", rules)
         self.assertIn("manual_review_before_implementation", rules["next_stage_recommendations"])
+        self.assertEqual(
+            rules["rendering_rules"]["default_output"],
+            "unified_chinese_html_report",
+        )
+        self.assertIn("unified_html", rules["rendering_rules"])
 
     def test_prompt_and_platform_docs_include_module_6(self):
         system_prompt = (ROOT / "agent_platform_package/system_prompt/agent-system-prompt.md").read_text(encoding="utf-8")
@@ -245,8 +263,10 @@ class SolutionPackagingContractTests(unittest.TestCase):
 
         self.assertIn("Module 6: Solution Packaging", system_prompt)
         self.assertIn("solution_package_result", system_prompt)
+        self.assertIn("统一中文《RPA 单需求落地分析报告》", system_prompt)
         self.assertIn("Module 6 Expected Output", expected_outputs)
         self.assertIn("solution_package_result", expected_outputs)
+        self.assertIn("unified_html", expected_outputs)
 
     def test_module_6_files_have_readable_text(self):
         for path in MODULE_6_READABILITY_PATHS:

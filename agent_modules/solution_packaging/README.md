@@ -1,6 +1,6 @@
 # Solution Packaging Module
 
-Module 6 packages Modules 1-5 into a customer-facing HTML report, a developer-facing HTML report, and one structured JSON fact source.
+Module 6 packages Modules 1-5 into one unified Chinese RPA landing analysis report and one structured JSON fact source. Legacy customer-facing and developer-facing HTML views may remain as compatibility outputs, but the unified report is the default deliverable.
 
 ## Scope
 
@@ -20,4 +20,4 @@ The module is a solution packaging and development-alignment module. It is not a
 
 ## Boundary Rule
 
-The structured JSON is the single source of truth. Customer HTML and developer HTML must be rendered from the same fact source. Missing development information must be shown as missing information, not filled with guessed content.
+The structured JSON is the single source of truth. Unified HTML and any compatibility HTML views must be rendered from the same fact source. Missing development information must be shown as missing information, not filled with guessed content.
