@@ -1,0 +1,300 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://yingdao.local/rpa-requirements/solution-package-result.schema.json",
+  "title": "SolutionPackageResult",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "module",
+    "module_status",
+    "developer_alignment_status",
+    "source_modules",
+    "fact_base",
+    "decision_summary",
+    "customer_view_model",
+    "developer_view_model",
+    "render_outputs",
+    "next_stage_recommendation"
+  ],
+  "properties": {
+    "module": { "const": "module_6_solution_packaging" },
+    "module_status": { "enum": ["completed", "blocked"] },
+    "developer_alignment_status": {
+      "enum": ["ready_for_development", "needs_confirmation", "not_recommended", "blocked"]
+    },
+    "source_modules": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "module_2_requirement_clarification",
+        "module_3_rpa_boundary_check",
+        "module_4_process_breakdown",
+        "module_5_exception_design"
+      ],
+      "properties": {
+        "module_2_requirement_clarification": { "$ref": "#/$defs/source_module_ref" },
+        "module_3_rpa_boundary_check": { "$ref": "#/$defs/source_module_ref" },
+        "module_4_process_breakdown": { "$ref": "#/$defs/source_module_ref" },
+        "module_5_exception_design": { "$ref": "#/$defs/source_module_ref" }
+      }
+    },
+    "fact_base": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "confirmed_facts",
+        "inferred_recommendations",
+        "missing_required_items",
+        "conflict_or_uncertainty"
+      ],
+      "properties": {
+        "confirmed_facts": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/confirmed_fact" }
+        },
+        "inferred_recommendations": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/inferred_recommendation" }
+        },
+        "missing_required_items": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/missing_required_item" }
+        },
+        "conflict_or_uncertainty": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/conflict_or_uncertainty" }
+        }
+      }
+    },
+    "decision_summary": { "$ref": "#/$defs/decision_summary" },
+    "customer_view_model": { "$ref": "#/$defs/customer_view_model" },
+    "developer_view_model": { "$ref": "#/$defs/developer_view_model" },
+    "render_outputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["customer_html", "developer_html"],
+      "properties": {
+        "customer_html": { "type": "string", "minLength": 1 },
+        "developer_html": { "type": "string", "minLength": 1 }
+      }
+    },
+    "next_stage_recommendation": {
+      "enum": [
+        "manual_review_before_implementation",
+        "implementation_planning",
+        "return_to_exception_design",
+        "return_to_process_breakdown",
+        "return_to_rpa_boundary_check",
+        "return_to_requirement_clarification",
+        "stop_with_gap_report",
+        "stop_with_blocker"
+      ]
+    }
+  },
+  "$defs": {
+    "source_module_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "summary"],
+      "properties": {
+        "status": { "type": "string" },
+        "summary": { "type": "string" }
+      }
+    },
+    "confidence": {
+      "enum": ["high", "medium_high", "medium", "low", "none"]
+    },
+    "confirmed_fact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fact_id",
+        "topic",
+        "value",
+        "source_module",
+        "source_type",
+        "confidence",
+        "can_be_used_for_development"
+      ],
+      "properties": {
+        "fact_id": { "type": "string", "pattern": "^F[0-9]{3}$" },
+        "topic": { "type": "string" },
+        "value": {},
+        "source_module": { "type": "string" },
+        "source_type": { "type": "string" },
+        "confidence": { "$ref": "#/$defs/confidence" },
+        "can_be_used_for_development": { "type": "boolean" }
+      }
+    },
+    "inferred_recommendation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "item_id",
+        "topic",
+        "value",
+        "basis",
+        "requires_confirmation",
+        "can_be_used_for_development"
+      ],
+      "properties": {
+        "item_id": { "type": "string", "pattern": "^I[0-9]{3}$" },
+        "topic": { "type": "string" },
+        "value": { "type": "string" },
+        "basis": { "type": "array", "items": { "type": "string" } },
+        "requires_confirmation": { "type": "boolean" },
+        "can_be_used_for_development": { "type": "boolean" }
+      }
+    },
+    "missing_required_item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "item_id",
+        "topic",
+        "question",
+        "why_it_matters",
+        "blocking_level",
+        "owner"
+      ],
+      "properties": {
+        "item_id": { "type": "string", "pattern": "^M[0-9]{3}$" },
+        "topic": { "type": "string" },
+        "question": { "type": "string" },
+        "why_it_matters": { "type": "string" },
+        "blocking_level": { "enum": ["high", "medium", "low"] },
+        "owner": { "type": "string" }
+      }
+    },
+    "conflict_or_uncertainty": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["item_id", "topic", "description", "impact", "resolution_needed"],
+      "properties": {
+        "item_id": { "type": "string", "pattern": "^U[0-9]{3}$" },
+        "topic": { "type": "string" },
+        "description": { "type": "string" },
+        "impact": { "type": "string" },
+        "resolution_needed": { "type": "boolean" }
+      }
+    },
+    "decision_summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["recommendation", "headline", "confidence", "reasoning_points"],
+      "properties": {
+        "recommendation": {
+          "enum": ["recommended", "conditional", "not_recommended", "blocked"]
+        },
+        "headline": { "type": "string" },
+        "confidence": { "$ref": "#/$defs/confidence" },
+        "reasoning_points": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "customer_view_model": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "report_type",
+        "headline",
+        "recommendation",
+        "requirement_understanding",
+        "rpa_fit_summary",
+        "business_scope_included",
+        "business_scope_excluded",
+        "process_cards",
+        "risk_and_manual_intervention",
+        "customer_preparation_items",
+        "next_steps",
+        "referenced_fact_ids"
+      ],
+      "properties": {
+        "report_type": { "enum": ["solution_report", "gap_report"] },
+        "headline": { "type": "string" },
+        "recommendation": { "type": "string" },
+        "requirement_understanding": { "type": "string" },
+        "rpa_fit_summary": { "type": "array", "items": { "type": "string" } },
+        "business_scope_included": { "type": "array", "items": { "type": "string" } },
+        "business_scope_excluded": { "type": "array", "items": { "type": "string" } },
+        "process_cards": { "type": "array", "items": { "$ref": "#/$defs/view_process_card" } },
+        "risk_and_manual_intervention": { "type": "array", "items": { "type": "string" } },
+        "customer_preparation_items": { "type": "array", "items": { "type": "string" } },
+        "next_steps": { "type": "array", "items": { "type": "string" } },
+        "referenced_fact_ids": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^F[0-9]{3}$" }
+        }
+      }
+    },
+    "developer_view_model": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "report_type",
+        "implementation_status",
+        "confirmed_development_basis",
+        "blocking_confirmation_items",
+        "agent_inferred_recommendations",
+        "rpa_capability_boundary",
+        "process_breakdown",
+        "field_and_data_mapping",
+        "exception_handling",
+        "acceptance_criteria",
+        "traceability",
+        "structured_data_appendix",
+        "referenced_fact_ids"
+      ],
+      "properties": {
+        "report_type": { "enum": ["solution_report", "gap_report"] },
+        "implementation_status": { "type": "string" },
+        "confirmed_development_basis": { "type": "array", "items": { "type": "string" } },
+        "blocking_confirmation_items": { "type": "array", "items": { "type": "string" } },
+        "agent_inferred_recommendations": { "type": "array", "items": { "type": "string" } },
+        "rpa_capability_boundary": { "type": "array", "items": { "type": "string" } },
+        "process_breakdown": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["process_cards", "dependencies", "validation_points"],
+          "properties": {
+            "process_cards": { "type": "array", "items": { "$ref": "#/$defs/view_process_card" } },
+            "dependencies": { "type": "array", "items": { "type": "string" } },
+            "validation_points": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "field_and_data_mapping": { "type": "array", "items": { "type": "string" } },
+        "exception_handling": { "type": "array", "items": { "type": "string" } },
+        "acceptance_criteria": { "type": "array", "items": { "type": "string" } },
+        "traceability": { "type": "array", "items": { "type": "string" } },
+        "structured_data_appendix": { "type": "object" },
+        "referenced_fact_ids": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^F[0-9]{3}$" }
+        }
+      }
+    },
+    "view_process_card": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["step_id", "title", "summary", "source_step_id"],
+      "properties": {
+        "step_id": { "type": "string" },
+        "title": { "type": "string" },
+        "summary": { "type": "string" },
+        "source_step_id": { "type": "string" }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "developer_alignment_status": { "const": "blocked" } },
+        "required": ["developer_alignment_status"]
+      },
+      "then": {
+        "properties": {
+          "module_status": { "const": "blocked" }
+        }
+      }
+    }
+  ]
+}
