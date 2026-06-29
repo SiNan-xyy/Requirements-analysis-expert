@@ -1,0 +1,257 @@
+{
+  "module": "module_6_solution_packaging",
+  "module_status": "completed",
+  "developer_alignment_status": "needs_confirmation",
+  "source_modules": {
+    "module_1_interaction_schema": {
+      "status": "completed",
+      "summary": "Customer interaction answers and state were captured."
+    },
+    "module_2_requirement_clarification": {
+      "status": "boundary_ready",
+      "summary": "Daily e-commerce report boundary facts are available."
+    },
+    "module_3_rpa_boundary_check": {
+      "status": "completed",
+      "summary": "Requirement is conditionally suitable pending mapping, date, and validation confirmation."
+    },
+    "module_4_process_breakdown": {
+      "status": "completed",
+      "summary": "Business process cards are available."
+    },
+    "module_5_exception_design": {
+      "status": "completed",
+      "summary": "Exception, manual review, and logging policies are available."
+    }
+  },
+  "fact_base": {
+    "confirmed_facts": [
+      {
+        "fact_id": "F001",
+        "topic": "business_goal",
+        "value": "Automatically collect daily operating data from multiple e-commerce platforms and write a daily report into Tencent Docs.",
+        "source_module": "module_2_requirement_clarification",
+        "source_type": "user_answer",
+        "confidence": "high",
+        "can_be_used_for_development": true
+      },
+      {
+        "fact_id": "F002",
+        "topic": "trigger",
+        "value": "Run at a fixed time every day.",
+        "source_module": "module_2_requirement_clarification",
+        "source_type": "user_answer",
+        "confidence": "high",
+        "can_be_used_for_development": true
+      },
+      {
+        "fact_id": "F003",
+        "topic": "operated_systems",
+        "value": [
+          "Taobao/Tmall",
+          "JD",
+          "Pinduoduo",
+          "Douyin E-commerce",
+          "Kuaishou E-commerce",
+          "Tencent Docs"
+        ],
+        "source_module": "module_2_requirement_clarification",
+        "source_type": "user_answer",
+        "confidence": "high",
+        "can_be_used_for_development": true
+      }
+    ],
+    "inferred_recommendations": [
+      {
+        "item_id": "I001",
+        "topic": "retry_and_skip_policy",
+        "value": "Use retry-and-skip handling for platform access failures and continue with other platforms when possible.",
+        "basis": [
+          "Multiple external platforms are involved.",
+          "Module 5 exception design includes login and source data failures."
+        ],
+        "requires_confirmation": true,
+        "can_be_used_for_development": false
+      }
+    ],
+    "missing_required_items": [
+      {
+        "item_id": "M001",
+        "topic": "field_mapping",
+        "question": "Are source platform fields mapped one-to-one to Tencent Docs report fields?",
+        "why_it_matters": "Field mapping affects data write accuracy.",
+        "blocking_level": "high",
+        "owner": "customer_or_implementation_consultant"
+      },
+      {
+        "item_id": "M002",
+        "topic": "metric_definition",
+        "question": "Are GMV, paid order count, and refund metrics defined consistently across platforms?",
+        "why_it_matters": "Metric differences affect report consistency.",
+        "blocking_level": "high",
+        "owner": "customer_or_business_owner"
+      },
+      {
+        "item_id": "M003",
+        "topic": "date_definition",
+        "question": "Should the report use natural day, previous day, or platform-specific settlement day?",
+        "why_it_matters": "Date definition affects data collection filters.",
+        "blocking_level": "high",
+        "owner": "customer_or_business_owner"
+      },
+      {
+        "item_id": "M004",
+        "topic": "result_validation_method",
+        "question": "Should the robot only verify successful write, or compare written values against source platform values?",
+        "why_it_matters": "Validation method affects acceptance and exception handling.",
+        "blocking_level": "medium",
+        "owner": "customer_or_implementation_consultant"
+      }
+    ],
+    "conflict_or_uncertainty": [
+      {
+        "item_id": "U001",
+        "topic": "platform_metric_consistency",
+        "description": "The requirement says platform metrics are generally unified, but exact metric definitions are not confirmed.",
+        "impact": "Report values may be inconsistent across platforms.",
+        "resolution_needed": true
+      }
+    ]
+  },
+  "decision_summary": {
+    "recommendation": "conditional",
+    "headline": "This requirement is suitable for RPA after field, metric, date, and validation details are confirmed.",
+    "confidence": "medium_high",
+    "reasoning_points": [
+      "Inputs are platform reports with repeatable access patterns.",
+      "The output template is fixed in Tencent Docs.",
+      "Development-critical mapping details remain open."
+    ]
+  },
+  "customer_view_model": {
+    "report_type": "solution_report",
+    "headline": "Daily e-commerce report automation is conditionally suitable for RPA.",
+    "recommendation": "Confirm report mapping before implementation.",
+    "requirement_understanding": "Collect daily operating data from fixed e-commerce platforms and write it into a fixed Tencent Docs report.",
+    "rpa_fit_summary": [
+      "Repeatable daily task",
+      "Fixed target report",
+      "Mapping confirmation required"
+    ],
+    "business_scope_included": [
+      "Collect daily metrics",
+      "Write Tencent Docs report",
+      "Record execution result"
+    ],
+    "business_scope_excluded": [
+      "Redefine business metrics",
+      "Handle long-term account risk as an automation task"
+    ],
+    "process_cards": [
+      {
+        "step_id": "C01",
+        "title": "Collect platform data",
+        "summary": "Access each configured platform and collect the required daily metrics.",
+        "source_step_id": "S02"
+      },
+      {
+        "step_id": "C02",
+        "title": "Write report",
+        "summary": "Write mapped values into the fixed Tencent Docs report.",
+        "source_step_id": "S05"
+      }
+    ],
+    "risk_and_manual_intervention": [
+      "Login verification may require manual handling.",
+      "Missing source fields require review."
+    ],
+    "customer_preparation_items": [
+      "Confirm platform-store list.",
+      "Confirm metric definitions.",
+      "Confirm report field mapping."
+    ],
+    "next_steps": [
+      "Review missing confirmation items.",
+      "Confirm implementation scope before development."
+    ],
+    "referenced_fact_ids": [
+      "F001",
+      "F002",
+      "F003"
+    ]
+  },
+  "developer_view_model": {
+    "report_type": "solution_report",
+    "implementation_status": "needs_confirmation",
+    "confirmed_development_basis": [
+      "Business goal, trigger, and operated systems are confirmed."
+    ],
+    "blocking_confirmation_items": [
+      "field_mapping",
+      "metric_definition",
+      "date_definition"
+    ],
+    "agent_inferred_recommendations": [
+      "retry_and_skip_policy"
+    ],
+    "rpa_capability_boundary": [
+      "RPA can execute repeatable collection and writing.",
+      "RPA cannot define business metric standards."
+    ],
+    "process_breakdown": {
+      "process_cards": [
+        {
+          "step_id": "D01",
+          "title": "Platform data collection",
+          "summary": "Collect metrics from configured platform-store scope.",
+          "source_step_id": "S02"
+        },
+        {
+          "step_id": "D02",
+          "title": "Tencent Docs writing",
+          "summary": "Write mapped metrics to the fixed report area.",
+          "source_step_id": "S05"
+        }
+      ],
+      "dependencies": [
+        "Confirmed platform-store list",
+        "Confirmed field mapping"
+      ],
+      "validation_points": [
+        "Write success",
+        "Execution record generated"
+      ]
+    },
+    "field_and_data_mapping": [
+      "Source metric to target report field mapping is required."
+    ],
+    "exception_handling": [
+      "Login failure, source field missing, target write failure, and validation failure require handling."
+    ],
+    "acceptance_criteria": [
+      "Configured platforms are processed.",
+      "Tencent Docs report is updated.",
+      "Run result is logged."
+    ],
+    "traceability": [
+      "Facts from Module 2",
+      "RPA boundary from Module 3",
+      "Process cards from Module 4",
+      "Exceptions from Module 5"
+    ],
+    "structured_data_appendix": {
+      "included": true,
+      "source": "solution_package_result.fact_base"
+    },
+    "referenced_fact_ids": [
+      "F001",
+      "F002",
+      "F003"
+    ]
+  },
+  "render_outputs": {
+    "customer_html": "<section class=\"summary-card\"><h1>Daily e-commerce report automation</h1><div class=\"card\">Conditionally suitable for RPA after mapping confirmation.</div></section>",
+    "developer_html": "<section class=\"developer-card\"><h1>Implementation alignment</h1><div class=\"card\">Status: needs confirmation. Missing: field mapping, metric definition, date definition.</div></section>"
+  },
+  "next_stage_recommendation": "manual_review_before_implementation"
+}

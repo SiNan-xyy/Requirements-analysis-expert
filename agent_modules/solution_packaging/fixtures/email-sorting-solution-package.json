@@ -1,0 +1,182 @@
+{
+  "module": "module_6_solution_packaging",
+  "module_status": "completed",
+  "developer_alignment_status": "needs_confirmation",
+  "source_modules": {
+    "module_1_interaction_schema": {
+      "status": "completed",
+      "summary": "Customer interaction answers and state were captured."
+    },
+    "module_2_requirement_clarification": {
+      "status": "boundary_ready",
+      "summary": "Email sorting boundary facts are available."
+    },
+    "module_3_rpa_boundary_check": {
+      "status": "completed",
+      "summary": "Requirement is conditionally suitable because semantic classification needs review handling."
+    },
+    "module_4_process_breakdown": {
+      "status": "completed",
+      "summary": "Email sorting process cards are available."
+    },
+    "module_5_exception_design": {
+      "status": "completed",
+      "summary": "Low-confidence and manual review exception handling is available."
+    }
+  },
+  "fact_base": {
+    "confirmed_facts": [
+      {
+        "fact_id": "F001",
+        "topic": "business_goal",
+        "value": "Automatically classify Outlook or Microsoft 365 emails into folders or labels.",
+        "source_module": "module_2_requirement_clarification",
+        "source_type": "user_answer",
+        "confidence": "high",
+        "can_be_used_for_development": true
+      }
+    ],
+    "inferred_recommendations": [
+      {
+        "item_id": "I001",
+        "topic": "manual_review_queue",
+        "value": "Keep low-confidence semantic classification results in a manual review queue.",
+        "basis": [
+          "Semantic classification can misclassify messages.",
+          "Module 5 includes low-confidence handling."
+        ],
+        "requires_confirmation": true,
+        "can_be_used_for_development": false
+      }
+    ],
+    "missing_required_items": [
+      {
+        "item_id": "M001",
+        "topic": "classification_samples",
+        "question": "Are representative examples available for each email category?",
+        "why_it_matters": "Examples reduce semantic classification ambiguity.",
+        "blocking_level": "high",
+        "owner": "customer_or_business_owner"
+      }
+    ],
+    "conflict_or_uncertainty": [
+      {
+        "item_id": "U001",
+        "topic": "semantic_judgment",
+        "description": "Some messages rely on semantic judgment rather than fixed sender or subject rules.",
+        "impact": "Unattended automation may misclassify emails without manual review.",
+        "resolution_needed": true
+      }
+    ]
+  },
+  "decision_summary": {
+    "recommendation": "conditional",
+    "headline": "Email sorting is conditionally suitable with low-confidence manual review.",
+    "confidence": "medium_high",
+    "reasoning_points": [
+      "Folder operations are repeatable.",
+      "Semantic judgment requires containment."
+    ]
+  },
+  "customer_view_model": {
+    "report_type": "solution_report",
+    "headline": "Email sorting can be automated with manual review for uncertain emails.",
+    "recommendation": "Confirm category examples and low-confidence handling.",
+    "requirement_understanding": "Classify incoming Outlook or Microsoft 365 emails by sender, subject, keywords, and semantic meaning.",
+    "rpa_fit_summary": [
+      "Repeatable folder or label actions",
+      "Semantic judgment risk remains"
+    ],
+    "business_scope_included": [
+      "Classify emails",
+      "Move or label emails",
+      "Record processing results"
+    ],
+    "business_scope_excluded": [
+      "Fully unattended semantic judgment for every message"
+    ],
+    "process_cards": [
+      {
+        "step_id": "C01",
+        "title": "Read email",
+        "summary": "Read sender, subject, and body signals.",
+        "source_step_id": "S02"
+      }
+    ],
+    "risk_and_manual_intervention": [
+      "Low-confidence semantic results need manual review."
+    ],
+    "customer_preparation_items": [
+      "Provide category examples.",
+      "Confirm low-confidence handling."
+    ],
+    "next_steps": [
+      "Prepare representative email samples."
+    ],
+    "referenced_fact_ids": [
+      "F001"
+    ]
+  },
+  "developer_view_model": {
+    "report_type": "solution_report",
+    "implementation_status": "needs_confirmation",
+    "confirmed_development_basis": [
+      "Target mailbox and classification goal are confirmed."
+    ],
+    "blocking_confirmation_items": [
+      "classification_samples"
+    ],
+    "agent_inferred_recommendations": [
+      "manual_review_queue"
+    ],
+    "rpa_capability_boundary": [
+      "RPA can move or label emails.",
+      "RPA must not pretend uncertain semantic judgment is fully deterministic."
+    ],
+    "process_breakdown": {
+      "process_cards": [
+        {
+          "step_id": "D01",
+          "title": "Email signal reading",
+          "summary": "Read sender, subject, and body signals for classification.",
+          "source_step_id": "S02"
+        }
+      ],
+      "dependencies": [
+        "Category examples",
+        "Low-confidence policy"
+      ],
+      "validation_points": [
+        "Email moved or labeled",
+        "Processing record generated"
+      ]
+    },
+    "field_and_data_mapping": [
+      "Email signal to target category mapping requires examples."
+    ],
+    "exception_handling": [
+      "Low-confidence semantic classification enters manual review."
+    ],
+    "acceptance_criteria": [
+      "High-confidence emails are classified.",
+      "Low-confidence emails are not silently processed."
+    ],
+    "traceability": [
+      "Facts from Module 2",
+      "Semantic risk from Module 3",
+      "Review handling from Module 5"
+    ],
+    "structured_data_appendix": {
+      "included": true,
+      "source": "solution_package_result.fact_base"
+    },
+    "referenced_fact_ids": [
+      "F001"
+    ]
+  },
+  "render_outputs": {
+    "customer_html": "<section class=\"summary-card\"><h1>Email sorting automation</h1><div class=\"card\">Conditionally suitable with manual review for low-confidence semantic decisions.</div></section>",
+    "developer_html": "<section class=\"developer-card\"><h1>Implementation alignment</h1><div class=\"card\">Status: needs confirmation. Semantic low-confidence handling must remain manual.</div></section>"
+  },
+  "next_stage_recommendation": "manual_review_before_implementation"
+}
