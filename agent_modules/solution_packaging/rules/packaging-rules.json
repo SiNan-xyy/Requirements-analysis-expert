@@ -1,0 +1,57 @@
+{
+  "module": "module_6_solution_packaging",
+  "status_rules": {
+    "ready_for_development": [
+      "module_3_classification_is_suitable_or_conditionally_suitable",
+      "module_4_process_breakdown_completed",
+      "module_5_exception_design_completed",
+      "no_high_blocking_missing_required_items",
+      "key_development_basis_confirmed"
+    ],
+    "needs_confirmation": [
+      "direction_viable_but_required_prework_or_open_questions_remain",
+      "field_mapping_or_metric_definition_or_template_or_validation_missing",
+      "inferred_recommendations_require_confirmation"
+    ],
+    "not_recommended": [
+      "module_3_classification_is_not_suitable_for_direct_rpa",
+      "package_governance_guidance_instead_of_implementation_plan"
+    ],
+    "blocked": [
+      "upstream_module_needs_more_information",
+      "upstream_module_returns_stop_with_gap_report_or_stop_with_blocker",
+      "core_boundary_facts_missing"
+    ]
+  },
+  "fact_layer_rules": {
+    "confirmed_facts": "Only explicit user answers or upstream-confirmed facts may be used as development basis.",
+    "inferred_recommendations": "Agent recommendations must require confirmation and must not be marked as development facts.",
+    "missing_required_items": "Pending questions, required prework, process prework dependencies, and exception open questions must remain visible.",
+    "conflict_or_uncertainty": "Low-confidence or inconsistent facts must be carried forward for review."
+  },
+  "rendering_rules": {
+    "single_source_of_truth": "Customer HTML and developer HTML must be rendered from the same structured JSON fact source.",
+    "customer_html": "Use business-facing sections and process cards.",
+    "developer_html": "Use implementation-readiness sections and include a structured data appendix.",
+    "insufficient_data": "Show gaps or pending confirmation instead of inventing missing content."
+  },
+  "next_stage_recommendations": [
+    "manual_review_before_implementation",
+    "implementation_planning",
+    "return_to_exception_design",
+    "return_to_process_breakdown",
+    "return_to_rpa_boundary_check",
+    "return_to_requirement_clarification",
+    "stop_with_gap_report",
+    "stop_with_blocker"
+  ],
+  "prohibited_content": [
+    "exact_click_paths",
+    "selectors",
+    "wait_times",
+    "retry_counts_as_executable_parameters",
+    "yingdao_instruction_parameters",
+    "final_build_guide",
+    "customer_confirmed_language_for_inferred_content"
+  ]
+}
