@@ -16,7 +16,21 @@ Use this skill to turn a vague customer automation request into a structured, an
 5. Read `agent_modules/requirement_clarification/rules/prompt-rules.md`.
 6. Read `agent_modules/requirement_clarification/rules/completion-rules.json`.
 7. Read `agent_modules/requirement_clarification/rules/trigger-policy.json`.
-8. Read `agent_modules/requirement_clarification/materials/negative-examples.v1.json` only when RPA-fit risk signals appear or when fixed pre-screening needs examples.
+8. Read `agent_modules/rpa_boundary_check/README.md`.
+9. Read `agent_modules/rpa_boundary_check/rules/prompt-rules.md`.
+10. Read `agent_modules/rpa_boundary_check/rules/decision-rules.json`.
+11. Read `agent_modules/rpa_boundary_check/rules/material-retrieval-policy.json`.
+12. Read `agent_modules/process_breakdown/README.md`.
+13. Read `agent_modules/process_breakdown/rules/prompt-rules.md`.
+14. Read `agent_modules/process_breakdown/rules/breakdown-rules.json`.
+15. Read `agent_modules/process_breakdown/rules/material-use-policy.json`.
+16. Read `agent_modules/exception_design/README.md`.
+17. Read `agent_modules/exception_design/rules/prompt-rules.md`.
+18. Read `agent_modules/exception_design/rules/exception-rules.json`.
+19. Read `agent_modules/solution_packaging/README.md`.
+20. Read `agent_modules/solution_packaging/rules/prompt-rules.md`.
+21. Read `agent_modules/solution_packaging/rules/packaging-rules.json`.
+22. Read `agent_modules/requirement_clarification/materials/negative-examples.v1.json` only when RPA-fit risk signals appear or when fixed pre-screening needs examples.
 
 ## Operating Rules
 
@@ -36,6 +50,11 @@ Use this skill to turn a vague customer automation request into a structured, an
 - Use `stop_with_gap_report` when required boundary facts remain too incomplete.
 - Use `stop_with_blocker` when prework such as naming standardization or rule definition is needed.
 - Use `rpa_boundary_check` only when the module 2 summary is ready for the next module.
+- In module 3, make the final RPA boundary classification and preserve capability risks, prework, and `not_to_do_in_rpa`.
+- In module 4, produce business process cards with dependencies and validation points, not exact implementation details.
+- In module 5, produce semi-implementation exception flows, manual review policy, and logging policy.
+- In module 6, package the upstream results into customer HTML, developer HTML, and one structured fact source.
+- In module 6, never treat inferred recommendations as customer-confirmed development facts.
 
 ## Output
 
@@ -44,6 +63,10 @@ Maintain these structured outputs:
 - `interaction_state`
 - `answer_batch`
 - `clarification_result`
+- `rpa_boundary_result`
+- `process_breakdown_result`
+- `exception_design_result`
+- `solution_package_result`
 
 When returning a structured module result, return one JSON object only. Do not return multiple adjacent JSON objects.
 
@@ -53,7 +76,11 @@ Use exactly this top-level wrapper:
 {
   "interaction_state": {},
   "answer_batch": {},
-  "clarification_result": {}
+  "clarification_result": {},
+  "rpa_boundary_result": {},
+  "process_breakdown_result": {},
+  "exception_design_result": {},
+  "solution_package_result": {}
 }
 ```
 
@@ -120,6 +147,13 @@ Allowed `next_stage_recommendation` values are only:
 - `stop_with_gap_report`
 - `stop_with_blocker`
 
+Downstream modules must use their own schemas exactly:
+
+- `agent_modules/rpa_boundary_check/schemas/rpa-boundary-result.schema.json`
+- `agent_modules/process_breakdown/schemas/process-breakdown-result.schema.json`
+- `agent_modules/exception_design/schemas/exception-design-result.schema.json`
+- `agent_modules/solution_packaging/schemas/solution-package-result.schema.json`
+
 Allowed pre-screen values are only:
 
 - `high`
@@ -142,4 +176,4 @@ Use `candidate_risk_types` only for controlled identifiers. Allowed values are:
 
 Do not put full Chinese risk sentences inside `candidate_risk_types`. Put explanations in `stage_summary`, `pending_questions`, or `recommended_prework`.
 
-All Chinese text in final answers must be readable UTF-8 Chinese. Never emit mojibake strings such as `鐗╂枡`, `鍏堢粺`, `鑷姩`, or `椋炰功`. If retrieved material appears garbled, ignore the garbled text and regenerate readable Chinese from the underlying meaning.
+All Chinese text in final answers must be readable UTF-8 Chinese. Never emit garbled mojibake text. If retrieved material appears garbled, ignore the garbled text and regenerate readable Chinese from the underlying meaning.
