@@ -64,3 +64,12 @@
 - 电商多平台日报：验证模块 3 是否输出条件适合，并保留字段映射、指标口径、日期口径和校验方式缺口。
 - 邮件自动分类：验证语义判断风险是否进入低置信度或人工复核路径。
 - 物料名称同义判断：验证不建议直接 RPA 时是否输出治理建议，而不是伪造自动化方案。
+
+## Memory-driven stability regression
+
+- Before deployment, run the scenarios in `agent_platform_package/testing/stability_regression_scenarios.md`.
+- Confirm every scenario updates requirement memory before module transition.
+- Confirm each transition uses requirement memory gate state: `ready`, `partial_ready`, or `blocked`.
+- Confirm non-blocking gaps can be carried forward instead of forcing excessive questions.
+- Confirm final reports keep fixed report sections across scenarios.
+- Confirm inferred recommendations and RAG suggestions are source-labeled and not written as customer-confirmed facts.

@@ -32,6 +32,22 @@
     "module_3_questions_must_be_capability_critical",
     "captcha_is_conditional_capability_not_automatic_blocker"
   ],
+  "memory_gate_policy": {
+    "memory_module": "global_requirement_memory",
+    "entry_transition": "module_2_to_module_3",
+    "exit_transition": "module_3_to_module_4",
+    "read_memory_before_decision": true,
+    "write_boundary_decision_to_memory": true,
+    "allow_partial_ready_with_carry_forward_gaps": true,
+    "allowed_entry_gate_states": [
+      "ready",
+      "partial_ready"
+    ],
+    "blocked_gate_states": [
+      "blocked"
+    ],
+    "flow_rule": "Start from confirmed memory facts and module 2 carry-forward gaps. Write the RPA boundary classification as a memory decision before deciding whether module 4 is ready, partial_ready, or blocked."
+  },
   "classification_rules": {
     "suitable": {
       "required_dimension_statuses": {

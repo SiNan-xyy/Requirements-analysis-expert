@@ -12,29 +12,39 @@ Use this skill to turn a vague customer automation request into a structured, an
 1. Read `agent_modules/interaction_schema/README.md`.
 2. Read `agent_modules/interaction_schema/rules/prompt-rules.md`.
 3. Read `agent_modules/interaction_schema/rules/decision-rules.json`.
-4. Read `agent_modules/requirement_clarification/README.md`.
-5. Read `agent_modules/requirement_clarification/rules/prompt-rules.md`.
-6. Read `agent_modules/requirement_clarification/rules/completion-rules.json`.
-7. Read `agent_modules/requirement_clarification/rules/trigger-policy.json`.
-8. Read `agent_modules/rpa_boundary_check/README.md`.
-9. Read `agent_modules/rpa_boundary_check/rules/prompt-rules.md`.
-10. Read `agent_modules/rpa_boundary_check/rules/decision-rules.json`.
-11. Read `agent_modules/rpa_boundary_check/rules/material-retrieval-policy.json`.
-12. Read `agent_modules/process_breakdown/README.md`.
-13. Read `agent_modules/process_breakdown/rules/prompt-rules.md`.
-14. Read `agent_modules/process_breakdown/rules/breakdown-rules.json`.
-15. Read `agent_modules/process_breakdown/rules/material-use-policy.json`.
-16. Read `agent_modules/exception_design/README.md`.
-17. Read `agent_modules/exception_design/rules/prompt-rules.md`.
-18. Read `agent_modules/exception_design/rules/exception-rules.json`.
-19. Read `agent_modules/solution_packaging/README.md`.
-20. Read `agent_modules/solution_packaging/rules/prompt-rules.md`.
-21. Read `agent_modules/solution_packaging/rules/packaging-rules.json`.
-22. Read `agent_modules/requirement_clarification/materials/negative-examples.v1.json` only when RPA-fit risk signals appear or when fixed pre-screening needs examples.
+4. Read `agent_modules/requirement_memory/README.md`.
+5. Read `agent_modules/requirement_memory/rules/prompt-rules.md`.
+6. Read `agent_modules/requirement_memory/rules/update-rules.json`.
+7. Read `agent_modules/requirement_memory/rules/gate-rules.json`.
+8. Read `agent_modules/requirement_memory/schemas/requirement-memory.schema.json`.
+9. Read `agent_modules/requirement_clarification/README.md`.
+10. Read `agent_modules/requirement_clarification/rules/prompt-rules.md`.
+11. Read `agent_modules/requirement_clarification/rules/completion-rules.json`.
+12. Read `agent_modules/requirement_clarification/rules/trigger-policy.json`.
+13. Read `agent_modules/rpa_boundary_check/README.md`.
+14. Read `agent_modules/rpa_boundary_check/rules/prompt-rules.md`.
+15. Read `agent_modules/rpa_boundary_check/rules/decision-rules.json`.
+16. Read `agent_modules/rpa_boundary_check/rules/material-retrieval-policy.json`.
+17. Read `agent_modules/process_breakdown/README.md`.
+18. Read `agent_modules/process_breakdown/rules/prompt-rules.md`.
+19. Read `agent_modules/process_breakdown/rules/breakdown-rules.json`.
+20. Read `agent_modules/process_breakdown/rules/material-use-policy.json`.
+21. Read `agent_modules/exception_design/README.md`.
+22. Read `agent_modules/exception_design/rules/prompt-rules.md`.
+23. Read `agent_modules/exception_design/rules/exception-rules.json`.
+24. Read `agent_modules/solution_packaging/README.md`.
+25. Read `agent_modules/solution_packaging/rules/prompt-rules.md`.
+26. Read `agent_modules/solution_packaging/rules/packaging-rules.json`.
+27. Read `agent_modules/requirement_clarification/materials/negative-examples.v1.json` only when RPA-fit risk signals appear or when fixed pre-screening needs examples.
 
 ## Operating Rules
 
 - Start in module 1 by creating or updating `interaction_state`.
+- Read requirement memory before every turn, then update requirement memory after absorbing the latest customer response.
+- Use requirement memory facts, gaps, decisions, and gate states as the source of truth for module flow.
+- Do not require perfect upstream JSON before moving modules when memory gate state is `ready` or `partial_ready`.
+- Never convert `inferred_items` into development facts unless the customer confirms them.
+- Carry forward non-blocking gaps instead of repeatedly asking detailed questions too early.
 - Ask choice-first questions. Every question should allow `unknown` and `other` when appropriate.
 - Record every user response as an `answer_batch`.
 - Absorb supplemental free text into state before asking another question.

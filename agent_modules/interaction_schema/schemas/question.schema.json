@@ -31,7 +31,12 @@
     },
     "type": {
       "type": "string",
-      "enum": ["single_choice", "multiple_choice"]
+      "enum": [
+        "single_choice",
+        "multiple_choice",
+        "single_choice_with_text",
+        "multiple_choice_with_text"
+      ]
     },
     "importance": {
       "type": "string",

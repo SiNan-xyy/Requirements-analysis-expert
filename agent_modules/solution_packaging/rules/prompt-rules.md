@@ -42,6 +42,23 @@ Customer HTML and developer HTML are compatibility views only. All HTML views mu
 
 Use card-style process sections instead of swimlane diagrams.
 
+Every unified report must keep these fixed sections in this order:
+
+1. overall_conclusion
+2. requirement_understanding
+3. rpa_fit
+4. scope
+5. process_with_candidate_capabilities
+6. exceptions_with_source_labels
+7. fact_layering
+8. prework_gaps
+9. poc_next_steps
+10. chinese_development_json_summary
+
+Source labels must be visible when content comes from customer confirmation, RAG suggestion, agent inference awaiting confirmation, or required prework before build.
+
+The development JSON summary must be written in Chinese-facing business language, with confirmed fact IDs and pending gap IDs.
+
 ## Prohibited Content
 
 Do not generate exact click paths, selectors, wait times, retry counts as executable parameters, Yingdao instruction parameters, or final build guides.

@@ -29,5 +29,25 @@
     "max_required_unknown_count": 3,
     "max_retries_per_question": 2,
     "fallback_to_single_question": true
+  },
+  "question_type_policy": {
+    "mutually_exclusive": "single_choice_with_text",
+    "coexisting_facts": "multiple_choice_with_text",
+    "every_question_keeps_other_or_supplement_path": true,
+    "must_use_multiple_choice_with_text_for": [
+      "platform",
+      "data_source",
+      "output_field",
+      "exception_handling",
+      "notification_method",
+      "human_fallback",
+      "captcha_handling"
+    ],
+    "type_selection_rules": [
+      "Use single_choice_with_text when options are mutually exclusive but customer may need to add a special case.",
+      "Use multiple_choice_with_text when several options can be true at the same time.",
+      "Use multiple_choice_with_text for platforms, systems, data sources, output fields, exception handling, notification methods, human fallback, and captcha handling.",
+      "If an earlier answer already covers a later question, skip or convert the later question into a confirmation question."
+    ]
   }
 }

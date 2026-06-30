@@ -19,6 +19,11 @@
 
 ## Automatic module transition policy
 
+- Requirement memory is the source of truth for module flow.
+- Every turn must read requirement memory, absorb the latest customer answer, update facts/gaps/decisions, then evaluate the next gate state.
+- A module can continue automatically when the relevant memory gate is `ready` or `partial_ready`.
+- When the gate is `partial_ready`, carry non-blocking gaps forward and label them clearly instead of forcing all details to be answered immediately.
+- When the gate is `blocked`, stay in the current module or return upstream with a short gap report.
 - Do not wait for the user to type 继续 when the current module has enough facts to enter the next module.
 - 自动流转时，先用一两句话说明为什么可以进入下一模块，再直接提出下一模块的问题。
 - 如果当前模块有阻塞信息，必须停在当前模块或回退上游模块，不要假装可以继续。

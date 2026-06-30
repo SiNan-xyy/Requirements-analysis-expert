@@ -64,6 +64,22 @@
     "default_for_unasked_exception": "agent_inferred_pending_confirmation",
     "must_not_write_inferred_exception_as_customer_confirmed": true
   },
+  "memory_gate_policy": {
+    "memory_module": "global_requirement_memory",
+    "entry_transition": "module_4_to_module_5",
+    "exit_transition": "module_5_to_module_6",
+    "read_memory_before_exception_design": true,
+    "write_exception_decision_to_memory": true,
+    "allow_partial_ready_with_carry_forward_gaps": true,
+    "allowed_entry_gate_states": [
+      "ready",
+      "partial_ready"
+    ],
+    "blocked_gate_states": [
+      "blocked"
+    ],
+    "flow_rule": "Use module 4 focus steps and memory gaps to design exception flows. Mark unasked exception handling as inferred or required_before_build, then decide whether module 6 can package with carry-forward gaps."
+  },
   "handoff_policy": {
     "ready_next_module": "solution_packaging",
     "auto_transition_without_waiting_for_continue": true,

@@ -1,0 +1,127 @@
+{
+  "module": "global_requirement_memory",
+  "gate_states": [
+    "ready",
+    "partial_ready",
+    "blocked"
+  ],
+  "transitions": {
+    "module_2_to_module_3": {
+      "minimum_facts": [
+        "business_goal",
+        "operated_systems",
+        "input_data_or_source",
+        "output_result"
+      ],
+      "optional_facts": [
+        "trigger",
+        "completion_condition",
+        "basic_rule_clarity",
+        "basic_platform_access"
+      ],
+      "allowed_carry_forward_gaps": [
+        "detailed_field_mapping",
+        "detailed_exception_policy",
+        "verification_method",
+        "notification_method"
+      ],
+      "hard_blockers": [
+        "missing_business_goal",
+        "missing_operated_systems",
+        "missing_input_and_output"
+      ],
+      "ready_states": [
+        "ready",
+        "partial_ready"
+      ]
+    },
+    "module_3_to_module_4": {
+      "minimum_facts": [
+        "business_goal",
+        "operated_systems",
+        "input_stability",
+        "rule_clarity",
+        "platform_operability",
+        "result_verifiability",
+        "rpa_boundary_classification"
+      ],
+      "optional_facts": [
+        "available_instruction_candidates",
+        "known_rpa_risks",
+        "prework_recommendations"
+      ],
+      "allowed_carry_forward_gaps": [
+        "exact_field_mapping",
+        "exact_schedule",
+        "manual_review_threshold",
+        "captcha_handling_policy"
+      ],
+      "hard_blockers": [
+        "unresolved_core_rule",
+        "platform_not_operable",
+        "result_not_verifiable",
+        "high_risk_human_judgment_without_fallback"
+      ],
+      "ready_states": [
+        "ready",
+        "partial_ready"
+      ]
+    },
+    "module_4_to_module_5": {
+      "minimum_facts": [
+        "main_process_steps",
+        "step_dependencies",
+        "input_output_mapping",
+        "validation_points"
+      ],
+      "optional_facts": [
+        "candidate_instruction_chain",
+        "branch_conditions",
+        "manual_review_points"
+      ],
+      "allowed_carry_forward_gaps": [
+        "exact_selector_or_path",
+        "field_level_mapping_detail",
+        "notification_copy",
+        "retry_count"
+      ],
+      "hard_blockers": [
+        "no_main_process",
+        "unclear_input_output_mapping",
+        "missing_validation_points"
+      ],
+      "ready_states": [
+        "ready",
+        "partial_ready"
+      ]
+    },
+    "module_5_to_module_6": {
+      "minimum_facts": [
+        "exception_categories",
+        "manual_fallback_policy",
+        "logging_policy",
+        "report_scope",
+        "source_labels"
+      ],
+      "optional_facts": [
+        "notification_policy",
+        "retry_policy",
+        "poc_plan"
+      ],
+      "allowed_carry_forward_gaps": [
+        "exact_alert_receiver",
+        "exact_retry_interval",
+        "final_deployment_schedule"
+      ],
+      "hard_blockers": [
+        "missing_exception_policy",
+        "missing_manual_fallback",
+        "unresolved_fact_conflict"
+      ],
+      "ready_states": [
+        "ready",
+        "partial_ready"
+      ]
+    }
+  }
+}

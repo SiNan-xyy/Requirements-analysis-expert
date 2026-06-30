@@ -97,6 +97,19 @@ class RpaBoundaryCheckContractTests(unittest.TestCase):
             rules["classification_rules"]["not_suitable_for_direct_rpa"]["use_when"],
         )
 
+    def test_decision_rules_use_requirement_memory_gate_for_module_flow(self):
+        rules = load_json("agent_modules/rpa_boundary_check/rules/decision-rules.json")
+        gate_policy = rules["memory_gate_policy"]
+
+        self.assertEqual(gate_policy["memory_module"], "global_requirement_memory")
+        self.assertEqual(gate_policy["entry_transition"], "module_2_to_module_3")
+        self.assertEqual(gate_policy["exit_transition"], "module_3_to_module_4")
+        self.assertTrue(gate_policy["read_memory_before_decision"])
+        self.assertTrue(gate_policy["write_boundary_decision_to_memory"])
+        self.assertTrue(gate_policy["allow_partial_ready_with_carry_forward_gaps"])
+        self.assertIn("partial_ready", gate_policy["allowed_entry_gate_states"])
+        self.assertIn("blocked", gate_policy["blocked_gate_states"])
+
     def test_material_retrieval_policy_orders_yingdao_sources(self):
         policy = load_json("agent_modules/rpa_boundary_check/rules/material-retrieval-policy.json")
         steps = policy["retrieval_order"]

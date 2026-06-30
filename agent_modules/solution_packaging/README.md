@@ -15,6 +15,7 @@ The module is a solution packaging and development-alignment module. It is not a
 - `rules/prompt-rules.md`
 - `fixtures/ecommerce-daily-report-solution-package.json`
 - `fixtures/email-sorting-solution-package.json`
+- `fixtures/inventory-monitor-solution-package.json`
 - `fixtures/not-recommended-semantic-risk-solution-package.json`
 - `fixtures/blocked-gap-report-solution-package.json`
 

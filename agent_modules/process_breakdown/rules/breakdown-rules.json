@@ -51,6 +51,22 @@
     "do_not_override_module_3_decision",
     "do_not_generate_html"
   ],
+  "memory_gate_policy": {
+    "memory_module": "global_requirement_memory",
+    "entry_transition": "module_3_to_module_4",
+    "exit_transition": "module_4_to_module_5",
+    "read_memory_before_breakdown": true,
+    "write_process_decision_to_memory": true,
+    "allow_partial_ready_with_carry_forward_gaps": true,
+    "allowed_entry_gate_states": [
+      "ready",
+      "partial_ready"
+    ],
+    "blocked_gate_states": [
+      "blocked"
+    ],
+    "flow_rule": "Use confirmed memory facts, boundary decision, and carried gaps to build coherent business process cards. Ask only when the main process cannot be coherent; otherwise carry detailed implementation gaps forward."
+  },
   "question_policy": {
     "ask_only_when_main_flow_cannot_be_coherent": false,
     "must_use_module_1_choice_format": true,

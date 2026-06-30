@@ -74,6 +74,33 @@
       "status": "blocked",
       "source": "solution_package_result.fact_base"
     },
+    "fixed_sections": [
+      "overall_conclusion",
+      "requirement_understanding",
+      "rpa_fit",
+      "scope",
+      "process_with_candidate_capabilities",
+      "exceptions_with_source_labels",
+      "fact_layering",
+      "prework_gaps",
+      "poc_next_steps",
+      "chinese_development_json_summary"
+    ],
+    "source_labels": [
+      "customer_confirmed",
+      "rag_suggested",
+      "agent_inferred_pending_confirmation",
+      "required_before_build"
+    ],
+    "development_json_summary": {
+      "status": "blocked",
+      "confirmed_fact_ids": [],
+      "pending_gap_ids": [
+        "M001",
+        "M002"
+      ],
+      "chinese_summary": "当前缺少业务目标和操作系统等边界事实，暂不能生成落地方案。"
+    },
     "referenced_fact_ids": []
   },
   "customer_view_model": {

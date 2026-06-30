@@ -1,0 +1,272 @@
+{
+  "module": "module_6_solution_packaging",
+  "module_status": "completed",
+  "developer_alignment_status": "needs_confirmation",
+  "source_modules": {
+    "module_1_interaction_schema": {
+      "status": "completed",
+      "summary": "Customer interaction answers and state were captured."
+    },
+    "module_2_requirement_clarification": {
+      "status": "boundary_ready",
+      "summary": "Inventory monitor boundary facts are available."
+    },
+    "module_3_rpa_boundary_check": {
+      "status": "completed",
+      "summary": "Requirement is conditionally suitable pending threshold and notification confirmation."
+    },
+    "module_4_process_breakdown": {
+      "status": "completed",
+      "summary": "Inventory query, threshold comparison, and notification process cards are available."
+    },
+    "module_5_exception_design": {
+      "status": "completed",
+      "summary": "Source data, threshold, notification, manual review, and logging policies are available."
+    }
+  },
+  "fact_base": {
+    "confirmed_facts": [
+      {
+        "fact_id": "F001",
+        "topic": "business_goal",
+        "value": "Monitor product inventory and notify staff when stock is lower than the configured threshold.",
+        "source_module": "module_2_requirement_clarification",
+        "source_type": "user_answer",
+        "confidence": "high",
+        "can_be_used_for_development": true
+      }
+    ],
+    "inferred_recommendations": [
+      {
+        "item_id": "I001",
+        "topic": "manual_review_policy",
+        "value": "When inventory value is missing or abnormal, route the item to manual review before notification.",
+        "basis": [
+          "Inventory decisions affect replenishment actions.",
+          "Missing source data can create false alerts."
+        ],
+        "requires_confirmation": true,
+        "can_be_used_for_development": false
+      }
+    ],
+    "missing_required_items": [
+      {
+        "item_id": "M001",
+        "topic": "inventory_threshold",
+        "question": "What is the low-stock threshold for each product or product group?",
+        "why_it_matters": "Threshold rules decide whether an alert should be sent.",
+        "blocking_level": "high",
+        "owner": "customer_or_business_owner"
+      },
+      {
+        "item_id": "M002",
+        "topic": "notification_receiver",
+        "question": "Who should receive low-stock notifications?",
+        "why_it_matters": "Notification recipients affect handoff and accountability.",
+        "blocking_level": "medium",
+        "owner": "customer_or_implementation_consultant"
+      }
+    ],
+    "conflict_or_uncertainty": []
+  },
+  "decision_summary": {
+    "recommendation": "conditional",
+    "headline": "Inventory monitoring is suitable for RPA after thresholds and notifications are confirmed.",
+    "confidence": "medium_high",
+    "reasoning_points": [
+      "Inventory query and threshold comparison are repeatable.",
+      "Alert sending has a clear output.",
+      "Threshold and recipient details remain open."
+    ]
+  },
+  "unified_view_model": {
+    "report_type": "solution_report",
+    "headline": "Inventory monitoring is conditionally suitable for RPA.",
+    "recommendation": "Confirm thresholds, source system scope, and notification recipients before implementation.",
+    "audience": "customer_business_owner_and_rpa_builder",
+    "requirement_understanding": "Monitor inventory values and send low-stock alerts based on confirmed threshold rules.",
+    "rpa_fit_summary": [
+      "Repeatable inventory query",
+      "Clear threshold judgment",
+      "Notification rule confirmation required"
+    ],
+    "scope": [
+      "Read inventory data",
+      "Compare against thresholds",
+      "Send low-stock notification",
+      "Record execution result"
+    ],
+    "process_and_branch_cards": [
+      {
+        "step_id": "U01",
+        "title": "Read inventory data",
+        "summary": "Collect inventory values from the confirmed source system.",
+        "source_step_id": "S02"
+      },
+      {
+        "step_id": "U02",
+        "title": "Check threshold",
+        "summary": "Compare inventory values with configured threshold rules.",
+        "source_step_id": "S03"
+      }
+    ],
+    "exception_handling": [
+      "Missing inventory values require manual review.",
+      "Notification failure must be recorded and escalated."
+    ],
+    "candidate_yingdao_capabilities": [
+      "Web automation",
+      "Condition judgment",
+      "Message notification",
+      "Execution logging"
+    ],
+    "prework_and_pending_confirmations": [
+      "Confirm inventory source system.",
+      "Confirm threshold table.",
+      "Confirm notification recipients."
+    ],
+    "implementation_json_summary": {
+      "status": "needs_confirmation",
+      "source": "solution_package_result.fact_base"
+    },
+    "fixed_sections": [
+      "overall_conclusion",
+      "requirement_understanding",
+      "rpa_fit",
+      "scope",
+      "process_with_candidate_capabilities",
+      "exceptions_with_source_labels",
+      "fact_layering",
+      "prework_gaps",
+      "poc_next_steps",
+      "chinese_development_json_summary"
+    ],
+    "source_labels": [
+      "customer_confirmed",
+      "rag_suggested",
+      "agent_inferred_pending_confirmation",
+      "required_before_build"
+    ],
+    "development_json_summary": {
+      "status": "needs_confirmation",
+      "confirmed_fact_ids": [
+        "F001"
+      ],
+      "pending_gap_ids": [
+        "M001",
+        "M002"
+      ],
+      "chinese_summary": "已确认库存监控目标；开发前仍需确认库存阈值、数据来源和通知接收人。"
+    },
+    "referenced_fact_ids": [
+      "F001"
+    ]
+  },
+  "customer_view_model": {
+    "report_type": "solution_report",
+    "headline": "Inventory monitoring is conditionally suitable for RPA.",
+    "recommendation": "Confirm threshold rules and notification recipients.",
+    "requirement_understanding": "Monitor inventory and notify staff when stock falls below the configured threshold.",
+    "rpa_fit_summary": [
+      "Repeatable query and comparison",
+      "Clear alert output"
+    ],
+    "business_scope_included": [
+      "Read inventory",
+      "Compare threshold",
+      "Send notification"
+    ],
+    "business_scope_excluded": [
+      "Define replenishment strategy",
+      "Change product master data"
+    ],
+    "process_cards": [
+      {
+        "step_id": "C01",
+        "title": "Read inventory data",
+        "summary": "Collect inventory values from the confirmed source.",
+        "source_step_id": "S02"
+      }
+    ],
+    "risk_and_manual_intervention": [
+      "Missing inventory data requires manual review."
+    ],
+    "customer_preparation_items": [
+      "Confirm threshold table.",
+      "Confirm notification recipients."
+    ],
+    "next_steps": [
+      "Review missing confirmation items.",
+      "Confirm implementation scope before development."
+    ],
+    "referenced_fact_ids": [
+      "F001"
+    ]
+  },
+  "developer_view_model": {
+    "report_type": "solution_report",
+    "implementation_status": "needs_confirmation",
+    "confirmed_development_basis": [
+      "Business goal is confirmed."
+    ],
+    "blocking_confirmation_items": [
+      "inventory_threshold",
+      "notification_receiver"
+    ],
+    "agent_inferred_recommendations": [
+      "manual_review_policy"
+    ],
+    "rpa_capability_boundary": [
+      "RPA can execute repeatable query, threshold comparison, and notification.",
+      "RPA cannot define replenishment rules."
+    ],
+    "process_breakdown": {
+      "process_cards": [
+        {
+          "step_id": "D01",
+          "title": "Read inventory data",
+          "summary": "Collect inventory values from the confirmed source.",
+          "source_step_id": "S02"
+        }
+      ],
+      "dependencies": [
+        "Confirmed source system",
+        "Confirmed threshold table"
+      ],
+      "validation_points": [
+        "Inventory value is readable",
+        "Notification record is generated"
+      ]
+    },
+    "field_and_data_mapping": [
+      "Inventory field to threshold table mapping is required."
+    ],
+    "exception_handling": [
+      "Source data missing and notification failure require handling."
+    ],
+    "acceptance_criteria": [
+      "Inventory data is read.",
+      "Low-stock records are identified.",
+      "Notification result is logged."
+    ],
+    "traceability": [
+      "Facts from Module 2",
+      "RPA boundary from Module 3",
+      "Process cards from Module 4",
+      "Exceptions from Module 5"
+    ],
+    "structured_data_appendix": {
+      "included": true,
+      "source": "solution_package_result.fact_base"
+    },
+    "referenced_fact_ids": [
+      "F001"
+    ]
+  },
+  "render_outputs": {
+    "unified_html": "<section class=\"unified-card\"><h1>Inventory monitoring is conditionally suitable for RPA.</h1><div class=\"card\">Unified report: confirm thresholds, source system, and notification recipients before implementation.</div></section>",
+    "customer_html": "<section class=\"summary-card\"><h1>Inventory monitoring is conditionally suitable for RPA.</h1><div class=\"card\">Conditionally suitable for RPA after threshold confirmation.</div></section>",
+    "developer_html": "<section class=\"developer-card\"><h1>Implementation alignment</h1><div class=\"card\">Status: needs_confirmation. Missing: inventory threshold and notification receiver.</div></section>"
+  },
+  "next_stage_recommendation": "manual_review_before_implementation"
+}

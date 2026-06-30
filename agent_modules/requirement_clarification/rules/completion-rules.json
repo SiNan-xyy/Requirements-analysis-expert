@@ -32,5 +32,20 @@
     "confirmed": "enter_next_module",
     "insufficient": "stop_with_gap_report",
     "prework_required": "stop_with_blocker"
+  },
+  "memory_gate_policy": {
+    "memory_module": "global_requirement_memory",
+    "transition": "module_2_to_module_3",
+    "read_memory_before_decision": true,
+    "update_memory_before_transition": true,
+    "allow_partial_ready_with_carry_forward_gaps": true,
+    "allowed_gate_states": [
+      "ready",
+      "partial_ready"
+    ],
+    "blocked_gate_states": [
+      "blocked"
+    ],
+    "flow_rule": "Use requirement memory gate state to decide whether to enter module 3. If the gate is partial_ready, carry non-blocking gaps forward instead of asking implementation-detail questions in module 2."
   }
 }

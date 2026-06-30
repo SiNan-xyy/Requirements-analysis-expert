@@ -108,6 +108,36 @@
       "status": "not_recommended",
       "source": "solution_package_result.fact_base"
     },
+    "fixed_sections": [
+      "overall_conclusion",
+      "requirement_understanding",
+      "rpa_fit",
+      "scope",
+      "process_with_candidate_capabilities",
+      "exceptions_with_source_labels",
+      "fact_layering",
+      "prework_gaps",
+      "poc_next_steps",
+      "chinese_development_json_summary"
+    ],
+    "source_labels": [
+      "customer_confirmed",
+      "rag_suggested",
+      "agent_inferred_pending_confirmation",
+      "required_before_build"
+    ],
+    "development_json_summary": {
+      "status": "not_recommended",
+      "confirmed_fact_ids": [
+        "F001"
+      ],
+      "pending_gap_ids": [
+        "M001",
+        "M002",
+        "M003"
+      ],
+      "chinese_summary": "当前核心问题依赖开放语义判断，不建议直接开发 RPA；需先完成命名规则和映射治理。"
+    },
     "referenced_fact_ids": [
       "F001"
     ]

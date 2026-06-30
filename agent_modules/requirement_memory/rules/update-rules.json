@@ -1,0 +1,41 @@
+{
+  "module": "global_requirement_memory",
+  "global_rules": [
+    "read_memory_before_every_turn",
+    "confirmed_facts_require_customer_or_upstream_source",
+    "inferred_items_cannot_be_used_for_development",
+    "gaps_must_track_blocking_stage",
+    "conflicts_must_supersede_or_retire_old_facts"
+  ],
+  "update_sequence": [
+    "read_existing_memory",
+    "extract_customer_confirmed_facts",
+    "promote_confirmed_answers_to_F_ids",
+    "record_agent_or_rag_suggestions_as_I_ids",
+    "record_unanswered_development_needs_as_G_ids",
+    "retire_questions_answered_by_existing_facts",
+    "resolve_or_record_conflicts",
+    "update_gate_states",
+    "plan_next_question_only_for_active_gaps"
+  ],
+  "source_promotion_rules": {
+    "customer_answer_to_confirmed_fact": "Only explicit user answers or explicit correction from the customer can create customer_confirmed facts.",
+    "module_output_to_confirmed_fact": "Only upstream module outputs based on confirmed facts can create upstream_confirmed facts.",
+    "rag_to_inferred_item": "RAG content can suggest capabilities, risks, examples, and prework, but it cannot become a development fact without customer confirmation.",
+    "agent_reasoning_to_inferred_item": "Agent inference must remain agent_inferred_pending_confirmation until confirmed by the customer."
+  },
+  "development_use_rules": {
+    "confirmed_facts": "Can be used for boundary checks, process breakdown, exception design, and final report development alignment.",
+    "inferred_items": "Can be displayed as suggested items or confirmation candidates only.",
+    "gaps": "Must be shown as pending confirmation, prework, or carry-forward risk depending on blocking level.",
+    "conflicts": "Must be resolved or explicitly marked before final development handoff."
+  },
+  "id_rules": {
+    "fact": "F001",
+    "inference": "I001",
+    "gap": "G001",
+    "conflict": "C001",
+    "retired_question": "R001",
+    "decision": "D001"
+  }
+}

@@ -1,0 +1,392 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RequirementMemory",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "module",
+    "memory_version",
+    "current_stage",
+    "confirmed_facts",
+    "inferred_items",
+    "gaps",
+    "conflicts",
+    "retired_questions",
+    "decisions",
+    "gate_states"
+  ],
+  "properties": {
+    "module": {
+      "const": "global_requirement_memory"
+    },
+    "memory_version": {
+      "type": "string"
+    },
+    "current_stage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "current_module",
+        "state",
+        "next_action"
+      ],
+      "properties": {
+        "current_module": {
+          "type": "string"
+        },
+        "state": {
+          "enum": [
+            "collecting",
+            "analyzing",
+            "ready_to_transition",
+            "blocked",
+            "packaging"
+          ]
+        },
+        "next_action": {
+          "type": "string"
+        }
+      }
+    },
+    "confirmed_facts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/confirmed_fact"
+      }
+    },
+    "inferred_items": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/inferred_item"
+      }
+    },
+    "gaps": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/gap"
+      }
+    },
+    "conflicts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/conflict"
+      }
+    },
+    "retired_questions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/retired_question"
+      }
+    },
+    "decisions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/decision"
+      }
+    },
+    "gate_states": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/gate"
+      }
+    },
+    "next_question_plan": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "target_gap_id",
+          "question_type",
+          "question"
+        ],
+        "properties": {
+          "target_gap_id": {
+            "$ref": "#/$defs/gap_id"
+          },
+          "question_type": {
+            "enum": [
+              "single_choice",
+              "multiple_choice",
+              "single_choice_with_text",
+              "multiple_choice_with_text"
+            ]
+          },
+          "question": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "fact_id": {
+      "type": "string",
+      "pattern": "^F[0-9]{3}$"
+    },
+    "inference_id": {
+      "type": "string",
+      "pattern": "^I[0-9]{3}$"
+    },
+    "gap_id": {
+      "type": "string",
+      "pattern": "^G[0-9]{3}$"
+    },
+    "conflict_id": {
+      "type": "string",
+      "pattern": "^C[0-9]{3}$"
+    },
+    "retired_id": {
+      "type": "string",
+      "pattern": "^R[0-9]{3}$"
+    },
+    "decision_id": {
+      "type": "string",
+      "pattern": "^D[0-9]{3}$"
+    },
+    "source_label": {
+      "enum": [
+        "customer_confirmed",
+        "upstream_confirmed",
+        "rag_suggested",
+        "agent_inferred_pending_confirmation",
+        "required_before_build"
+      ]
+    },
+    "confidence": {
+      "enum": [
+        "high",
+        "medium",
+        "low",
+        "unknown"
+      ]
+    },
+    "gate_state": {
+      "enum": [
+        "ready",
+        "partial_ready",
+        "blocked"
+      ]
+    },
+    "confirmed_fact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fact_id",
+        "topic",
+        "value",
+        "source_label",
+        "source_detail",
+        "confidence",
+        "can_be_used_for_development"
+      ],
+      "properties": {
+        "fact_id": {
+          "$ref": "#/$defs/fact_id"
+        },
+        "topic": {
+          "type": "string"
+        },
+        "value": {},
+        "source_label": {
+          "enum": [
+            "customer_confirmed",
+            "upstream_confirmed"
+          ]
+        },
+        "source_detail": {
+          "type": "string"
+        },
+        "confidence": {
+          "$ref": "#/$defs/confidence"
+        },
+        "can_be_used_for_development": {
+          "const": true
+        }
+      }
+    },
+    "inferred_item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "item_id",
+        "topic",
+        "value",
+        "basis",
+        "source_label",
+        "requires_confirmation",
+        "can_be_used_for_development"
+      ],
+      "properties": {
+        "item_id": {
+          "$ref": "#/$defs/inference_id"
+        },
+        "topic": {
+          "type": "string"
+        },
+        "value": {},
+        "basis": {
+          "type": "string"
+        },
+        "source_label": {
+          "enum": [
+            "rag_suggested",
+            "agent_inferred_pending_confirmation"
+          ]
+        },
+        "requires_confirmation": {
+          "const": true
+        },
+        "can_be_used_for_development": {
+          "const": false
+        }
+      }
+    },
+    "gap": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "gap_id",
+        "topic",
+        "question",
+        "blocking_stage",
+        "blocking_level",
+        "source_label"
+      ],
+      "properties": {
+        "gap_id": {
+          "$ref": "#/$defs/gap_id"
+        },
+        "topic": {
+          "type": "string"
+        },
+        "question": {
+          "type": "string"
+        },
+        "blocking_stage": {
+          "type": "string"
+        },
+        "blocking_level": {
+          "enum": [
+            "high",
+            "medium",
+            "low"
+          ]
+        },
+        "source_label": {
+          "const": "required_before_build"
+        }
+      }
+    },
+    "conflict": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "conflict_id",
+        "description",
+        "affected_fact_ids",
+        "resolution"
+      ],
+      "properties": {
+        "conflict_id": {
+          "$ref": "#/$defs/conflict_id"
+        },
+        "description": {
+          "type": "string"
+        },
+        "affected_fact_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/fact_id"
+          }
+        },
+        "resolution": {
+          "enum": [
+            "supersede_old_fact",
+            "retire_old_question",
+            "await_customer_confirmation"
+          ]
+        }
+      }
+    },
+    "retired_question": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "retired_id",
+        "question_topic",
+        "reason"
+      ],
+      "properties": {
+        "retired_id": {
+          "$ref": "#/$defs/retired_id"
+        },
+        "question_topic": {
+          "type": "string"
+        },
+        "reason": {
+          "type": "string"
+        }
+      }
+    },
+    "decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "decision_id",
+        "module",
+        "decision",
+        "based_on_fact_ids"
+      ],
+      "properties": {
+        "decision_id": {
+          "$ref": "#/$defs/decision_id"
+        },
+        "module": {
+          "type": "string"
+        },
+        "decision": {
+          "type": "string"
+        },
+        "based_on_fact_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/fact_id"
+          }
+        }
+      }
+    },
+    "gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "transition",
+        "state",
+        "reason"
+      ],
+      "properties": {
+        "transition": {
+          "type": "string"
+        },
+        "state": {
+          "$ref": "#/$defs/gate_state"
+        },
+        "reason": {
+          "type": "string"
+        },
+        "minimum_facts_met": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "carry_forward_gap_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/gap_id"
+          }
+        }
+      }
+    }
+  }
+}

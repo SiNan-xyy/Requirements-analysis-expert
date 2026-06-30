@@ -35,7 +35,21 @@
     "unified_html": "Default output. Use one Chinese RPA landing analysis report for customer, business implementer, and RPA builder alignment.",
     "customer_html": "Use business-facing sections and process cards.",
     "developer_html": "Use implementation-readiness sections and include a structured data appendix.",
-    "insufficient_data": "Show gaps or pending confirmation instead of inventing missing content."
+    "insufficient_data": "Show gaps or pending confirmation instead of inventing missing content.",
+    "fixed_report_sections": [
+      "overall_conclusion",
+      "requirement_understanding",
+      "rpa_fit",
+      "scope",
+      "process_with_candidate_capabilities",
+      "exceptions_with_source_labels",
+      "fact_layering",
+      "prework_gaps",
+      "poc_next_steps",
+      "chinese_development_json_summary"
+    ],
+    "must_render_source_labels": true,
+    "must_include_chinese_development_json_summary": true
   },
   "next_stage_recommendations": [
     "manual_review_before_implementation",

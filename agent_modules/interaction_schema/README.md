@@ -13,6 +13,7 @@ It does not evaluate RPA feasibility, break down process steps, design exception
 - `rules/prompt-rules.md`: agent prompt behavior rules.
 - `fixtures/valid-interaction-state.json`: baseline interaction state example.
 - `fixtures/valid-question-trigger-type.json`: required trigger question example.
+- `fixtures/multiple-choice-with-text-required.json`: required multi-select question with supplement example.
 - `fixtures/valid-answer-batch.json`: answer record and state patch example.
 - `fixtures/deduplication-url-inference.json`: answer absorption example that infers a web system from a URL and skips repeated system questions.
 
@@ -29,7 +30,7 @@ Use these files as the module 1 contract for agent platform integration.
 
 ## Acceptance Criteria
 
-- Questions support only `single_choice` and `multiple_choice`.
+- Questions support `single_choice`, `multiple_choice`, `single_choice_with_text`, and `multiple_choice_with_text`.
 - Questions classify importance as `required`, `recommended`, or `optional`.
 - Questions support free text and require it when `other` is selected.
 - Answers distinguish `answered`, `unknown`, `skipped`, `invalid`, and `needs_free_text`.

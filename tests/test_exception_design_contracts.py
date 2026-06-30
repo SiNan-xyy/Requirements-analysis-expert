@@ -186,6 +186,19 @@ class ExceptionDesignContractTests(unittest.TestCase):
         self.assertIn("do_not_generate_instruction_parameters", rules["forbidden_behaviors"])
         self.assertIn("do_not_generate_html", rules["forbidden_behaviors"])
 
+    def test_exception_rules_use_requirement_memory_gate_for_module_flow(self):
+        rules = load_json("agent_modules/exception_design/rules/exception-rules.json")
+        gate_policy = rules["memory_gate_policy"]
+
+        self.assertEqual(gate_policy["memory_module"], "global_requirement_memory")
+        self.assertEqual(gate_policy["entry_transition"], "module_4_to_module_5")
+        self.assertEqual(gate_policy["exit_transition"], "module_5_to_module_6")
+        self.assertTrue(gate_policy["read_memory_before_exception_design"])
+        self.assertTrue(gate_policy["write_exception_decision_to_memory"])
+        self.assertTrue(gate_policy["allow_partial_ready_with_carry_forward_gaps"])
+        self.assertIn("partial_ready", gate_policy["allowed_entry_gate_states"])
+        self.assertIn("blocked", gate_policy["blocked_gate_states"])
+
     def test_prompt_rules_keep_module_5_semi_implementation_level(self):
         text = (ROOT / "agent_modules/exception_design/rules/prompt-rules.md").read_text(
             encoding="utf-8"

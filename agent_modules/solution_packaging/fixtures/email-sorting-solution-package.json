@@ -127,6 +127,36 @@
       "status": "needs_confirmation",
       "source": "solution_package_result.fact_base"
     },
+    "fixed_sections": [
+      "overall_conclusion",
+      "requirement_understanding",
+      "rpa_fit",
+      "scope",
+      "process_with_candidate_capabilities",
+      "exceptions_with_source_labels",
+      "fact_layering",
+      "prework_gaps",
+      "poc_next_steps",
+      "chinese_development_json_summary"
+    ],
+    "source_labels": [
+      "customer_confirmed",
+      "rag_suggested",
+      "agent_inferred_pending_confirmation",
+      "required_before_build"
+    ],
+    "development_json_summary": {
+      "status": "needs_confirmation",
+      "confirmed_fact_ids": [
+        "F001"
+      ],
+      "pending_gap_ids": [
+        "M001",
+        "M002",
+        "M003"
+      ],
+      "chinese_summary": "已确认邮件分类目标；开发前仍需确认分类样例、低置信度处理方式和人工复核责任人。"
+    },
     "referenced_fact_ids": [
       "F001"
     ]

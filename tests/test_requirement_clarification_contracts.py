@@ -87,6 +87,19 @@ class RequirementClarificationContractTests(unittest.TestCase):
         self.assertEqual(rules["next_actions"]["insufficient"], "stop_with_gap_report")
         self.assertEqual(rules["next_actions"]["prework_required"], "stop_with_blocker")
 
+    def test_completion_rules_use_requirement_memory_gate_for_module_flow(self):
+        rules = load_json("agent_modules/requirement_clarification/rules/completion-rules.json")
+        gate_policy = rules["memory_gate_policy"]
+
+        self.assertEqual(gate_policy["memory_module"], "global_requirement_memory")
+        self.assertEqual(gate_policy["transition"], "module_2_to_module_3")
+        self.assertTrue(gate_policy["read_memory_before_decision"])
+        self.assertTrue(gate_policy["update_memory_before_transition"])
+        self.assertTrue(gate_policy["allow_partial_ready_with_carry_forward_gaps"])
+        self.assertIn("ready", gate_policy["allowed_gate_states"])
+        self.assertIn("partial_ready", gate_policy["allowed_gate_states"])
+        self.assertIn("blocked", gate_policy["blocked_gate_states"])
+
     def test_module_2_actions_match_module_1_interaction_vocabulary(self):
         interaction_schema = load_json("agent_modules/interaction_schema/schemas/interaction-state.schema.json")
         module_2_schema = load_json("agent_modules/requirement_clarification/schemas/clarification-result.schema.json")

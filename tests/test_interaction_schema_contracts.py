@@ -30,10 +30,18 @@ class InteractionSchemaContractTests(unittest.TestCase):
         self.assertIn("development_ready", props["completion_level"]["enum"])
         self.assertIn("stop_with_gap_report", props["next_action"]["enum"])
 
-    def test_question_schema_uses_only_single_or_multiple_choice(self):
+    def test_question_schema_supports_choice_with_text_types(self):
         schema = load_json("agent_modules/interaction_schema/schemas/question.schema.json")
 
-        self.assertEqual(schema["properties"]["type"]["enum"], ["single_choice", "multiple_choice"])
+        self.assertEqual(
+            schema["properties"]["type"]["enum"],
+            [
+                "single_choice",
+                "multiple_choice",
+                "single_choice_with_text",
+                "multiple_choice_with_text",
+            ],
+        )
         self.assertEqual(
             schema["properties"]["importance"]["enum"],
             ["required", "recommended", "optional"],
@@ -88,11 +96,38 @@ class InteractionSchemaContractTests(unittest.TestCase):
         self.assertEqual(rules["gap_stop_policy"]["max_retries_per_question"], 2)
         self.assertTrue(rules["gap_stop_policy"]["fallback_to_single_question"])
 
+    def test_question_type_policy_routes_coexisting_facts_to_multi_choice_with_text(self):
+        rules = load_json("agent_modules/interaction_schema/rules/decision-rules.json")
+        policy = rules["question_type_policy"]
+
+        self.assertEqual(policy["mutually_exclusive"], "single_choice_with_text")
+        self.assertEqual(policy["coexisting_facts"], "multiple_choice_with_text")
+        self.assertIn("platform", policy["must_use_multiple_choice_with_text_for"])
+        self.assertIn("data_source", policy["must_use_multiple_choice_with_text_for"])
+        self.assertIn("output_field", policy["must_use_multiple_choice_with_text_for"])
+        self.assertIn("exception_handling", policy["must_use_multiple_choice_with_text_for"])
+        self.assertIn("notification_method", policy["must_use_multiple_choice_with_text_for"])
+        self.assertIn("human_fallback", policy["must_use_multiple_choice_with_text_for"])
+        self.assertIn("captcha_handling", policy["must_use_multiple_choice_with_text_for"])
+        self.assertTrue(policy["every_question_keeps_other_or_supplement_path"])
+
+    def test_multiple_choice_with_text_fixture_supports_supplement(self):
+        question = load_json("agent_modules/interaction_schema/fixtures/multiple-choice-with-text-required.json")
+        option_values = {option["value"] for option in question["options"]}
+
+        self.assertEqual(question["type"], "multiple_choice_with_text")
+        self.assertEqual(question["target_field"], "operated_systems")
+        self.assertTrue(question["free_text"]["enabled"])
+        self.assertIn("other", option_values)
+        self.assertIn("unknown", option_values)
+        self.assertEqual(question["free_text"]["required_when"]["selected_values_include"], ["other"])
+
     def test_prompt_rules_document_mentions_no_repeated_questions(self):
         text = (ROOT / "agent_modules/interaction_schema/rules/prompt-rules.md").read_text(encoding="utf-8")
 
         self.assertIn("Do not ask a question if the answer was already supplied", text)
         self.assertIn("Summarize what was learned before entering the next module", text)
+        self.assertIn("Use `multiple_choice_with_text`", text)
 
     def test_deduplication_fixture_infers_web_system_from_url(self):
         fixture = load_json("agent_modules/interaction_schema/fixtures/deduplication-url-inference.json")
@@ -126,6 +161,7 @@ class InteractionSchemaContractTests(unittest.TestCase):
             "rules/decision-rules.json",
             "rules/prompt-rules.md",
             "fixtures/deduplication-url-inference.json",
+            "fixtures/multiple-choice-with-text-required.json",
         ]
         for path in expected_paths:
             with self.subTest(path=path):

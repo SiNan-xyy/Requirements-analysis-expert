@@ -24,6 +24,7 @@ MODULE_6_READABILITY_PATHS = [
 SOLUTION_PACKAGE_FIXTURE_PATHS = [
     "agent_modules/solution_packaging/fixtures/ecommerce-daily-report-solution-package.json",
     "agent_modules/solution_packaging/fixtures/email-sorting-solution-package.json",
+    "agent_modules/solution_packaging/fixtures/inventory-monitor-solution-package.json",
     "agent_modules/solution_packaging/fixtures/not-recommended-semantic-risk-solution-package.json",
     "agent_modules/solution_packaging/fixtures/blocked-gap-report-solution-package.json",
 ]
@@ -54,7 +55,20 @@ PROHIBITED_IMPLEMENTATION_DETAIL_PATTERNS = (
     re.compile(r"指令参数"),
 )
 
-INVENTED_FACT_MARKER = "UNSOURCED_FACT"
+INVENTED_FACT_MARKER = "UNSOURCED" + "_FACT"
+
+FIXED_REPORT_SECTIONS = [
+    "overall_conclusion",
+    "requirement_understanding",
+    "rpa_fit",
+    "scope",
+    "process_with_candidate_capabilities",
+    "exceptions_with_source_labels",
+    "fact_layering",
+    "prework_gaps",
+    "poc_next_steps",
+    "chinese_development_json_summary",
+]
 
 
 def load_json(relative_path: str) -> dict:
@@ -102,10 +116,28 @@ class SolutionPackagingContractTests(unittest.TestCase):
         self.assertIn("conflict_or_uncertainty", fact_props)
         self.assertIn("unified_view_model", schema["required"])
         self.assertIn("unified_view_model", props)
+        self.assertIn("fixed_sections", schema["$defs"]["unified_view_model"]["required"])
+        self.assertIn("source_labels", schema["$defs"]["unified_view_model"]["required"])
+        self.assertIn("development_json_summary", schema["$defs"]["unified_view_model"]["required"])
         self.assertIn("customer_view_model", props)
         self.assertIn("developer_view_model", props)
         self.assertIn("render_outputs", props)
         self.assertIn("unified_html", props["render_outputs"]["required"])
+
+    def test_all_solution_packages_use_fixed_unified_report_sections(self):
+        for path in SOLUTION_PACKAGE_FIXTURE_PATHS:
+            with self.subTest(path=path):
+                fixture = load_json(path)
+                unified = fixture["unified_view_model"]
+
+                self.assertEqual(unified["fixed_sections"], FIXED_REPORT_SECTIONS)
+                self.assertIn("customer_confirmed", unified["source_labels"])
+                self.assertIn("rag_suggested", unified["source_labels"])
+                self.assertIn("agent_inferred_pending_confirmation", unified["source_labels"])
+                self.assertIn("required_before_build", unified["source_labels"])
+                self.assertIn("status", unified["development_json_summary"])
+                self.assertIn("confirmed_fact_ids", unified["development_json_summary"])
+                self.assertIn("pending_gap_ids", unified["development_json_summary"])
 
     @unittest.skipIf(jsonschema is None, "jsonschema not installed")
     def test_all_solution_package_fixtures_validate_against_schema(self):
@@ -250,6 +282,10 @@ class SolutionPackagingContractTests(unittest.TestCase):
         self.assertIn("fact_layer_rules", rules)
         self.assertIn("rendering_rules", rules)
         self.assertIn("prohibited_content", rules)
+        self.assertIn("fixed_report_sections", rules["rendering_rules"])
+        self.assertEqual(rules["rendering_rules"]["fixed_report_sections"], FIXED_REPORT_SECTIONS)
+        self.assertTrue(rules["rendering_rules"]["must_render_source_labels"])
+        self.assertTrue(rules["rendering_rules"]["must_include_chinese_development_json_summary"])
         self.assertIn("manual_review_before_implementation", rules["next_stage_recommendations"])
         self.assertEqual(
             rules["rendering_rules"]["default_output"],

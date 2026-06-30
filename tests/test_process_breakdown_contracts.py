@@ -125,6 +125,19 @@ class ProcessBreakdownContractTests(unittest.TestCase):
             any("required recommended and optional" in item for item in rules["generation_requirements"])
         )
 
+    def test_breakdown_rules_use_requirement_memory_gate_for_module_flow(self):
+        rules = load_json("agent_modules/process_breakdown/rules/breakdown-rules.json")
+        gate_policy = rules["memory_gate_policy"]
+
+        self.assertEqual(gate_policy["memory_module"], "global_requirement_memory")
+        self.assertEqual(gate_policy["entry_transition"], "module_3_to_module_4")
+        self.assertEqual(gate_policy["exit_transition"], "module_4_to_module_5")
+        self.assertTrue(gate_policy["read_memory_before_breakdown"])
+        self.assertTrue(gate_policy["write_process_decision_to_memory"])
+        self.assertTrue(gate_policy["allow_partial_ready_with_carry_forward_gaps"])
+        self.assertIn("partial_ready", gate_policy["allowed_entry_gate_states"])
+        self.assertIn("blocked", gate_policy["blocked_gate_states"])
+
     def test_material_use_policy_prioritizes_flow_templates(self):
         policy = load_json("agent_modules/process_breakdown/rules/material-use-policy.json")
         sources = [item["source"] for item in policy["source_order"]]

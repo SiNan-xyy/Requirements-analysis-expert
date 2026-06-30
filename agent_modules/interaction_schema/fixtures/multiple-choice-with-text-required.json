@@ -1,0 +1,52 @@
+{
+  "question_id": "operated_systems",
+  "stage": "intake",
+  "question": "这个自动化需要操作哪些平台或系统？可以多选；如果不在选项里，请选择“其他”并补充。",
+  "type": "multiple_choice_with_text",
+  "importance": "required",
+  "blocks_stage_progression": true,
+  "allow_unknown": true,
+  "target_field": "operated_systems",
+  "options": [
+    {
+      "label": "电商平台后台",
+      "value": "ecommerce_platform_backend",
+      "description": "例如淘宝、京东、拼多多、抖音电商等后台。"
+    },
+    {
+      "label": "在线表格",
+      "value": "online_spreadsheet",
+      "description": "例如腾讯文档、飞书表格或金山文档。"
+    },
+    {
+      "label": "本地文件",
+      "value": "local_file",
+      "description": "例如 Excel、CSV 或下载文件。"
+    },
+    {
+      "label": "不确定",
+      "value": "unknown",
+      "description": "目前还不清楚具体操作系统。"
+    },
+    {
+      "label": "其他，请补充",
+      "value": "other",
+      "description": "系统不在上述选项中。"
+    }
+  ],
+  "free_text": {
+    "enabled": true,
+    "field": "operated_systems_supplement",
+    "required_when": {
+      "selected_values_include": [
+        "other"
+      ]
+    }
+  },
+  "retry_policy": {
+    "max_retries": 2,
+    "fallback_to_single_question": true
+  },
+  "depends_on_fields": [],
+  "skip_if": []
+}
