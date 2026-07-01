@@ -87,6 +87,56 @@ class PlatformPackageContractTests(unittest.TestCase):
                 with self.subTest(path=relative_path, forbidden=fragment):
                     self.assertNotIn(fragment, text)
 
+    def test_system_prompt_requires_skill_and_mapped_rag_before_output(self):
+        prompt = (ROOT / "agent_platform_package/system_prompt/agent-system-prompt.md").read_text(
+            encoding="utf-8"
+        )
+        checklist = (ROOT / "agent_platform_package/testing/platform_test_checklist.md").read_text(
+            encoding="utf-8"
+        )
+        guide = (ROOT / "agent_platform_package/integration_guide.md").read_text(
+            encoding="utf-8"
+        )
+
+        prompt_fragments = [
+            "Skill 与 RAG 强制使用规则",
+            "每一轮回复前，必须先读取并遵循 Git Skill",
+            "每个模块输出前，必须检索并使用当前模块对应的 RAG 材料",
+            "未检索到可用 RAG 依据",
+            "RAG 只负责知识解释、能力依据、案例参考和风险提示",
+            "客户已确认、RAG 建议、Agent 推断待确认、开发前必须补充确认",
+            "模块 2 需求澄清",
+            "模块 3 RPA 能力边界",
+            "模块 4 流程拆解",
+            "模块 5 异常设计",
+            "模块 6 方案打包",
+            "12_captcha_capability_boundary.md",
+            "11_report_quality_rules.md",
+        ]
+        checklist_fragments = [
+            "Skill And RAG Invocation",
+            "Before each module output, the Agent should first follow the Git Skill",
+            "If no usable RAG evidence is retrieved",
+            "Module 3 should retrieve RPA boundary",
+            "Every recommendation or risk must be source-labeled",
+        ]
+        guide_fragments = [
+            "运行要求",
+            "每一轮都应先按 Git Skill 判断当前模块",
+            "模块与 RAG 对应关系",
+            "每轮先遵循 Git Skill，再检索对应 RAG",
+        ]
+
+        for fragment in prompt_fragments:
+            with self.subTest(doc="system_prompt", fragment=fragment):
+                self.assertIn(fragment, prompt)
+        for fragment in checklist_fragments:
+            with self.subTest(doc="platform_test_checklist", fragment=fragment):
+                self.assertIn(fragment, checklist)
+        for fragment in guide_fragments:
+            with self.subTest(doc="integration_guide", fragment=fragment):
+                self.assertIn(fragment, guide)
+
     def test_platform_testing_docs_are_readable(self):
         for relative_path in PLATFORM_DOCS:
             text = (ROOT / relative_path).read_text(encoding="utf-8")

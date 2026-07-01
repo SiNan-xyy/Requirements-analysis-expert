@@ -10,6 +10,18 @@ Use this checklist to verify that the Agent platform loads Git Skill, RAG materi
 - RAG can inspect materials under `agent_platform_package/rag_upload/`.
 - RAG can inspect the 12 uploaded materials, including the Yingdao capability Chinese guide, Tencent Docs online spreadsheet capability, report collection scenarios, branch exception rules, HTML Chinese dictionary, report quality rules, and captcha capability boundary.
 - The system prompt comes from `agent_platform_package/system_prompt/agent-system-prompt.md`.
+- Before each module output, the Agent should first follow the Git Skill for the current module, then retrieve the mapped RAG materials.
+- If no usable RAG evidence is retrieved, the Agent must say "未检索到可用 RAG 依据" instead of pretending to cite material.
+- Module flow, JSON fields, question controls, and output contracts come from Git Skill and system prompt; RAG provides evidence and examples only.
+
+## Skill And RAG Invocation
+
+- Module 2 should retrieve requirement analysis, negative examples, logistics interception case, and requirement-template RAG before producing `clarification_result`.
+- Module 3 should retrieve RPA boundary, negative examples, Yingdao capability cards, online spreadsheet capability, and captcha boundary RAG before producing `rpa_boundary_result`.
+- Module 4 should retrieve Yingdao capability cards, online spreadsheet capability, and report collection scenario RAG before producing `process_breakdown_result`.
+- Module 5 should retrieve branch/exception rules and captcha boundary RAG before producing `exception_design_result`.
+- Module 6 should retrieve HTML display dictionary, report quality rules, and requirement-template fields before producing `solution_package_result`.
+- Every recommendation or risk must be source-labeled as customer confirmed, RAG suggestion, Agent inference pending confirmation, or required prework before development.
 
 ## Interaction Behavior
 
