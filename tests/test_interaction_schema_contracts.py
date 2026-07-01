@@ -2,6 +2,11 @@ import json
 import unittest
 from pathlib import Path
 
+try:
+    import jsonschema
+except ImportError:  # pragma: no cover - optional dependency in some environments
+    jsonschema = None
+
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -32,10 +37,20 @@ class InteractionSchemaContractTests(unittest.TestCase):
 
     def test_question_schema_uses_platform_compatible_choice_types(self):
         schema = load_json("agent_modules/interaction_schema/schemas/question.schema.json")
+        options = schema["properties"]["options"]
 
         self.assertEqual(schema["properties"]["type"]["enum"], ["single_choice", "multiple_choice"])
         self.assertIn("supplement_text", schema["required"])
         supplement = schema["properties"]["supplement_text"]
+        self.assertEqual(options["minItems"], 2)
+        self.assertEqual(len(options["allOf"]), 2)
+        required_values = set()
+        for clause in options["allOf"]:
+            self.assertEqual(clause["minContains"], 1)
+            self.assertEqual(clause["contains"]["type"], "object")
+            self.assertEqual(clause["contains"]["required"], ["value"])
+            required_values.add(clause["contains"]["properties"]["value"]["const"])
+        self.assertEqual(required_values, {"unknown", "other"})
         self.assertEqual(
             supplement["required"],
             ["enabled", "always_visible", "label", "placeholder"],
@@ -46,6 +61,21 @@ class InteractionSchemaContractTests(unittest.TestCase):
             schema["properties"]["importance"]["enum"],
             ["required", "recommended", "optional"],
         )
+
+    @unittest.skipIf(jsonschema is None, "jsonschema is not installed in this environment")
+    def test_question_schema_rejects_choice_options_missing_unknown_or_other(self):
+        schema = load_json("agent_modules/interaction_schema/schemas/question.schema.json")
+        question = load_json("agent_modules/interaction_schema/fixtures/multiple-choice-with-supplement-required.json")
+
+        missing_unknown = json.loads(json.dumps(question))
+        missing_unknown["options"] = [option for option in missing_unknown["options"] if option["value"] != "unknown"]
+        with self.assertRaises(jsonschema.ValidationError):
+            jsonschema.validate(instance=missing_unknown, schema=schema)
+
+        missing_other = json.loads(json.dumps(question))
+        missing_other["options"] = [option for option in missing_other["options"] if option["value"] != "other"]
+        with self.assertRaises(jsonschema.ValidationError):
+            jsonschema.validate(instance=missing_other, schema=schema)
 
     def test_required_question_fixture_supports_unknown_other_and_free_text(self):
         question = load_json("agent_modules/interaction_schema/fixtures/valid-question-trigger-type.json")
@@ -96,21 +126,6 @@ class InteractionSchemaContractTests(unittest.TestCase):
         self.assertEqual(rules["gap_stop_policy"]["max_retries_per_question"], 2)
         self.assertTrue(rules["gap_stop_policy"]["fallback_to_single_question"])
 
-    def test_question_type_policy_routes_coexisting_facts_to_multi_choice_with_text(self):
-        rules = load_json("agent_modules/interaction_schema/rules/decision-rules.json")
-        policy = rules["question_type_policy"]
-
-        self.assertEqual(policy["mutually_exclusive"], "single_choice_with_text")
-        self.assertEqual(policy["coexisting_facts"], "multiple_choice_with_text")
-        self.assertIn("platform", policy["must_use_multiple_choice_with_text_for"])
-        self.assertIn("data_source", policy["must_use_multiple_choice_with_text_for"])
-        self.assertIn("output_field", policy["must_use_multiple_choice_with_text_for"])
-        self.assertIn("exception_handling", policy["must_use_multiple_choice_with_text_for"])
-        self.assertIn("notification_method", policy["must_use_multiple_choice_with_text_for"])
-        self.assertIn("human_fallback", policy["must_use_multiple_choice_with_text_for"])
-        self.assertIn("captcha_handling", policy["must_use_multiple_choice_with_text_for"])
-        self.assertTrue(policy["every_question_keeps_other_or_supplement_path"])
-
     def test_multiple_choice_fixture_uses_platform_type_and_supplement_text(self):
         question = load_json("agent_modules/interaction_schema/fixtures/multiple-choice-with-supplement-required.json")
         option_values = {option["value"] for option in question["options"]}
@@ -123,12 +138,12 @@ class InteractionSchemaContractTests(unittest.TestCase):
         self.assertTrue(question["supplement_text"]["always_visible"])
         self.assertEqual(question["supplement_text"]["label"], "请补充")
 
-    def test_prompt_rules_document_mentions_no_repeated_questions(self):
+    def test_prompt_rules_document_mentions_platform_choice_guidance(self):
         text = (ROOT / "agent_modules/interaction_schema/rules/prompt-rules.md").read_text(encoding="utf-8")
 
-        self.assertIn("Do not ask a question if the answer was already supplied", text)
-        self.assertIn("Summarize what was learned before entering the next module", text)
-        self.assertIn("Use `multiple_choice_with_text`", text)
+        self.assertIn("Use only `single_choice` and `multiple_choice` for platform rendering.", text)
+        self.assertIn("Always include `other` and `unknown` routes for required questions.", text)
+        self.assertIn("Every question includes `unknown`, `other`, and an always-visible `supplement_text` field.", text)
 
     def test_deduplication_fixture_infers_web_system_from_url(self):
         fixture = load_json("agent_modules/interaction_schema/fixtures/deduplication-url-inference.json")

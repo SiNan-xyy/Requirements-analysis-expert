@@ -51,6 +51,32 @@
     "options": {
       "type": "array",
       "minItems": 2,
+      "allOf": [
+        {
+          "contains": {
+            "type": "object",
+            "required": ["value"],
+            "properties": {
+              "value": {
+                "const": "unknown"
+              }
+            }
+          },
+          "minContains": 1
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": ["value"],
+            "properties": {
+              "value": {
+                "const": "other"
+              }
+            }
+          },
+          "minContains": 1
+        }
+      ],
       "items": {
         "type": "object",
         "required": ["label", "value"],

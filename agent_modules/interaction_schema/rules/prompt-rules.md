@@ -6,8 +6,9 @@ Use these rules only for module 1 interaction control.
 - Ask only one simplified question if the prior batch was skipped or unclear.
 - Prefer business language over technical language.
 - Always include `other` and `unknown` routes for required questions.
-- Use `single_choice_with_text` when options are mutually exclusive but a supplement may be needed.
-- Use `multiple_choice_with_text` when multiple facts can coexist, such as platform, data source, output field, exception handling, notification method, human fallback, and captcha handling.
+- Use only `single_choice` and `multiple_choice` for platform rendering.
+- Do not use `single_choice_with_text` or `multiple_choice_with_text`.
+- Every question includes `unknown`, `other`, and an always-visible `supplement_text` field.
 - Summarize what was learned before entering the next module.
 - Do not ask a question if the answer was already supplied or can be inferred with high confidence.
 - Do not generate downstream artifacts until the current stage summary is confirmed.
