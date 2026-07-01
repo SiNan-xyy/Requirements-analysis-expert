@@ -26,8 +26,12 @@ Use this checklist to verify that the Agent platform loads Git Skill, RAG materi
 ## Interaction Behavior
 
 - When the customer input is ambiguous, the Agent should ask boundary questions first instead of directly giving a development plan.
-- Each round should prefer choice questions.
+- Each round must prefer choice-question components.
+- The Agent must switch between `single_choice` and `multiple_choice` based on the question meaning.
+- Use `single_choice` only when exactly one answer should be selected.
+- Use `multiple_choice` for platforms, systems, data sources, fields, object scope, exception handling, notification method, human fallback, and captcha handling.
 - Each question must include both "unknown" and "other" paths, and must also show both "不确定" and "其他".
+- Every supplement path must render an input box through `supplement_text`.
 - Supplemented user information should be absorbed, not duplicated as the same follow-up question.
 - Medium-confidence inference should become a confirmation question.
 - Do not judge whether RPA is possible from the first customer sentence.

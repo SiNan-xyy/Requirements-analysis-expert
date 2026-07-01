@@ -137,6 +137,51 @@ class PlatformPackageContractTests(unittest.TestCase):
             with self.subTest(doc="integration_guide", fragment=fragment):
                 self.assertIn(fragment, guide)
 
+    def test_system_prompt_emphasizes_core_priority_and_choice_controls(self):
+        prompt = (ROOT / "agent_platform_package/system_prompt/agent-system-prompt.md").read_text(
+            encoding="utf-8"
+        )
+        checklist = (ROOT / "agent_platform_package/testing/platform_test_checklist.md").read_text(
+            encoding="utf-8"
+        )
+        guide = (ROOT / "agent_platform_package/integration_guide.md").read_text(
+            encoding="utf-8"
+        )
+
+        prompt_fragments = [
+            "最高优先级核心规则",
+            "Git Skill 规则 > 本系统提示词 > RAG 材料 > Agent 自行推断",
+            "必须优先使用选择题组件进行澄清",
+            "必须根据题目含义切换单选和多选",
+            "唯一答案、判断类、阶段类问题使用 `single_choice`",
+            "可能存在多个答案的问题使用 `multiple_choice`",
+            "所有补充选项必须加入输入框",
+            "补充内容只能通过始终可见的 `supplement_text` 输入框承载",
+            "Use `single_choice` only when the customer should select exactly one answer.",
+            "Any option that allows supplementing information must use `supplement_text` as an input box",
+        ]
+        checklist_fragments = [
+            "Each round must prefer choice-question components.",
+            "The Agent must switch between `single_choice` and `multiple_choice` based on the question meaning.",
+            "Use `single_choice` only when exactly one answer should be selected.",
+            "Every supplement path must render an input box through `supplement_text`.",
+        ]
+        guide_fragments = [
+            "最高优先级规则：Git Skill 规则 > 本系统提示词 > RAG 材料 > Agent 自行推断。",
+            "根据题目含义切换 `single_choice` 和 `multiple_choice`",
+            "所有补充选项必须加入输入框，由 `supplement_text` 承载。",
+        ]
+
+        for fragment in prompt_fragments:
+            with self.subTest(doc="system_prompt", fragment=fragment):
+                self.assertIn(fragment, prompt)
+        for fragment in checklist_fragments:
+            with self.subTest(doc="platform_test_checklist", fragment=fragment):
+                self.assertIn(fragment, checklist)
+        for fragment in guide_fragments:
+            with self.subTest(doc="integration_guide", fragment=fragment):
+                self.assertIn(fragment, guide)
+
     def test_platform_testing_docs_are_readable(self):
         for relative_path in PLATFORM_DOCS:
             text = (ROOT / relative_path).read_text(encoding="utf-8")
