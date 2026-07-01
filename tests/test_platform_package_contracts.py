@@ -33,6 +33,8 @@ class PlatformPackageContractTests(unittest.TestCase):
         expected = (ROOT / "agent_platform_package/testing/expected_outputs.md").read_text(
             encoding="utf-8"
         )
+        platform_controls_section = checklist.split("## Platform-compatible question controls\n", 1)[1]
+        platform_controls_section = platform_controls_section.split("\n## ", 1)[0]
 
         checklist_fragments = [
             "supplement_text.enabled = true",
@@ -40,6 +42,7 @@ class PlatformPackageContractTests(unittest.TestCase):
             "Question `type` must stay `single_choice` or `multiple_choice`",
             "Do not output `single_choice_with_text` or `multiple_choice_with_text`",
             "unknown is not other",
+            'Every question must show both `unknown` and `other`, and must also show both "不确定" and "其他".',
             "不确定",
             "其他",
             "If the platform cannot render `supplement_text`, keep the choice question stable and use the `other` option wording as fallback.",
@@ -58,6 +61,9 @@ class PlatformPackageContractTests(unittest.TestCase):
         for fragment in checklist_fragments:
             with self.subTest(doc="checklist", fragment=fragment):
                 self.assertIn(fragment, checklist)
+
+        self.assertNotIn("where appropriate", checklist)
+        self.assertNotIn("where appropriate", platform_controls_section)
 
         for fragment in expected_fragments:
             with self.subTest(doc="expected_outputs", fragment=fragment):
