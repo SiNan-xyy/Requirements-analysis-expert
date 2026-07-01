@@ -4,7 +4,7 @@ Use this document before deployment or after major prompt, RAG, or skill changes
 
 ## ecommerce_daily_report
 
-- question_behavior: Use `multiple_choice_with_text` for platforms, data fields, output fields, and validation method. Do not ask exact click paths.
+- question_behavior: Use `multiple_choice with always-visible supplement_text` for platforms, data fields, output fields, and validation method. Do not ask exact click paths.
 - requirement_memory_updates: Confirm business goal, platforms, input metrics, Tencent Docs output, and daily trigger as `F` facts. Keep metric mapping, date definition, and validation method as `G` gaps if unanswered.
 - gate_state: Module 2 can be `partial_ready` for Module 3 when core boundary facts are known. Module 3 can be `partial_ready` for Module 4 when field mapping is a carry-forward gap.
 - rpa_boundary: Usually `conditionally_suitable`, with field mapping, result log, login stability, and platform-store scope as capability or prework notes.
@@ -13,7 +13,7 @@ Use this document before deployment or after major prompt, RAG, or skill changes
 
 ## inventory_monitor
 
-- question_behavior: Use `multiple_choice_with_text` for source systems, monitored product scope, notification methods, and human fallback.
+- question_behavior: Use `multiple_choice with always-visible supplement_text` for source systems, monitored product scope, notification methods, and human fallback.
 - requirement_memory_updates: Confirm monitoring goal and output alert as `F` facts. Keep threshold table, source field mapping, and receiver list as `G` gaps if missing.
 - gate_state: Module 2 can move forward with `partial_ready` when goal, source, and output are clear. Module 4 must not block on exact UI details.
 - rpa_boundary: Usually `conditionally_suitable` when inventory source is readable and threshold rules can be written; block only if threshold rules are undefined and cannot be confirmed.
@@ -22,7 +22,7 @@ Use this document before deployment or after major prompt, RAG, or skill changes
 
 ## email_sorting
 
-- question_behavior: Use `multiple_choice_with_text` for classification signals, folder or label outputs, manual review policy, and notification method.
+- question_behavior: Use `multiple_choice with always-visible supplement_text` for classification signals, folder or label outputs, manual review policy, and notification method.
 - requirement_memory_updates: Confirm mailbox platform, classification goal, trigger, and target result as `F` facts. Keep category examples and low-confidence threshold as `G` gaps if unanswered.
 - gate_state: Module 2 can move to Module 3 with semantic risk as a candidate. Module 3 should keep semantic judgment visible instead of finalizing fully unattended execution.
 - rpa_boundary: Usually `conditionally_suitable` with manual review queue for low-confidence or semantic cases.
@@ -49,7 +49,7 @@ Use this document before deployment or after major prompt, RAG, or skill changes
 
 ## captcha_heavy_platform_collection
 
-- question_behavior: Use `multiple_choice_with_text` for captcha type, appearance frequency, paid service acceptance, human fallback, and authorization or compliance constraints.
+- question_behavior: Use `multiple_choice with always-visible supplement_text` for captcha type, appearance frequency, paid service acceptance, human fallback, and authorization or compliance constraints.
 - requirement_memory_updates: Confirm platform, collection goal, captcha type, frequency, and fallback acceptance as `F` facts when answered. Keep unsupported captcha details as `G` gaps.
 - gate_state: Module 3 must retrieve captcha boundary material before marking captcha as a blocker. `partial_ready` is allowed when captcha is occasional and fallback exists.
 - rpa_boundary: Captcha is a conditional capability, not an automatic blocker. Block only when high-frequency unattended execution is required and no supported instruction, paid service, or human fallback is accepted.

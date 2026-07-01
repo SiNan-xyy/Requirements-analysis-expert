@@ -126,6 +126,28 @@ class InteractionSchemaContractTests(unittest.TestCase):
         self.assertEqual(rules["gap_stop_policy"]["max_retries_per_question"], 2)
         self.assertTrue(rules["gap_stop_policy"]["fallback_to_single_question"])
 
+    def test_question_type_policy_routes_coexisting_facts_to_multiple_choice(self):
+        rules = load_json("agent_modules/interaction_schema/rules/decision-rules.json")
+        policy = rules["question_type_policy"]
+
+        self.assertEqual(policy["mutually_exclusive"], "single_choice")
+        self.assertEqual(policy["coexisting_facts"], "multiple_choice")
+        self.assertTrue(policy["must_include_unknown_option"])
+        self.assertTrue(policy["must_include_other_option"])
+        self.assertTrue(policy["must_include_always_visible_supplement_text"])
+        self.assertIn("platform", policy["must_use_multiple_choice_for"])
+        self.assertIn("data_source", policy["must_use_multiple_choice_for"])
+        self.assertIn("input_field", policy["must_use_multiple_choice_for"])
+        self.assertIn("output_field", policy["must_use_multiple_choice_for"])
+        self.assertIn("object_scope", policy["must_use_multiple_choice_for"])
+        self.assertIn("exception_handling", policy["must_use_multiple_choice_for"])
+        self.assertIn("notification_method", policy["must_use_multiple_choice_for"])
+        self.assertIn("human_fallback", policy["must_use_multiple_choice_for"])
+        self.assertIn("captcha_handling", policy["must_use_multiple_choice_for"])
+        self.assertIn("capability", policy["must_use_multiple_choice_for"])
+        self.assertIn("risk", policy["must_use_multiple_choice_for"])
+        self.assertIn("prework", policy["must_use_multiple_choice_for"])
+
     def test_multiple_choice_fixture_uses_platform_type_and_supplement_text(self):
         question = load_json("agent_modules/interaction_schema/fixtures/multiple-choice-with-supplement-required.json")
         option_values = {option["value"] for option in question["options"]}
@@ -141,9 +163,10 @@ class InteractionSchemaContractTests(unittest.TestCase):
     def test_prompt_rules_document_mentions_platform_choice_guidance(self):
         text = (ROOT / "agent_modules/interaction_schema/rules/prompt-rules.md").read_text(encoding="utf-8")
 
-        self.assertIn("Use only `single_choice` and `multiple_choice` for platform rendering.", text)
+        self.assertIn("Use `multiple_choice` when multiple facts can coexist", text)
+        self.assertIn("Do not use `multiple_choice_with_text`", text)
         self.assertIn("Always include `other` and `unknown` routes for required questions.", text)
-        self.assertIn("Every question includes `unknown`, `other`, and an always-visible `supplement_text` field.", text)
+        self.assertIn("Every question must include `unknown`, `other`, and always-visible `supplement_text`.", text)
 
     def test_deduplication_fixture_infers_web_system_from_url(self):
         fixture = load_json("agent_modules/interaction_schema/fixtures/deduplication-url-inference.json")

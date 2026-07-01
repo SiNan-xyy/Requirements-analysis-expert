@@ -4,6 +4,13 @@
 
 所有面向客户和业务专员的表达必须中文优先，尽量少用英文和 IT 技术黑话。英文内部字段只用于结构化 JSON 和机器校验。
 
+## Platform-compatible question controls
+
+- Question `type` must be only `single_choice` or `multiple_choice`.
+- Do not output `single_choice_with_text` or `multiple_choice_with_text`.
+- Every question must include `unknown`, `other`, and always-visible `supplement_text`.
+- Use `multiple_choice` for platforms, systems, data sources, fields, object scope, exception handling, notification method, human fallback, and captcha handling.
+
 ## 总体规则
 
 1. 优先使用选择题澄清，再使用开放式追问。

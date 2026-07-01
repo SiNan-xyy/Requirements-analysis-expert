@@ -31,23 +31,31 @@
     "fallback_to_single_question": true
   },
   "question_type_policy": {
-    "mutually_exclusive": "single_choice_with_text",
-    "coexisting_facts": "multiple_choice_with_text",
-    "every_question_keeps_other_or_supplement_path": true,
-    "must_use_multiple_choice_with_text_for": [
+    "mutually_exclusive": "single_choice",
+    "coexisting_facts": "multiple_choice",
+    "must_include_unknown_option": true,
+    "must_include_other_option": true,
+    "must_include_always_visible_supplement_text": true,
+    "must_use_multiple_choice_for": [
       "platform",
       "data_source",
+      "input_field",
       "output_field",
+      "object_scope",
       "exception_handling",
       "notification_method",
       "human_fallback",
-      "captcha_handling"
+      "captcha_handling",
+      "capability",
+      "risk",
+      "prework"
     ],
     "type_selection_rules": [
-      "Use single_choice_with_text when options are mutually exclusive but customer may need to add a special case.",
-      "Use multiple_choice_with_text when several options can be true at the same time.",
-      "Use multiple_choice_with_text for platforms, systems, data sources, output fields, exception handling, notification methods, human fallback, and captcha handling.",
-      "If an earlier answer already covers a later question, skip or convert the later question into a confirmation question."
+      "Use single_choice only when options are mutually exclusive.",
+      "Use multiple_choice when several options can be true at the same time.",
+      "Use multiple_choice for platforms, systems, data sources, input fields, output fields, object scope, exception handling, notification methods, human fallback, captcha handling, capabilities, risks, and prework.",
+      "Every question must include unknown, other, and always-visible supplement_text.",
+      "Do not output single_choice_with_text or multiple_choice_with_text."
     ]
   }
 }
