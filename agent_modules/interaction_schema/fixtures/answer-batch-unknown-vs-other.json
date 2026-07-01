@@ -9,6 +9,14 @@
       "confidence": "none"
     },
     {
+      "question_id": "platform_access_with_note",
+      "selected_values": ["unknown"],
+      "free_text": "需后续确认具体平台名称",
+      "answer_status": "unknown_with_note",
+      "semantic_route": "gap_candidate",
+      "confidence": "low"
+    },
+    {
       "question_id": "other_system",
       "selected_values": ["other"],
       "free_text": "还需要操作一个供应商门户网站后台",

@@ -147,6 +147,15 @@ class InteractionSchemaContractTests(unittest.TestCase):
 
         self.assertEqual(records["platform_access"]["answer_status"], "unknown")
         self.assertEqual(records["platform_access"]["semantic_route"], "gap_candidate")
+        self.assertIn("platform_access_with_note", records)
+        self.assertEqual(records["platform_access_with_note"]["selected_values"], ["unknown"])
+        self.assertEqual(records["platform_access_with_note"]["answer_status"], "unknown_with_note")
+        self.assertEqual(records["platform_access_with_note"]["semantic_route"], "gap_candidate")
+        self.assertEqual(records["platform_access_with_note"]["confidence"], "low")
+        self.assertNotEqual(
+            records["platform_access_with_note"]["answer_status"],
+            records["other_system"]["answer_status"],
+        )
         self.assertEqual(records["other_system"]["answer_status"], "answered_with_supplement")
         self.assertEqual(records["other_system"]["semantic_route"], "candidate_fact")
         self.assertEqual(records["other_without_text"]["answer_status"], "needs_free_text")
@@ -192,6 +201,9 @@ class InteractionSchemaContractTests(unittest.TestCase):
         self.assertEqual(semantics["unknown"]["meaning"], "customer cannot confirm now")
         self.assertFalse(semantics["unknown"]["requires_supplement_text"])
         self.assertEqual(semantics["unknown"]["semantic_route"], "gap_candidate")
+        self.assertEqual(semantics["unknown_with_note"]["meaning"], "customer cannot confirm now, with note")
+        self.assertFalse(semantics["unknown_with_note"]["requires_supplement_text"])
+        self.assertEqual(semantics["unknown_with_note"]["semantic_route"], "gap_candidate")
         self.assertEqual(semantics["other"]["meaning"], "customer knows an answer not covered by options")
         self.assertTrue(semantics["other"]["requires_supplement_text"])
         self.assertEqual(semantics["other"]["semantic_route_when_text_present"], "candidate_fact")

@@ -64,6 +64,11 @@
       "requires_supplement_text": false,
       "semantic_route": "gap_candidate"
     },
+    "unknown_with_note": {
+      "meaning": "customer cannot confirm now, with note",
+      "requires_supplement_text": false,
+      "semantic_route": "gap_candidate"
+    },
     "other": {
       "meaning": "customer knows an answer not covered by options",
       "requires_supplement_text": true,
