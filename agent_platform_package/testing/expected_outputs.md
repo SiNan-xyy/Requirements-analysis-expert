@@ -6,6 +6,8 @@ Valid output must always be a single top-level JSON object. The agent may includ
 
 - `interaction_state`
 - `answer_batch`
+- `requirement_memory`
+- `requirement_memory_document`
 - `clarification_result`
 - `rpa_boundary_result`
 - `process_breakdown_result`
@@ -35,6 +37,23 @@ Example wrapper:
       "review_notes": []
     }
   },
+  "requirement_memory": {
+    "module": "global_requirement_memory",
+    "memory_version": "v1",
+    "current_stage": {
+      "current_module": "module_2_requirement_clarification",
+      "state": "collecting",
+      "next_action": "ask_next_question"
+    },
+    "confirmed_facts": [],
+    "inferred_items": [],
+    "gaps": [],
+    "conflicts": [],
+    "retired_questions": [],
+    "decisions": [],
+    "gate_states": []
+  },
+  "requirement_memory_document": "# 需求记忆体\n\n## 当前阶段\n- 当前模块：module_2_requirement_clarification\n- 状态：collecting\n- 下一步：ask_next_question\n\n## 已确认事实 F\n\n## 推断建议 I\n\n## 待确认缺口 G\n\n## 冲突或更正 C\n\n## 已废弃问题 R\n\n## 模块判断 D\n\n## 模块就绪度 Gate",
   "clarification_result": {},
   "rpa_boundary_result": {},
   "process_breakdown_result": {},
@@ -44,6 +63,19 @@ Example wrapper:
 ```
 
 Real output may include only the objects needed for the current stage, but it must remain a single top-level JSON wrapper.
+
+Every structured turn should include updated `requirement_memory` and `requirement_memory_document`. The next turn must read them before asking another question, entering another module, or generating a report.
+
+`requirement_memory_document` is a short Chinese Markdown memory document. It should mirror the structured memory and include:
+
+- 当前阶段
+- 已确认事实 F
+- 推断建议 I
+- 待确认缺口 G
+- 冲突或更正 C
+- 已废弃问题 R
+- 模块判断 D
+- 模块就绪度 Gate
 
 ## Module 1 Expected Output
 

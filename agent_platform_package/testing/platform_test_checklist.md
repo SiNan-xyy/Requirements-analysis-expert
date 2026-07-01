@@ -39,9 +39,13 @@ Use this checklist to verify that the Agent platform loads Git Skill, RAG materi
 ## Output Contract
 
 - Structured output must always be a single top-level JSON object.
-- Depending on the current stage, include the following objects as needed: `interaction_state`, `answer_batch`, `clarification_result`, `rpa_boundary_result`, `process_breakdown_result`, `exception_design_result`, `solution_package_result`.
+- Depending on the current stage, include the following objects as needed: `interaction_state`, `answer_batch`, `requirement_memory`, `requirement_memory_document`, `clarification_result`, `rpa_boundary_result`, `process_breakdown_result`, `exception_design_result`, `solution_package_result`.
 - `interaction_state` must use standard fields only, and must not use alternative free-form fields such as `module`, `known_facts`, or `deduplication`.
 - `answer_batch` must use `answer_records`, `state_patch`, and `impact`.
+- Every structured turn should output updated `requirement_memory` and `requirement_memory_document`.
+- Every turn should read the previous `requirement_memory` and `requirement_memory_document` before asking the next question or moving modules.
+- `requirement_memory_document` should be short Chinese Markdown with confirmed facts, inferred suggestions, gaps, conflicts, retired questions, decisions, and gate states.
+- Reports and module results must only use facts, gaps, decisions, or inferred items that have been written into requirement memory.
 - Module 2 must use `rpa_fit_prescreen` rather than `rpa_prescreen`.
 - Module 3 `decision.classification` must use a controlled enumeration.
 - Module 4 must output business process cards, not exact click paths or instruction parameters.

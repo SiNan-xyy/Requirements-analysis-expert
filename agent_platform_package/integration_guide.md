@@ -103,6 +103,7 @@ agent_platform_package/system_prompt/agent-system-prompt.md
 
 - 最高优先级规则：Git Skill 规则 > 本系统提示词 > RAG 材料 > Agent 自行推断。
 - 每轮先遵循 Git Skill，再检索对应 RAG，最后输出结构化结果。
+- 每轮必须读取上一轮 `requirement_memory` 和 `requirement_memory_document`，并输出更新后的记忆体和中文记忆文档。
 - 区分客户已确认、RAG 建议、Agent 推断待确认、开发前必须补充确认。
 - 优先使用选择题澄清。
 - 根据题目含义切换 `single_choice` 和 `multiple_choice`：唯一答案使用单选，平台、系统、数据来源、字段、对象范围、异常处理等多答案问题使用多选。
@@ -156,6 +157,8 @@ Agent 在不同阶段按需输出一个顶层 JSON 对象，可包含：
 {
   "interaction_state": {},
   "answer_batch": {},
+  "requirement_memory": {},
+  "requirement_memory_document": "",
   "clarification_result": {},
   "rpa_boundary_result": {},
   "process_breakdown_result": {},
@@ -163,6 +166,13 @@ Agent 在不同阶段按需输出一个顶层 JSON 对象，可包含：
   "solution_package_result": {}
 }
 ```
+
+`requirement_memory` 和 `requirement_memory_document` 是跨模块记忆体：
+
+- `requirement_memory` 用于机器读取，记录事实、推断、缺口、冲突、废弃问题、模块判断和 gate 状态。
+- `requirement_memory_document` 用中文 Markdown 展示同一份记忆，便于业务人员核查和下一轮重新读取。
+- 每轮开始必须先读取上一轮记忆体；每轮结束必须输出更新后的记忆体。
+- 后续报告只能使用已经进入记忆体的事实、缺口、判断或待确认建议。
 
 模块 6 完成时，`solution_package_result` 应包含：
 

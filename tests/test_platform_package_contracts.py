@@ -182,6 +182,79 @@ class PlatformPackageContractTests(unittest.TestCase):
             with self.subTest(doc="integration_guide", fragment=fragment):
                 self.assertIn(fragment, guide)
 
+    def test_platform_requires_visible_requirement_memory_document(self):
+        prompt = (ROOT / "agent_platform_package/system_prompt/agent-system-prompt.md").read_text(
+            encoding="utf-8"
+        )
+        checklist = (ROOT / "agent_platform_package/testing/platform_test_checklist.md").read_text(
+            encoding="utf-8"
+        )
+        expected = (ROOT / "agent_platform_package/testing/expected_outputs.md").read_text(
+            encoding="utf-8"
+        )
+        guide = (ROOT / "agent_platform_package/integration_guide.md").read_text(
+            encoding="utf-8"
+        )
+
+        prompt_fragments = [
+            "需求记忆体文档协议",
+            "不允许只依赖模型上下文记忆",
+            "每一轮结构化输出都必须包含 `requirement_memory` 和 `requirement_memory_document`",
+            "每一轮开始时，必须先读取上一轮的 `requirement_memory` 和 `requirement_memory_document`",
+            "吸收客户最新回答后，必须先更新 `requirement_memory` 和 `requirement_memory_document`",
+            "模块流转只能依据更新后的记忆体 gate 状态判断",
+            "任何报告、流程拆解、异常设计或开发对齐内容，都只能引用已经进入 `requirement_memory` 的事实",
+            "## 需求记忆体文档协议",
+        ]
+        shared_fragments = [
+            "`requirement_memory`",
+            "`requirement_memory_document`",
+        ]
+        expected_fragments = [
+            '"requirement_memory": {',
+            '"requirement_memory_document":',
+            "Every structured turn should include updated `requirement_memory` and `requirement_memory_document`",
+            "The next turn must read them before asking another question",
+            "当前阶段",
+            "已确认事实 F",
+            "推断建议 I",
+            "待确认缺口 G",
+            "模块就绪度 Gate",
+        ]
+        checklist_fragments = [
+            "Every structured turn should output updated `requirement_memory` and `requirement_memory_document`.",
+            "Every turn should read the previous `requirement_memory` and `requirement_memory_document`",
+            "`requirement_memory_document` should be short Chinese Markdown",
+            "Reports and module results must only use facts, gaps, decisions, or inferred items that have been written into requirement memory.",
+        ]
+        guide_fragments = [
+            "每轮必须读取上一轮 `requirement_memory` 和 `requirement_memory_document`",
+            "`requirement_memory` 和 `requirement_memory_document` 是跨模块记忆体",
+            "每轮开始必须先读取上一轮记忆体；每轮结束必须输出更新后的记忆体。",
+        ]
+
+        for fragment in prompt_fragments:
+            with self.subTest(doc="system_prompt", fragment=fragment):
+                self.assertIn(fragment, prompt)
+        for fragment in shared_fragments:
+            with self.subTest(doc="system_prompt", fragment=fragment):
+                self.assertIn(fragment, prompt)
+            with self.subTest(doc="platform_test_checklist", fragment=fragment):
+                self.assertIn(fragment, checklist)
+            with self.subTest(doc="expected_outputs", fragment=fragment):
+                self.assertIn(fragment, expected)
+            with self.subTest(doc="integration_guide", fragment=fragment):
+                self.assertIn(fragment, guide)
+        for fragment in expected_fragments:
+            with self.subTest(doc="expected_outputs", fragment=fragment):
+                self.assertIn(fragment, expected)
+        for fragment in checklist_fragments:
+            with self.subTest(doc="platform_test_checklist", fragment=fragment):
+                self.assertIn(fragment, checklist)
+        for fragment in guide_fragments:
+            with self.subTest(doc="integration_guide", fragment=fragment):
+                self.assertIn(fragment, guide)
+
     def test_platform_testing_docs_are_readable(self):
         for relative_path in PLATFORM_DOCS:
             text = (ROOT / relative_path).read_text(encoding="utf-8")
