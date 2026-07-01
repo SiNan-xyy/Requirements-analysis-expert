@@ -63,6 +63,28 @@ class RequirementMemoryContractTests(unittest.TestCase):
         self.assertIn("gaps_must_track_blocking_stage", rules["global_rules"])
         self.assertIn("conflicts_must_supersede_or_retire_old_facts", rules["global_rules"])
 
+    def test_memory_update_rules_separate_unknown_from_other(self):
+        rules = load_json("agent_modules/requirement_memory/rules/update-rules.json")
+        semantics = rules["unknown_other_semantics"]
+
+        self.assertEqual(semantics["unknown"]["memory_target"], "gaps")
+        self.assertFalse(semantics["unknown"]["requires_supplement_text"])
+        self.assertEqual(
+            semantics["other_with_supplement"]["memory_target"], "confirmed_facts_or_inferred_items"
+        )
+        self.assertEqual(
+            semantics["other_without_supplement"]["memory_target"], "retired_questions_or_next_question_plan"
+        )
+        self.assertTrue(semantics["other_without_supplement"]["requires_supplement_text"])
+
+    def test_memory_prompt_rules_explain_unknown_and_other_separately(self):
+        text = (ROOT / "agent_modules/requirement_memory/rules/prompt-rules.md").read_text(encoding="utf-8")
+
+        self.assertIn("unknown means the customer cannot confirm now", text)
+        self.assertIn("other means the options do not cover a known answer", text)
+        self.assertIn("unknown must not require supplement text", text)
+        self.assertIn("other without supplement text must ask for supplement", text)
+
     def test_memory_template_contains_required_markdown_sections(self):
         text = (ROOT / "agent_modules/requirement_memory/templates/requirement_memory_template.md").read_text(
             encoding="utf-8"

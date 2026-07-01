@@ -27,6 +27,14 @@
 | --- | --- | --- | --- | --- |
 | G001 | 字段映射 | 各平台指标与腾讯文档字段是否已有一一对应关系？ | module_4_process_breakdown | medium |
 
+## 未知与其他答法
+
+| ID | 主题 | 处理方式 | 说明 |
+| --- | --- | --- | --- |
+| G002 | unknown | gaps | 客户暂时无法确认，先保留为缺口。 |
+| I002 | other_with_supplement | inferred_items | 其他选项带补充文本时，作为候选事实等待确认。 |
+| R002 | other_without_supplement | retired_questions_or_next_question_plan | 选了“其他”但未提供补充文本，重问或进入下一问计划。 |
+
 ## 冲突或更正 C
 
 | ID | 描述 | 影响事实 | 处理方式 |

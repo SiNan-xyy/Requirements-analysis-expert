@@ -30,6 +30,30 @@
     "gaps": "Must be shown as pending confirmation, prework, or carry-forward risk depending on blocking level.",
     "conflicts": "Must be resolved or explicitly marked before final development handoff."
   },
+  "unknown_other_semantics": {
+    "unknown": {
+      "meaning": "customer cannot confirm now",
+      "memory_target": "gaps",
+      "requires_supplement_text": false,
+      "development_use": "not_confirmed"
+    },
+    "unknown_with_note": {
+      "meaning": "customer is uncertain but added context",
+      "memory_target": "inferred_items",
+      "requires_confirmation": true,
+      "development_use": "not_confirmed"
+    },
+    "other_with_supplement": {
+      "meaning": "options do not cover a known answer",
+      "memory_target": "confirmed_facts_or_inferred_items",
+      "requires_confirmation_when_ambiguous": true
+    },
+    "other_without_supplement": {
+      "meaning": "other was selected but the known answer was not provided",
+      "memory_target": "retired_questions_or_next_question_plan",
+      "requires_supplement_text": true
+    }
+  },
   "id_rules": {
     "fact": "F001",
     "inference": "I001",

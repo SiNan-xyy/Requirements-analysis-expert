@@ -31,3 +31,12 @@
 - 待确认：需要客户补充或确认。
 - 建议项：来自经验或材料库，不能直接当作客户已确认。
 - 可继续：说明可以携带哪些缺口进入下一模块。
+
+## Unknown And Other
+
+- unknown means the customer cannot confirm now.
+- other means the options do not cover a known answer.
+- unknown must not require supplement text.
+- other without supplement text must ask for supplement.
+- unknown creates or updates a gap when the field is required.
+- other with supplement can become a candidate fact or confirmed fact depending on confidence and wording.
