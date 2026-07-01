@@ -26,6 +26,20 @@ COMMON_MOJIBAKE_FRAGMENTS = (
 
 
 class PlatformPackageContractTests(unittest.TestCase):
+    def test_platform_docs_describe_supplement_text_mapping(self):
+        checklist = (ROOT / "agent_platform_package/testing/platform_test_checklist.md").read_text(
+            encoding="utf-8"
+        )
+        expected = (ROOT / "agent_platform_package/testing/expected_outputs.md").read_text(
+            encoding="utf-8"
+        )
+
+        self.assertIn("supplement_text", checklist)
+        self.assertIn("always_visible", checklist)
+        self.assertIn("unknown is not other", checklist)
+        self.assertIn("Question `type` must stay `single_choice` or `multiple_choice`", expected)
+        self.assertIn("Do not output `multiple_choice_with_text`", expected)
+
     def test_platform_testing_docs_are_readable(self):
         for relative_path in PLATFORM_DOCS:
             text = (ROOT / relative_path).read_text(encoding="utf-8")

@@ -221,3 +221,18 @@ The email sorting scenario should retain low-confidence human confirmation or a 
 - Generating exact click paths, selectors, wait times, retry counts, or Yingdao instruction parameters in Module 6.
 - Generating customer and developer HTML from different facts.
 - Producing unreadable Chinese or mojibake.
+## Platform-Compatible Question Output
+
+Question `type` must stay `single_choice` or `multiple_choice`.
+
+Do not output `single_choice_with_text`.
+Do not output `multiple_choice_with_text`.
+
+Every question must include:
+
+- `unknown`
+- `other`
+- `supplement_text.enabled = true`
+- `supplement_text.always_visible = true`
+
+unknown is not other. unknown creates a gap candidate when required; other requires supplement text when selected.
