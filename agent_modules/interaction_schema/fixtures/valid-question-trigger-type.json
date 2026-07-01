@@ -33,8 +33,9 @@
       "value": "unknown"
     },
     {
-      "label": "其他，请补充",
-      "value": "other"
+      "label": "其他",
+      "value": "other",
+      "description": "如果选项未覆盖，请在下方补充说明中填写。"
     }
   ],
   "free_text": {

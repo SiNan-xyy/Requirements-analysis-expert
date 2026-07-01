@@ -63,7 +63,7 @@ class InteractionSchemaContractTests(unittest.TestCase):
         )
 
     @unittest.skipIf(jsonschema is None, "jsonschema is not installed in this environment")
-    def test_question_schema_rejects_choice_options_missing_unknown_or_other(self):
+    def test_question_schema_rejects_choice_options_missing_required_paths(self):
         schema = load_json("agent_modules/interaction_schema/schemas/question.schema.json")
         question = load_json("agent_modules/interaction_schema/fixtures/multiple-choice-with-supplement-required.json")
 
@@ -80,6 +80,7 @@ class InteractionSchemaContractTests(unittest.TestCase):
     def test_required_question_fixture_supports_unknown_other_and_free_text(self):
         question = load_json("agent_modules/interaction_schema/fixtures/valid-question-trigger-type.json")
         option_values = {option["value"] for option in question["options"]}
+        options_by_value = {option["value"]: option for option in question["options"]}
 
         self.assertEqual(question["type"], "single_choice")
         self.assertEqual(question["importance"], "required")
@@ -87,11 +88,15 @@ class InteractionSchemaContractTests(unittest.TestCase):
         self.assertTrue(question["allow_unknown"])
         self.assertIn("unknown", option_values)
         self.assertIn("other", option_values)
+        self.assertEqual(options_by_value["other"]["label"], "其他")
+        self.assertIn("补充说明", options_by_value["other"]["description"])
         self.assertTrue(question["free_text"]["enabled"])
         self.assertEqual(
             question["free_text"]["required_when"]["selected_values_include"],
             ["other"],
         )
+        self.assertTrue(question["supplement_text"]["enabled"])
+        self.assertTrue(question["supplement_text"]["always_visible"])
 
     def test_answer_batch_schema_defines_status_and_confidence_enums(self):
         schema = load_json("agent_modules/interaction_schema/schemas/answer-batch.schema.json")
@@ -119,15 +124,13 @@ class InteractionSchemaContractTests(unittest.TestCase):
         answer_props = schema["properties"]["answer_records"]["items"]["properties"]
 
         self.assertEqual(
-            answer_props["answer_status"]["enum"],
+            answer_props["semantic_route"]["enum"],
             [
-                "answered",
-                "answered_with_supplement",
-                "unknown",
-                "unknown_with_note",
-                "skipped",
-                "invalid",
-                "needs_free_text",
+                "confirmed_answer",
+                "candidate_fact",
+                "gap_candidate",
+                "supplement_required",
+                "ignored_or_skipped",
             ],
         )
 

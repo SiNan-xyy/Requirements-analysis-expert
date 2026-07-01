@@ -199,7 +199,9 @@ class RequirementClarificationContractTests(unittest.TestCase):
             self.assertIn("trigger_policy", example)
             self.assertTrue(example["trigger_policy"]["confirmation_required"])
             self.assertTrue(example["trigger_policy"]["never_conclude_from_initial_request_only"])
-            self.assertIn("其他，请补充", example["options"])
+            self.assertIn("暂不确定", example["options"])
+            self.assertIn("其他", example["options"])
+            self.assertNotIn("其他" + "，请补充", example["options"])
 
     def test_module_2_user_facing_materials_are_readable_utf8(self):
         paths = [

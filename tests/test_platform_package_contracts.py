@@ -8,6 +8,11 @@ PLATFORM_DOCS = [
     "agent_platform_package/testing/expected_outputs.md",
     "agent_platform_package/testing/platform_test_checklist.md",
 ]
+LIVE_CONTRACT_DOCS = [
+    "agent_platform_package/system_prompt/agent-system-prompt.md",
+    "agent_platform_package/testing/platform_test_checklist.md",
+    "agent_platform_package/integration_guide.md",
+]
 
 COMMON_MOJIBAKE_FRAGMENTS = (
     "骞冲",
@@ -45,7 +50,7 @@ class PlatformPackageContractTests(unittest.TestCase):
             'Every question must show both `unknown` and `other`, and must also show both "不确定" and "其他".',
             "不确定",
             "其他",
-            "If the platform cannot render `supplement_text`, keep the choice question stable and use the `other` option wording as fallback.",
+            "Supplement behavior must be represented by always-visible `supplement_text`",
         ]
         expected_fragments = [
             "Question `type` must stay `single_choice` or `multiple_choice`",
@@ -68,6 +73,19 @@ class PlatformPackageContractTests(unittest.TestCase):
         for fragment in expected_fragments:
             with self.subTest(doc="expected_outputs", fragment=fragment):
                 self.assertIn(fragment, expected)
+
+    def test_live_contract_docs_use_unknown_other_plus_supplement_split(self):
+        required_fragments = ["不确定", "其他", "supplement_text"]
+        forbidden_fragments = ["other, please " + "supplement", "其他" + "，请补充"]
+
+        for relative_path in LIVE_CONTRACT_DOCS:
+            text = (ROOT / relative_path).read_text(encoding="utf-8")
+            for fragment in required_fragments:
+                with self.subTest(path=relative_path, fragment=fragment):
+                    self.assertIn(fragment, text)
+            for fragment in forbidden_fragments:
+                with self.subTest(path=relative_path, forbidden=fragment):
+                    self.assertNotIn(fragment, text)
 
     def test_platform_testing_docs_are_readable(self):
         for relative_path in PLATFORM_DOCS:

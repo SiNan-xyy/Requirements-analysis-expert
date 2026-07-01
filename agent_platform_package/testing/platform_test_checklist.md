@@ -15,7 +15,7 @@ Use this checklist to verify that the Agent platform loads Git Skill, RAG materi
 
 - When the customer input is ambiguous, the Agent should ask boundary questions first instead of directly giving a development plan.
 - Each round should prefer choice questions.
-- Each question should keep an "unknown" or "other, please supplement" path, and must also show both "不确定" and "其他".
+- Each question must include both "unknown" and "other" paths, and must also show both "不确定" and "其他".
 - Supplemented user information should be absorbed, not duplicated as the same follow-up question.
 - Medium-confidence inference should become a confirmation question.
 - Do not judge whether RPA is possible from the first customer sentence.
@@ -82,4 +82,4 @@ Use this checklist to verify that the Agent platform loads Git Skill, RAG materi
 - Every question must show both `unknown` and `other`, and must also show both "不确定" and "其他".
 - unknown is not other: `unknown` means the customer cannot confirm now and does not require supplement text.
 - `other` means the customer knows an answer not covered by options and should provide supplement text.
-- If the platform cannot render `supplement_text`, keep the choice question stable and use the `other` option wording as fallback.
+- Supplement behavior must be represented by always-visible `supplement_text`; do not turn the `other` label into a supplement instruction.
