@@ -107,9 +107,7 @@
           "question_type": {
             "enum": [
               "single_choice",
-              "multiple_choice",
-              "single_choice_with_text",
-              "multiple_choice_with_text"
+              "multiple_choice"
             ]
           },
           "question": {

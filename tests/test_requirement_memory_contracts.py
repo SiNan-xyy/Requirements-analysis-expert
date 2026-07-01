@@ -47,6 +47,12 @@ class RequirementMemoryContractTests(unittest.TestCase):
         )
         self.assertEqual(schema["$defs"]["gate_state"]["enum"], ["ready", "partial_ready", "blocked"])
 
+    def test_requirement_memory_schema_limits_next_question_plan_question_types(self):
+        schema = load_json("agent_modules/requirement_memory/schemas/requirement-memory.schema.json")
+        question_type_enum = schema["properties"]["next_question_plan"]["items"]["properties"]["question_type"]["enum"]
+
+        self.assertEqual(question_type_enum, ["single_choice", "multiple_choice"])
+
     def test_update_rules_protect_confirmed_facts_and_require_read_before_write(self):
         rules = load_json("agent_modules/requirement_memory/rules/update-rules.json")
 
