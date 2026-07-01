@@ -44,6 +44,12 @@
       "selected_values_include": ["other"]
     }
   },
+  "supplement_text": {
+    "enabled": true,
+    "always_visible": true,
+    "label": "请补充",
+    "placeholder": "如果选项不完整，或需要说明特殊情况，请在这里补充"
+  },
   "retry_policy": {
     "max_retries": 2,
     "fallback_to_single_question": true

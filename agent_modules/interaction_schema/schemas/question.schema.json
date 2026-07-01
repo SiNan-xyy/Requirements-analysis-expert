@@ -13,6 +13,7 @@
     "allow_unknown",
     "target_field",
     "options",
+    "supplement_text",
     "free_text",
     "retry_policy"
   ],
@@ -31,12 +32,7 @@
     },
     "type": {
       "type": "string",
-      "enum": [
-        "single_choice",
-        "multiple_choice",
-        "single_choice_with_text",
-        "multiple_choice_with_text"
-      ]
+      "enum": ["single_choice", "multiple_choice"]
     },
     "importance": {
       "type": "string",
@@ -97,6 +93,27 @@
               }
             }
           }
+        }
+      }
+    },
+    "supplement_text": {
+      "type": "object",
+      "required": ["enabled", "always_visible", "label", "placeholder"],
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "const": true
+        },
+        "always_visible": {
+          "const": true
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "placeholder": {
+          "type": "string",
+          "minLength": 1
         }
       }
     },

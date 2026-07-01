@@ -2,7 +2,7 @@
   "question_id": "operated_systems",
   "stage": "intake",
   "question": "这个自动化需要操作哪些平台或系统？可以多选；如果不在选项里，请选择“其他”并补充。",
-  "type": "multiple_choice_with_text",
+  "type": "multiple_choice",
   "importance": "required",
   "blocks_stage_progression": true,
   "allow_unknown": true,
@@ -29,19 +29,23 @@
       "description": "目前还不清楚具体操作系统。"
     },
     {
-      "label": "其他，请补充",
+      "label": "其他",
       "value": "other",
-      "description": "系统不在上述选项中。"
+      "description": "系统不在上述选项中，请在补充框说明。"
     }
   ],
   "free_text": {
     "enabled": true,
     "field": "operated_systems_supplement",
     "required_when": {
-      "selected_values_include": [
-        "other"
-      ]
+      "selected_values_include": ["other"]
     }
+  },
+  "supplement_text": {
+    "enabled": true,
+    "always_visible": true,
+    "label": "请补充",
+    "placeholder": "如果选项不完整，或需要说明特殊情况，请在这里补充"
   },
   "retry_policy": {
     "max_retries": 2,

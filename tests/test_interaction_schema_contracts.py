@@ -30,18 +30,18 @@ class InteractionSchemaContractTests(unittest.TestCase):
         self.assertIn("development_ready", props["completion_level"]["enum"])
         self.assertIn("stop_with_gap_report", props["next_action"]["enum"])
 
-    def test_question_schema_supports_choice_with_text_types(self):
+    def test_question_schema_uses_platform_compatible_choice_types(self):
         schema = load_json("agent_modules/interaction_schema/schemas/question.schema.json")
 
+        self.assertEqual(schema["properties"]["type"]["enum"], ["single_choice", "multiple_choice"])
+        self.assertIn("supplement_text", schema["required"])
+        supplement = schema["properties"]["supplement_text"]
         self.assertEqual(
-            schema["properties"]["type"]["enum"],
-            [
-                "single_choice",
-                "multiple_choice",
-                "single_choice_with_text",
-                "multiple_choice_with_text",
-            ],
+            supplement["required"],
+            ["enabled", "always_visible", "label", "placeholder"],
         )
+        self.assertEqual(supplement["properties"]["enabled"]["const"], True)
+        self.assertEqual(supplement["properties"]["always_visible"]["const"], True)
         self.assertEqual(
             schema["properties"]["importance"]["enum"],
             ["required", "recommended", "optional"],
@@ -111,16 +111,17 @@ class InteractionSchemaContractTests(unittest.TestCase):
         self.assertIn("captcha_handling", policy["must_use_multiple_choice_with_text_for"])
         self.assertTrue(policy["every_question_keeps_other_or_supplement_path"])
 
-    def test_multiple_choice_with_text_fixture_supports_supplement(self):
-        question = load_json("agent_modules/interaction_schema/fixtures/multiple-choice-with-text-required.json")
+    def test_multiple_choice_fixture_uses_platform_type_and_supplement_text(self):
+        question = load_json("agent_modules/interaction_schema/fixtures/multiple-choice-with-supplement-required.json")
         option_values = {option["value"] for option in question["options"]}
 
-        self.assertEqual(question["type"], "multiple_choice_with_text")
+        self.assertEqual(question["type"], "multiple_choice")
         self.assertEqual(question["target_field"], "operated_systems")
-        self.assertTrue(question["free_text"]["enabled"])
         self.assertIn("other", option_values)
         self.assertIn("unknown", option_values)
-        self.assertEqual(question["free_text"]["required_when"]["selected_values_include"], ["other"])
+        self.assertTrue(question["supplement_text"]["enabled"])
+        self.assertTrue(question["supplement_text"]["always_visible"])
+        self.assertEqual(question["supplement_text"]["label"], "请补充")
 
     def test_prompt_rules_document_mentions_no_repeated_questions(self):
         text = (ROOT / "agent_modules/interaction_schema/rules/prompt-rules.md").read_text(encoding="utf-8")
@@ -161,7 +162,7 @@ class InteractionSchemaContractTests(unittest.TestCase):
             "rules/decision-rules.json",
             "rules/prompt-rules.md",
             "fixtures/deduplication-url-inference.json",
-            "fixtures/multiple-choice-with-text-required.json",
+            "fixtures/multiple-choice-with-supplement-required.json",
         ]
         for path in expected_paths:
             with self.subTest(path=path):
