@@ -34,11 +34,34 @@ class PlatformPackageContractTests(unittest.TestCase):
             encoding="utf-8"
         )
 
-        self.assertIn("supplement_text", checklist)
-        self.assertIn("always_visible", checklist)
-        self.assertIn("unknown is not other", checklist)
-        self.assertIn("Question `type` must stay `single_choice` or `multiple_choice`", expected)
-        self.assertIn("Do not output `multiple_choice_with_text`", expected)
+        checklist_fragments = [
+            "supplement_text.enabled = true",
+            "supplement_text.always_visible = true",
+            "Question `type` must stay `single_choice` or `multiple_choice`",
+            "Do not output `single_choice_with_text` or `multiple_choice_with_text`",
+            "unknown is not other",
+            "不确定",
+            "其他",
+            "If the platform cannot render `supplement_text`, keep the choice question stable and use the `other` option wording as fallback.",
+        ]
+        expected_fragments = [
+            "Question `type` must stay `single_choice` or `multiple_choice`",
+            "Do not output `single_choice_with_text`.",
+            "Do not output `multiple_choice_with_text`.",
+            "supplement_text.enabled = true",
+            "supplement_text.always_visible = true",
+            "unknown is not other.",
+            "`unknown`",
+            "`other`",
+        ]
+
+        for fragment in checklist_fragments:
+            with self.subTest(doc="checklist", fragment=fragment):
+                self.assertIn(fragment, checklist)
+
+        for fragment in expected_fragments:
+            with self.subTest(doc="expected_outputs", fragment=fragment):
+                self.assertIn(fragment, expected)
 
     def test_platform_testing_docs_are_readable(self):
         for relative_path in PLATFORM_DOCS:
