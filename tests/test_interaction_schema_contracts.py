@@ -99,11 +99,36 @@ class InteractionSchemaContractTests(unittest.TestCase):
 
         self.assertEqual(
             answer_props["answer_status"]["enum"],
-            ["answered", "unknown", "skipped", "invalid", "needs_free_text"],
+            [
+                "answered",
+                "answered_with_supplement",
+                "unknown",
+                "unknown_with_note",
+                "skipped",
+                "invalid",
+                "needs_free_text",
+            ],
         )
         self.assertEqual(
             answer_props["confidence"]["enum"],
             ["high", "medium", "low", "none"],
+        )
+
+    def test_answer_batch_schema_distinguishes_unknown_other_and_supplement(self):
+        schema = load_json("agent_modules/interaction_schema/schemas/answer-batch.schema.json")
+        answer_props = schema["properties"]["answer_records"]["items"]["properties"]
+
+        self.assertEqual(
+            answer_props["answer_status"]["enum"],
+            [
+                "answered",
+                "answered_with_supplement",
+                "unknown",
+                "unknown_with_note",
+                "skipped",
+                "invalid",
+                "needs_free_text",
+            ],
         )
 
     def test_answer_batch_fixture_updates_state_patch_and_impact(self):
@@ -111,9 +136,21 @@ class InteractionSchemaContractTests(unittest.TestCase):
 
         self.assertEqual(batch["answer_records"][0]["question_id"], "trigger_type")
         self.assertEqual(batch["answer_records"][0]["answer_status"], "answered")
+        self.assertEqual(batch["answer_records"][0]["semantic_route"], "confirmed_answer")
         self.assertEqual(batch["state_patch"]["requirement.trigger.type"]["value"], "message_received")
         self.assertEqual(batch["impact"]["blocks_stage_progression"], False)
         self.assertEqual(batch["impact"]["adds_pending_question"], False)
+
+    def test_unknown_and_other_fixture_have_different_semantics(self):
+        fixture = load_json("agent_modules/interaction_schema/fixtures/answer-batch-unknown-vs-other.json")
+        records = {record["question_id"]: record for record in fixture["answer_records"]}
+
+        self.assertEqual(records["platform_access"]["answer_status"], "unknown")
+        self.assertEqual(records["platform_access"]["semantic_route"], "gap_candidate")
+        self.assertEqual(records["other_system"]["answer_status"], "answered_with_supplement")
+        self.assertEqual(records["other_system"]["semantic_route"], "candidate_fact")
+        self.assertEqual(records["other_without_text"]["answer_status"], "needs_free_text")
+        self.assertEqual(records["other_without_text"]["semantic_route"], "supplement_required")
 
     def test_decision_rules_have_required_order_and_gap_policy(self):
         rules = load_json("agent_modules/interaction_schema/rules/decision-rules.json")
@@ -147,6 +184,18 @@ class InteractionSchemaContractTests(unittest.TestCase):
         self.assertIn("capability", policy["must_use_multiple_choice_for"])
         self.assertIn("risk", policy["must_use_multiple_choice_for"])
         self.assertIn("prework", policy["must_use_multiple_choice_for"])
+
+    def test_decision_rules_distinguish_unknown_from_other(self):
+        rules = load_json("agent_modules/interaction_schema/rules/decision-rules.json")
+        semantics = rules["unknown_other_semantics"]
+
+        self.assertEqual(semantics["unknown"]["meaning"], "customer cannot confirm now")
+        self.assertFalse(semantics["unknown"]["requires_supplement_text"])
+        self.assertEqual(semantics["unknown"]["semantic_route"], "gap_candidate")
+        self.assertEqual(semantics["other"]["meaning"], "customer knows an answer not covered by options")
+        self.assertTrue(semantics["other"]["requires_supplement_text"])
+        self.assertEqual(semantics["other"]["semantic_route_when_text_present"], "candidate_fact")
+        self.assertEqual(semantics["other"]["semantic_route_when_text_missing"], "supplement_required")
 
     def test_multiple_choice_fixture_uses_platform_type_and_supplement_text(self):
         question = load_json("agent_modules/interaction_schema/fixtures/multiple-choice-with-supplement-required.json")

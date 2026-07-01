@@ -57,5 +57,18 @@
       "Every question must include unknown, other, and always-visible supplement_text.",
       "Do not output single_choice_with_text or multiple_choice_with_text."
     ]
+  },
+  "unknown_other_semantics": {
+    "unknown": {
+      "meaning": "customer cannot confirm now",
+      "requires_supplement_text": false,
+      "semantic_route": "gap_candidate"
+    },
+    "other": {
+      "meaning": "customer knows an answer not covered by options",
+      "requires_supplement_text": true,
+      "semantic_route_when_text_present": "candidate_fact",
+      "semantic_route_when_text_missing": "supplement_required"
+    }
   }
 }

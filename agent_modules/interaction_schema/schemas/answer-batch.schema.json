@@ -35,7 +35,25 @@
           },
           "answer_status": {
             "type": "string",
-            "enum": ["answered", "unknown", "skipped", "invalid", "needs_free_text"]
+            "enum": [
+              "answered",
+              "answered_with_supplement",
+              "unknown",
+              "unknown_with_note",
+              "skipped",
+              "invalid",
+              "needs_free_text"
+            ]
+          },
+          "semantic_route": {
+            "type": "string",
+            "enum": [
+              "confirmed_answer",
+              "candidate_fact",
+              "gap_candidate",
+              "supplement_required",
+              "ignored_or_skipped"
+            ]
           },
           "confidence": {
             "type": "string",

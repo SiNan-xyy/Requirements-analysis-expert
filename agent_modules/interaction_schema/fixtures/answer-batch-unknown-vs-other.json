@@ -1,0 +1,37 @@
+{
+  "answer_records": [
+    {
+      "question_id": "platform_access",
+      "selected_values": ["unknown"],
+      "free_text": "",
+      "answer_status": "unknown",
+      "semantic_route": "gap_candidate",
+      "confidence": "none"
+    },
+    {
+      "question_id": "other_system",
+      "selected_values": ["other"],
+      "free_text": "还需要操作一个供应商门户网站后台",
+      "answer_status": "answered_with_supplement",
+      "semantic_route": "candidate_fact",
+      "confidence": "medium"
+    },
+    {
+      "question_id": "other_without_text",
+      "selected_values": ["other"],
+      "free_text": "",
+      "answer_status": "needs_free_text",
+      "semantic_route": "supplement_required",
+      "confidence": "none"
+    }
+  ],
+  "state_patch": {},
+  "impact": {
+    "blocks_stage_progression": true,
+    "adds_pending_question": true,
+    "pending_question_ids": ["other_without_text"],
+    "review_notes": [
+      "unknown creates a gap candidate, while other without text requires supplement."
+    ]
+  }
+}

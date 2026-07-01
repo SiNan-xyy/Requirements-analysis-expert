@@ -3,8 +3,9 @@
     {
       "question_id": "trigger_type",
       "selected_values": ["message_received"],
-      "free_text": "客户把物流单号发给飞书机器人后触发",
+      "free_text": "客户把物流单号发给飞书机器人后触发。",
       "answer_status": "answered",
+      "semantic_route": "confirmed_answer",
       "confidence": "high"
     }
   ],
@@ -15,7 +16,7 @@
       "confidence": "high"
     },
     "requirement.trigger.description": {
-      "value": "客户把物流单号发给飞书机器人后触发",
+      "value": "客户把物流单号发给飞书机器人后触发。",
       "source": "user_free_text",
       "confidence": "high"
     }
